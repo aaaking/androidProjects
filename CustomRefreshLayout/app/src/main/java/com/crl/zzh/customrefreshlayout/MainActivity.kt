@@ -12,9 +12,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //
         list.setLayoutManager(LinearLayoutManager(this))
         list.adapter = CardAdapter()
+        testInteractScroll()
     }
 
     override fun onBackPressed() {
@@ -66,6 +67,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    var mOriginalHeight = 0
+    var mFinalHeight = 0
+    fun testInteractScroll() {
+        mOriginalHeight = ScreenUtil.dp2px(this, 233f)
     }
 }
 
@@ -103,5 +110,4 @@ internal class CardAdapter : RecyclerView.Adapter<CardAdapter.ViewHolder>() {
     companion object {
         val ITEM_COUNT = 64
     }
-
 }
