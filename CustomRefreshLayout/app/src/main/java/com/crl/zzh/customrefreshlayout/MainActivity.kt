@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -91,11 +92,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var percentage = Math.abs(verticalOffset / mTotalMove)//已经移动的百分比例
             if (percentage >= 1) {
                 percentage = 1f
-                app_bar_layout.setBackgroundColor(resources.getColor(R.color.transparent))
-                scroll_contailer.setBackgroundColor(resources.getColor(R.color.transparent))
-                rl_club_info.setBackgroundColor(resources.getColor(R.color.transparent))
-                ll_club_info_creator.setBackgroundColor(resources.getColor(R.color.transparent))
+//                app_bar_layout.setBackgroundColor(resources.getColor(R.color.transparent))
+//                scroll_contailer.setBackgroundColor(resources.getColor(R.color.transparent))
+//                rl_club_info.setBackgroundColor(resources.getColor(R.color.transparent))
+//                ll_club_info_creator.setBackgroundColor(resources.getColor(R.color.transparent))
             }
+            Log.i("percentage", "percentage: $percentage")
+            val paddingTop = (0 + (mTotalMove - 0) * percentage).toInt()
+            scroll_contailer.setPadding(scroll_contailer.paddingLeft, paddingTop, scroll_contailer.paddingRight, 0)
         }
         app_bar_layout.addOnOffsetChangedListener(offsetChangedListener)
     }
