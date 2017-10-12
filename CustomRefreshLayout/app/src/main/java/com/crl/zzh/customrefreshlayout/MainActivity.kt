@@ -1,21 +1,14 @@
 package com.crl.zzh.customrefreshlayout
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.*
-import android.widget.FrameLayout
-import android.widget.TextView
-import android.widget.Toast
-import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -31,10 +24,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-        //
-        list.setLayoutManager(LinearLayoutManager(this))
-        list.adapter = CardAdapter()
-        testInteractScroll()
     }
 
     override fun onBackPressed() {
@@ -53,7 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.itemId
         if (id == R.id.menu_setting) {
-            return true
+            CoordinatorTest.Companion.start(this)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -73,70 +62,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDestroy() {
-        app_bar_layout.removeOnOffsetChangedListener(offsetChangedListener)
         super.onDestroy()
     }
 
-    lateinit var offsetChangedListener: AppBarLayout.OnOffsetChangedListener
-    var mOriginalHeight = 0
-    var mFinalHeight = 0
-    var mTotalMove = 0f
-    fun testInteractScroll() {
-        //scroll_contailer
-        //rl_club_info  tv_club_info_name    tv_club_info_card
-        //ll_club_info_creator  tv_club_info_creator tv_club_info_creator_title
-        mOriginalHeight = ScreenUtil.dp2px(this, 233f)
-        mFinalHeight = ScreenUtil.dp2px(this, 48f)
-        mTotalMove = (mOriginalHeight - mFinalHeight).toFloat()
-        offsetChangedListener = AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            var percentage = Math.abs(verticalOffset / mTotalMove)//已经移动的百分比例
-            if (percentage >= 1) {
-                percentage = 1f
-//                app_bar_layout.setBackgroundColor(resources.getColor(R.color.transparent))
-//                scroll_contailer.setBackgroundColor(resources.getColor(R.color.transparent))
-//                rl_club_info.setBackgroundColor(resources.getColor(R.color.transparent))
-//                ll_club_info_creator.setBackgroundColor(resources.getColor(R.color.transparent))
-            }
-            Log.i("percentage", "percentage: $percentage")
-            val paddingTop = (0 + (mTotalMove - 0) * percentage).toInt()
-            scroll_contailer.setPadding(scroll_contailer.paddingLeft, paddingTop, scroll_contailer.paddingRight, 0)
-        }
-        app_bar_layout.addOnOffsetChangedListener(offsetChangedListener)
-    }
-}
-
-internal class CardAdapter : RecyclerView.Adapter<CardAdapter.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return ViewHolder(inflater.inflate(R.layout.row_empty_card, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(position)
-    }
-
-    override fun getItemCount(): Int {
-        return ITEM_COUNT
-    }
-
-    internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var card_view: CardView
-        var tv_position: TextView
-
-        init {
-            card_view = itemView.findViewById<View>(R.id.card_view) as CardView
-            card_view.isClickable = true
-            tv_position = itemView.findViewById<View>(R.id.tv_position) as TextView
-        }
-
-        fun bind(position: Int) {
-            tv_position.text = "$position"
-            card_view.setOnClickListener { v -> Toast.makeText(v.context, "点击: " + position, Toast.LENGTH_SHORT).show() }
-        }
-    }
-
-    companion object {
-        val ITEM_COUNT = 64
-    }
 }
