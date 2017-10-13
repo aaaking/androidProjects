@@ -1,1 +1,1 @@
-include ':app', ':flexiblerefreshlayout', ':swipebackactivity'
+include ':app', ':flexiblerefreshlayout', ':swipedismiss'
