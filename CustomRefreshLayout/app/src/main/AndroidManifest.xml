@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CoordinatorTest"/>
+        <activity android:name=".activity.CoordinatorTest"
+                  android:theme="@style/AppTheme.WindowTranslucent"/>
         <activity android:name=".activity.TestAC"
         android:theme="@style/AppTheme.WindowTranslucent"/>
     </application>

@@ -18,10 +18,11 @@ import android.widget.Toast
 import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import com.crl.zzh.swipebackactivity.SwipeBackActivity
 import kotlinx.android.synthetic.main.ac_test_coordinator.*
 import kotlinx.android.synthetic.main.toolbar.*
 
-class CoordinatorTest : BaseActivity() {
+class CoordinatorTest : SwipeBackActivity() {
     companion object {
         fun start(activity: Activity) {
             var intent = Intent(activity, CoordinatorTest::class.java)
@@ -32,6 +33,7 @@ class CoordinatorTest : BaseActivity() {
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_test_coordinator)
+        toolbar.setBackgroundColor(resources.getColor(R.color.blue_auxiliary_text_color))
         setSupportActionBar(toolbar)
         fab.setOnClickListener {
             Snackbar.make(it, "Replace with your action", Snackbar.LENGTH_SHORT).setAction("Action", null).show()

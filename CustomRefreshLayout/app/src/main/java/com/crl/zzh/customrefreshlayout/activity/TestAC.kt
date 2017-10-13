@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import kotlinx.android.synthetic.main.toolbar.*
 
 class TestAC : BaseActivity() {
     companion object {
@@ -24,6 +25,8 @@ class TestAC : BaseActivity() {
         val content = FrameLayout(this)
         content.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         setContentView(R.layout.ac_test)
+        setSupportActionBar(toolbar)
+        toolbar.setBackgroundColor(resources.getColor(R.color.red_normal))
         testSwipeback()
     }
 
