@@ -12,8 +12,18 @@ android {
         versionName versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        debug {
+            storeFile file("../keystore/customrefreshlayout.jks")
+            storePassword "customrefreshlayout"
+            //命令行密码 /storePassword System.console().readLine("\ninput Keystore password: ")
+            keyAlias "customrefreshlayout"
+            keyPassword "customrefreshlayout"
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
