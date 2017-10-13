@@ -12,6 +12,7 @@ import android.view.MenuItem
 import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {

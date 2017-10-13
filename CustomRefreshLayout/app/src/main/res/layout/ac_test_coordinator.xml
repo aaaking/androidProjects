@@ -154,11 +154,6 @@
                                                         app:srcCompat="@android:drawable/ic_dialog_email"
                                                         android:id="@+id/fab"/>
 
-    <android.support.v7.widget.Toolbar android:layout_width="match_parent"
-                                       android:layout_height="@dimen/toolbar_height"
-                                       android:paddingTop="@dimen/toppadding_to_fit_statusbar"
-                                       android:id="@+id/toolbar"
-                                       app:layout_collapseMode="pin"
-                                       android:background="@color/colorPrimary"/>
+    <include layout="@layout/toolbar"/>
 
 </android.support.design.widget.CoordinatorLayout>

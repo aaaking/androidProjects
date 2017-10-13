@@ -19,6 +19,7 @@ import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
 import kotlinx.android.synthetic.main.ac_test_coordinator.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 class CoordinatorTest : BaseActivity() {
     companion object {
