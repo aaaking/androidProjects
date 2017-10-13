@@ -23,7 +23,7 @@ class TestAC : BaseActivity() {
         super.onCreate(savedInstanceState)
         val content = FrameLayout(this)
         content.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-        setContentView(content)
+        setContentView(R.layout.ac_test)
         testSwipeback()
     }
 
@@ -57,6 +57,6 @@ class TestAC : BaseActivity() {
                 decorView.setX(0f)
             }
         }
-        return true
+        return super.onTouchEvent(event)
     }
 }
