@@ -29,6 +29,7 @@ class CoordinatorTest : BaseActivity() {
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+        overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_test_coordinator)
         setSupportActionBar(toolbar)
@@ -38,6 +39,15 @@ class CoordinatorTest : BaseActivity() {
         list.setLayoutManager(LinearLayoutManager(this))
         list.adapter = CardAdapter()
         testInteractScroll()
+    }
+
+    override fun onBackPressed() {
+        finish()
+        super.onBackPressed()
+    }
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
     override fun onDestroy() {
         app_bar_layout.removeOnOffsetChangedListener(offsetChangedListener)
