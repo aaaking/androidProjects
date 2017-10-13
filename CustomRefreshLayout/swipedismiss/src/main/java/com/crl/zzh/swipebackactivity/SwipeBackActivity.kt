@@ -20,10 +20,6 @@ open class SwipeBackActivity : AppCompatActivity(), SwipeBackLayout.SwipeBackLis
     private var ivShadow: ImageView? = null
 
     override fun setContentView(layoutResID: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var localLayoutParams: WindowManager.LayoutParams = getWindow().getAttributes()
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or localLayoutParams.flags);
-        }
         super.setContentView(container)
         val view = LayoutInflater.from(this).inflate(layoutResID, null)
         swipeBackLayout!!.addView(view)

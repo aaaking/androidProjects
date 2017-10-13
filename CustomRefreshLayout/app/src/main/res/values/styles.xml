@@ -16,7 +16,7 @@
 
     <style name="AppTheme.WindowTranslucent" parent="AppTheme.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/register_page_bg_color</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
