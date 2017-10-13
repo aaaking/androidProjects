@@ -4,4 +4,8 @@
           android:orderInCategory="100"
           android:title="Settings"
           app:showAsAction="never"/>
+    <item android:id="@+id/menu_test"
+          android:orderInCategory="100"
+          android:title="Test"
+          app:showAsAction="never"/>
 </menu>

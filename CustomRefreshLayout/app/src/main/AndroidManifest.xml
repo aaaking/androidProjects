@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.CoordinatorTest"/>
+        <activity android:name=".activity.TestAC"
+        android:theme="@style/AppTheme.WindowTranslucent"/>
     </application>
 
 </manifest>

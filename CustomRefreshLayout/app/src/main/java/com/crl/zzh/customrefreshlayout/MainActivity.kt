@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
+import com.crl.zzh.customrefreshlayout.activity.TestAC
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -49,8 +50,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.itemId
-        if (id == R.id.menu_setting) {
-            CoordinatorTest.Companion.start(this)
+        when (id) {
+            R.id.menu_setting -> {
+                CoordinatorTest.Companion.start(this)
+            }
+            R.id.menu_test -> {
+                TestAC.Companion.start(this)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
