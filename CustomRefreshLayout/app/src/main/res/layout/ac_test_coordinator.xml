@@ -155,9 +155,10 @@
                                                         android:id="@+id/fab"/>
 
     <android.support.v7.widget.Toolbar android:layout_width="match_parent"
-                                       android:layout_height="48dp"
+                                       android:layout_height="@dimen/toolbar_height"
+                                       android:paddingTop="@dimen/toppadding_to_fit_statusbar"
                                        android:id="@+id/toolbar"
                                        app:layout_collapseMode="pin"
-                                       android:background="@color/blue_auxiliary_text_color"/>
+                                       android:background="@color/colorPrimary"/>
 
 </android.support.design.widget.CoordinatorLayout>

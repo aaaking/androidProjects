@@ -15,11 +15,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
 import kotlinx.android.synthetic.main.ac_test_coordinator.*
 
-class CoordinatorTest : AppCompatActivity() {
+class CoordinatorTest : BaseActivity() {
     companion object {
         fun start(activity: Activity) {
             var intent = Intent(activity, CoordinatorTest::class.java)
