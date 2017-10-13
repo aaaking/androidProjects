@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
@@ -73,6 +74,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("lifecycle", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("lifecycle", "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("lifecycle", "onStop")
     }
 
     override fun onDestroy() {

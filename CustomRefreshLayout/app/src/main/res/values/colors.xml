@@ -362,6 +362,7 @@
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="white_half_transparent">#99FFFFFF</color>
+    <color name="black_half_transparent">#99000000</color>
     <color name="light">#FFEEEEEE</color>
     <color name="black">#000000</color>
     <color name="grey">#333333</color>
@@ -448,7 +449,7 @@
     <color name="club_me_press">#836f4b</color>
     <color name="club_others">#4590AA</color>
     <color name="club_others_press">#306476</color>
-    <color name="register_page_bg_color">#F0F1F2</color>
+    <color name="register_page_bg_color">#FEF0F1F2</color>
     <color name="paiju_num_tv_color_others">#BCA06C</color>
     <color name="paiju_num_tv_color_my">#39BDCC</color>
     <color name="red_normal">#DD5043</color>
