@@ -22,8 +22,6 @@ class TestAC : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 //        window.attributes.alpha = 0.6f
         super.onCreate(savedInstanceState)
-        val content = FrameLayout(this)
-        content.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         setContentView(R.layout.ac_test)
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(resources.getColor(R.color.red_normal))
