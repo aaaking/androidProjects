@@ -68,7 +68,7 @@
 
     <!-- 语音 -->
     <string name="record_audio">按住 说话</string>
-    <string name="record_audio_end">松开  结束</string>
+    <string name="record_audio_end">松开 结束</string>
     <string name="sdcard_not_exist_error">请插入SD卡</string>
     <string name="recording_error">录音失败，请重试</string>
     <string name="recording_init_failed">初始化录音失败</string>
@@ -244,10 +244,10 @@
     <string name="club_update_team_verifyType">%1$s身份验证权限更新为</string>
 
     <string name="club_update_team_head_netease">俱乐部头像已更新</string>
-    <string name="club_update_team_invite_mode">俱乐部邀请他人权限被更新为 </string>
-    <string name="club_update_team_update_mode">俱乐部资料修改权限被更新为 </string>
-    <string name="club_update_team_beinvite_mode">俱乐部被邀请人身份验证权限被更新为 </string>
-    <string name="club_update_team_extension_update_mode">群扩展字段修改权限被更新为 </string>
+    <string name="club_update_team_invite_mode">俱乐部邀请他人权限被更新为</string>
+    <string name="club_update_team_update_mode">俱乐部资料修改权限被更新为</string>
+    <string name="club_update_team_beinvite_mode">俱乐部被邀请人身份验证权限被更新为</string>
+    <string name="club_update_team_extension_update_mode">群扩展字段修改权限被更新为</string>
     <string name="club_mute_team_member">被管理员</string>
     <string name="club_mute_add">禁言</string>
     <string name="club_mute_remove">解除禁言</string>
@@ -871,7 +871,9 @@
     <string name="friend_guide_add">添加通讯簿好友</string>
     <string name="friend_guide_not">暂不添加</string>
     <string name="friend_guide_title">看看手机联系人里谁在扑克部落里？</string>
-    <string name="friend_guide_content">添加手机通讯簿好友可以让你更快的组建自己的圈子，只有在圈子里才可以和朋友一起打牌。\n我们不会保存您的通讯簿信息，只会向你推荐通讯簿中已经使用扑克部落的联系人</string>
+    <string name="friend_guide_content">
+        添加手机通讯簿好友可以让你更快的组建自己的圈子，只有在圈子里才可以和朋友一起打牌。\n我们不会保存您的通讯簿信息，只会向你推荐通讯簿中已经使用扑克部落的联系人
+    </string>
 
     <string name="game_back_tip">您确定要离开当前牌局？</string>
     <string name="session_clear_tip">确定清空聊天记录？</string>
@@ -1044,7 +1046,8 @@
     <!--<string nameId="game_mode_insurance_pool">分池购买</string>-->
     <!--<string nameId="game_mode_insurance_quick">快速购买</string>-->
 
-    <string name="system_announcement">“德州扑克圈”1.0版已经正式上线了。新版本修复了“添加好友时闪退”等bug，同时增加了牌局道具等新功能。请您及时下载并更新安装。祝您在“德州扑克圈”愉快!</string>
+    <string name="system_announcement">“德州扑克圈”1.0版已经正式上线了。新版本修复了“添加好友时闪退”等bug，同时增加了牌局道具等新功能。请您及时下载并更新安装。祝您在“德州扑克圈”愉快!
+    </string>
 
     <string name="upgrade_vip">升级VIP</string>
     <string name="shop_vip_not_hint">您还没有成为VIP会员</string>
@@ -1260,7 +1263,8 @@
     <string name="app_message_buychips_addon_recent_content">“%s”请求增购</string>
     <string name="app_message_buychips_into">带入</string>
     <string name="app_message_buychips_weekout">淘汰</string>
-    <string name="app_message_buychips_winchips">总盈利：%1$s&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;已买入：%2$d</string>
+    <string name="app_message_buychips_winchips">总盈利：%1$s&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;已买入：%2$d
+    </string>
     <string name="get_hand_failure">获取牌谱失败，请重试</string>
 
     <string name="look_detail">查看详情</string>
@@ -1309,7 +1313,9 @@
     <string name="sng_rule_instructions">说明</string>
     <string name="sng_rule_instructions_content">SNG是英文Sit and go的简写，是德州扑克的一种比赛形式，即单桌实时锦标赛。</string>
     <string name="sng_rule_rules">规则</string>
-    <string name="sng_rule_rules_content">每场比赛，参与者带入固定的记分牌，输光记分牌则淘汰。\n比赛开始后，不可中途加入和补充记分牌，中途退出视为弃权并失去所有记分牌。\n比赛直到只剩1名玩家为止，根据淘汰顺序决出第一名、第二名、第三名。</string>
+    <string name="sng_rule_rules_content">
+        每场比赛，参与者带入固定的记分牌，输光记分牌则淘汰。\n比赛开始后，不可中途加入和补充记分牌，中途退出视为弃权并失去所有记分牌。\n比赛直到只剩1名玩家为止，根据淘汰顺序决出第一名、第二名、第三名。
+    </string>
     <string name="sng_rule_blinds_rise">涨盲</string>
     <string name="sng_rule_blinds_rise_content">为提高比赛激烈程度，比赛过程中会逐步提升盲注。</string>
     <string name="sng_rule_bonus">奖金</string>
@@ -1513,8 +1519,8 @@
 
     <string name="game_match_current_blinds_title">当前等级%d：</string>
     <string name="game_match_next_blinds_title">下一等级%d：</string>
-    <string name="game_match_blinds_content">盲注 %1$s  前注 %2$s</string>
-    <string name="game_match_chips_content">最大 %1$d  平均 %2$d 最小 %3$d</string>
+    <string name="game_match_blinds_content">盲注 %1$s 前注 %2$s</string>
+    <string name="game_match_chips_content">最大 %1$d 平均 %2$d 最小 %3$d</string>
     <string name="game_match_chips_title">记分牌：</string>
 
     <string name="game_match_timestart">定时开赛</string>
@@ -1527,7 +1533,7 @@
 
     <string name="game_mt_sng_status_ing">坐满开赛：%1$d/%2$d人</string>
     <string name="game_mtt_status_waiting">开赛时间%s</string>
-    <string name="game_mtt_status_ing">比赛进行中  %s</string>
+    <string name="game_mtt_status_ing">比赛进行中 %s</string>
     <string name="game_mtt_status_remain">距离比赛开始剩余：%s</string>
 
     <string name="game_match_rebuy_desc">1-%d盲注级别（购买1倍记分牌 5次）</string>
@@ -1641,7 +1647,7 @@
     <string name="match_game_begin_after1">比赛将在</string>
     <string name="match_game_begin_after2">秒后开始</string>
 
-    <string name="chatroom_game_begintime">开赛时间  %s</string>
+    <string name="chatroom_game_begintime">开赛时间 %s</string>
 
     <string name="match_game_mystatus_ingame">您已在比赛中</string>
     <string name="match_game_mystatus_weedout">您已经被淘汰</string>
@@ -1956,7 +1962,8 @@
     <string name="permission_call_phone_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_CALL_PHONE</string>
     <string name="permission_camera_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_CAMERA</string>
     <string name="permission_access_fine_location_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_ACCESS_FINE_LOCATION</string>
-    <string name="permission_access_coarse_location_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_ACCESS_COARSE_LOCATION</string>
+    <string name="permission_access_coarse_location_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_ACCESS_COARSE_LOCATION
+    </string>
     <string name="permission_read_external_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_READ_EXTERNAL_STORAGE</string>
     <string name="permission_white_external_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_WRITE_EXTERNAL_STORAGE</string>
     <string name="permission_recode_audio_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_RECORD_AUDIO</string>
