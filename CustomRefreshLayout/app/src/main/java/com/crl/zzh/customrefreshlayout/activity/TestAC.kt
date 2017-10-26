@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
-import android.widget.FrameLayout
 import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
-import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import com.crl.zzh.customrefreshlayout.util.ScreenUtil
 import kotlinx.android.synthetic.main.toolbar.*
 
 class TestAC : BaseActivity() {

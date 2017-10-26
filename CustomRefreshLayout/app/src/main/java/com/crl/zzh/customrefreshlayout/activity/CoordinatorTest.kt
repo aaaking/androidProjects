@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,9 +16,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
-import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import com.crl.zzh.customrefreshlayout.util.ScreenUtil
 import com.crl.zzh.swipebackactivity.SwipeBackActivity
 import com.crl.zzh.swipebackactivity.SwipeBackLayout
 import kotlinx.android.synthetic.main.ac_test_coordinator.*

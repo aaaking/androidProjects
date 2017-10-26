@@ -1,4 +1,4 @@
-package com.crl.zzh.customrefreshlayout.Util;
+package com.crl.zzh.customrefreshlayout.util;
 
 import android.app.Activity;
 import android.content.Context;

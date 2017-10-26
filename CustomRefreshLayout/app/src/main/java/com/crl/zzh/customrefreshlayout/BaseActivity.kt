@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
-import com.crl.zzh.customrefreshlayout.Util.ScreenUtil
+import com.crl.zzh.customrefreshlayout.util.ScreenUtil
 
 open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

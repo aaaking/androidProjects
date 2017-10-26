@@ -8,7 +8,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import com.crl.zzh.customrefreshlayout.Util.ScreenUtil;
+import com.crl.zzh.customrefreshlayout.util.ScreenUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
