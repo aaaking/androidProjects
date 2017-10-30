@@ -1,11 +1,9 @@
 package com.crl.zzh.swipebackactivity
 
 import android.graphics.Color
-import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
