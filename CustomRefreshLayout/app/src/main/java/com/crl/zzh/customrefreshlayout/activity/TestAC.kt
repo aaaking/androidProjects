@@ -24,22 +24,6 @@ class TestAC : BaseActivity() {
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(resources.getColor(R.color.red_normal))
         testSwipeback()
-        //
-        launch(UI) {
-            val userString = fetchUserString("1").await()// suspension point #1
-            val user = deserializeUser(userString).await()// suspension point #2
-            showUserData(user)
-        }
-    }
-
-    fun fetchUserString(userId: String) = async {
-        // request user from network
-        // return user String
-    }
-
-    fun deserializeUser(userString: String) = async {
-        // deserialize
-        // return User
     }
 
     lateinit var decorView: View
