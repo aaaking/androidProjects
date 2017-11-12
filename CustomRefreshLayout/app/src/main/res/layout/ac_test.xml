@@ -36,20 +36,21 @@
             android:text="C"
             android:translationZ="10dp"
             android:gravity="center"
-            android:elevation="100dp"
+            android:elevation="10dp"
             android:layout_marginTop="10dp"
             android:layout_width="100dp"
             android:layout_height="100dp" />
         <TextView
             android:id="@+id/viewD"
-            android:background="#3f0533"
+            android:background="@color/green_4DC0A4"
             android:text="D"
-            android:elevation="50dp"
-            android:translationZ="100dp"
+            android:elevation="11dp"
             android:onClick="onClick"
             android:gravity="center"
             android:layout_marginLeft="140dp"
             android:layout_marginTop="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
             android:layout_width="100dp"
             android:layout_height="100dp" />
     </FrameLayout>
