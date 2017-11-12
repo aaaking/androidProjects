@@ -1,10 +1,13 @@
 package com.crl.zzh.customrefreshlayout.activity
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.OvershootInterpolator
+import android.widget.Toast
 import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.util.ScreenUtil
@@ -57,5 +60,13 @@ class TestAC : BaseActivity() {
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    fun onClick(view: View) {
+        Toast.makeText(this, "${view.z}  ${view.translationZ}", Toast.LENGTH_SHORT).show()
+        val zAnim = ObjectAnimator.ofFloat(view, "translationZ", 0f, 265f)
+        zAnim.setInterpolator(OvershootInterpolator())
+        zAnim.setDuration(2000)
+        zAnim.start()
     }
 }

@@ -6,20 +6,51 @@
 
     <include layout="@layout/toolbar"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center"
-        android:clickable="true"
-        android:background="?attr/selectableItemBackground"
-        android:text="hgewharighioaewrghoiaew"/>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:orientation="vertical"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/viewA"
+            android:background="#930"
+            android:text="A"
+            android:gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center"
-        android:clickable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:text="hgewharighioaewrghoiaew"/>
+        <TextView
+            android:id="@+id/viewB"
+            android:background="#6f9433"
+            android:text="B"
+            android:gravity="center"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="70dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
 
+        <!--ViewC有了一个elevation属性 -->
+        <TextView
+            android:id="@+id/viewC"
+            android:layout_marginLeft="80dp"
+            android:background="#003232"
+            android:text="C"
+            android:translationZ="10dp"
+            android:gravity="center"
+            android:elevation="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <TextView
+            android:id="@+id/viewD"
+            android:background="#3f0533"
+            android:text="D"
+            android:elevation="50dp"
+            android:translationZ="100dp"
+            android:onClick="onClick"
+            android:gravity="center"
+            android:layout_marginLeft="140dp"
+            android:layout_marginTop="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+    </FrameLayout>
 </LinearLayout>
