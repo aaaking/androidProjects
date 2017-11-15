@@ -26,6 +26,11 @@ class LocalCacheManager(private val context: Context) {
         db.userDao().all.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { users -> databaseCallback.onUsersLoaded(users) }
     }
 
+    fun loadByIds(userIds: IntArray) {
+        db.userDao().loadAllByIds(userIds).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { println("loadByIds") }
+    }
+
+
     fun addUser(databaseCallback: DatabaseCallback, firstName: String, lastName: String) {
         Completable.fromAction {
             val user = User(firstName, lastName)
