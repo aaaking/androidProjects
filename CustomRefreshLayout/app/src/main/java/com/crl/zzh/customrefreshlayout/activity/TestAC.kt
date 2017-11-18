@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Outline
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -16,6 +17,8 @@ import com.crl.zzh.customrefreshlayout.util.ScreenUtil
 import kotlinx.android.synthetic.main.toolbar.*
 import android.view.ViewOutlineProvider
 import kotlinx.android.synthetic.main.ac_test.*
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class TestAC : BaseActivity() {
@@ -91,6 +94,23 @@ class TestAC : BaseActivity() {
                 }
             }
             view.setOutlineProvider(viewOutlineProvider)
+        }
+        try {
+            var url: URL = URL("192.168.0.187:8082/user/amount?=&ccode=86&os=1&uid=10043"); // 构造URL
+            var con: HttpURLConnection = url.openConnection() as HttpURLConnection; // 打开连接
+            con.setRequestMethod("GET");
+            con.setReadTimeout(10000);
+            con.setConnectTimeout(5000);
+            var contentLength = con.getContentLength();//获得文件的长度
+            Log.i("DevelopAC", "  " +  contentLength + "   ${con.toString()}");
+            var  responseCode = con.getResponseCode();// 拿到服务器返回的响应码
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                var `is` = con.getInputStream(); // 输入流
+                val bs = ByteArray(1024) // 1K的数据缓冲
+            } else {
+            }
+        } catch (e: Exception) {
+            Log.i("DevelopAC", e.toString())
         }
     }
 }
