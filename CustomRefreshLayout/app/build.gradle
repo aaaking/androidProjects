@@ -27,11 +27,19 @@ android {
             minifyEnabled true//Setting minifyEnabled to true enables Proguard
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        android.applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                def outputFile = output.outputFile
+                def prefix = outputFile.name.substring(0, outputFile.name.length() - 4)
+                outputFileName = prefix + "-v${defaultConfig.versionName}-${variant.buildType.getName()}.apk"
+            }
+        }
     }
-    flavorDimensions "GooglePlay"
+    flavorDimensions "default"
     productFlavors {
         GooglePlay {
-            dimension "GooglePlay"
+        }
+        YingYongBao {
         }
     }
     productFlavors.all {
