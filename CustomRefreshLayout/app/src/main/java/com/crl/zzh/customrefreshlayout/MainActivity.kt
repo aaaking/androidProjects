@@ -6,12 +6,12 @@ import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
 import com.crl.zzh.customrefreshlayout.activity.TestAC
+import com.crl.zzh.customrefreshlayout.extensions.startActivityExt
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val id = item?.itemId
         when (id) {
             R.id.menu_setting -> {
-                CoordinatorTest.Companion.start(this)
+                startActivityExt(CoordinatorTest::class.java)
             }
             R.id.menu_test -> {
                 TestAC.Companion.start(this)
