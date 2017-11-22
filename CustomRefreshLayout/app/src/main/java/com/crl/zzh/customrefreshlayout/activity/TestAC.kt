@@ -16,6 +16,7 @@ import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.util.ScreenUtil
 import kotlinx.android.synthetic.main.toolbar.*
 import android.view.ViewOutlineProvider
+import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.ac_test.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -36,6 +37,7 @@ class TestAC : BaseActivity() {
         toolbar.setBackgroundColor(resources.getColor(R.color.red_normal))
         testSwipeback()
         viewD.setClipToOutline(true)
+        confirmPasswordView.setOnEditorActionListener { v, actionId, event -> onEditorActionClick(actionId) }
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            val viewOutlineProvider = object : ViewOutlineProvider() {
 //                override fun getOutline(view: View, outline: Outline) {
@@ -45,6 +47,14 @@ class TestAC : BaseActivity() {
 //            }
 //            viewD.setOutlineProvider(viewOutlineProvider)
 //        }
+    }
+
+    private fun onEditorActionClick(id: Int): Boolean = when (id) {
+        EditorInfo.IME_ACTION_DONE, EditorInfo.IME_NULL -> {
+            Toast.makeText(this, "onEditorActionClick", Toast.LENGTH_SHORT).show()
+            true
+        }
+        else -> false
     }
 
     lateinit var decorView: View
