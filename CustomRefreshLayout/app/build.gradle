@@ -25,7 +25,15 @@ android {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled true//Setting minifyEnabled to true enables Proguard
+            buildConfigField("String", "GOOGLE_VERIFICATION_API_KEY", '"AIzaSyAXp_YJBHPI4FLfJrlgjfFjMXbIVZWeKzk"')
+            buildConfigField("boolean", "IS_SAFETY_NET_ENABLED", "false")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled true//Setting minifyEnabled to true enables Proguard
+            buildConfigField("String", "GOOGLE_VERIFICATION_API_KEY", '"AIzaSyAXp_YJBHPI4FLfJrlgjfFjMXbIVZWeKzk"')
+            buildConfigField("boolean", "IS_SAFETY_NET_ENABLED", "false")
         }
         android.applicationVariants.all { variant ->
             variant.outputs.all { output ->
