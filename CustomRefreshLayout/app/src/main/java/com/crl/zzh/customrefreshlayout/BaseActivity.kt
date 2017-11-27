@@ -12,7 +12,7 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             var localLayoutParams: WindowManager.LayoutParams = getWindow().getAttributes()
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or localLayoutParams.flags);
+            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or localLayoutParams.flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
     }
 }
