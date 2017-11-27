@@ -11,141 +11,26 @@
         <FrameLayout android:layout_width="match_parent"
                      android:id="@+id/scroll_contailer"
                      android:layout_height="233dp"
-                     android:minHeight="48dp"
                      app:layout_collapseMode="parallax"
-                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                     android:minHeight="@dimen/toolbar_height"
+                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                      android:orientation="vertical">
-            <RelativeLayout
-                    android:id="@+id/rl_club_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/club_profile_head_height"
-                    android:background="@android:color/holo_green_light"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingTop="@dimen/dp_size_55">
-
-                <RelativeLayout
-                        android:id="@+id/rl_club_head"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentLeft="true">
-
-                    <ImageView
-                            android:id="@+id/iv_club_info_head"
-                            android:layout_width="@dimen/club_avatar_size_in_info"
-                            android:layout_height="@dimen/club_avatar_size_in_info"
-                            android:layout_centerInParent="true"
-                            android:src="@mipmap/ic_launcher_round"/>
-
-                </RelativeLayout>
-                <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_alignBottom="@+id/rl_club_head"
-                        android:src="@mipmap/ic_launcher_round"/>
-
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:orientation="vertical"
-                        android:paddingLeft="10dp"
-                        android:gravity="center_vertical"
-                        android:layout_toRightOf="@id/rl_club_head">
-                    <TextView
-                            android:id="@+id/tv_club_info_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginTop="5dp"
-                            android:shadowColor="#ff000000"
-                            android:shadowDx="2"
-                            android:shadowDy="2"
-                            android:shadowRadius="1"
-                            android:singleLine="true"
-                            android:text="We alliance"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
-
-                    <TextView
-                            android:id="@+id/tv_club_info_card"
-                            style="@style/tv_common_column_title_style"
-                            android:layout_below="@id/tv_club_info_name"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="5dp"
-                            android:text="My Identifier"
-                            android:alpha="0.5"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp"/>
-
-                    <TextView
-                            android:id="@+id/tv_club_info_member_city"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/tv_club_info_name"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="5dp"
-                            android:shadowColor="#ff000000"
-                            android:shadowDx="2"
-                            android:shadowDy="2"
-                            tools:text="city"
-                            tools:visibility="visible"
-                            android:shadowRadius="1"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp"
-                            android:visibility="gone"/>
-                </LinearLayout>
-
-            </RelativeLayout>
-            <LinearLayout
-                    android:id="@+id/ll_club_info_creator"
-                    style="@style/rl_other_column_style"
-                    android:background="@color/white"
-                    android:layout_gravity="bottom"
-                    android:layout_height="48dp">
-                <ImageView
-                        android:id="@+id/iv_club_creator_userhead"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/ic_launcher_round"/>
-
-                <TextView
-                        android:id="@+id/tv_club_info_creator"
-                        style="@style/tv_common_column_title_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:layout_toRightOf="@id/iv_club_creator_userhead"
-                        android:text="周智慧"
-                        android:textSize="18dp"/>
-                <TextView
-                        android:id="@+id/tv_club_info_creator_title"
-                        style="@style/tv_common_column_title_style"
-                        android:layout_toRightOf="@+id/tv_club_info_creator"
-                        android:textColor="@color/red_normal"
-                        android:layout_centerVertical="true"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:gravity="center"
-                        android:text="secretary"/>
-            </LinearLayout>
+            <include layout="@layout/toolbar"/>
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton android:layout_width="wrap_content"
                                                         android:layout_height="wrap_content"
@@ -154,6 +39,5 @@
                                                         app:srcCompat="@android:drawable/ic_dialog_email"
                                                         android:id="@+id/fab"/>
 
-    <include layout="@layout/toolbar"/>
 
 </android.support.design.widget.CoordinatorLayout>

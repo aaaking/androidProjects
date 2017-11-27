@@ -16,14 +16,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import com.crl.zzh.customrefreshlayout.BaseActivity
 import com.crl.zzh.customrefreshlayout.R
 import com.crl.zzh.customrefreshlayout.util.ScreenUtil
-import com.crl.zzh.swipebackactivity.SwipeBackActivity
-import com.crl.zzh.swipebackactivity.SwipeBackLayout
 import kotlinx.android.synthetic.main.ac_test_coordinator.*
 import kotlinx.android.synthetic.main.toolbar.*
 
-class CoordinatorTest : SwipeBackActivity() {
+class CoordinatorTest : BaseActivity() {
     companion object {
         fun start(activity: Activity) {
             var intent = Intent(activity, CoordinatorTest::class.java)
@@ -42,7 +41,6 @@ class CoordinatorTest : SwipeBackActivity() {
         list.setLayoutManager(LinearLayoutManager(this))
         list.adapter = CardAdapter()
         testInteractScroll()
-        setDragEdge(SwipeBackLayout.DragEdge.TOP)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             var localLayoutParams: WindowManager.LayoutParams = getWindow().getAttributes()
             localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or localLayoutParams.flags);
@@ -85,7 +83,6 @@ class CoordinatorTest : SwipeBackActivity() {
             Log.i("percentage", "percentage: $percentage")
             val paddingTop = (0 + (mTotalMove - 0) * percentage).toInt()
             scroll_contailer.setPadding(scroll_contailer.paddingLeft, paddingTop, scroll_contailer.paddingRight, 0)
-            setEnableSwipe(percentage <= 0)
         }
         app_bar_layout.addOnOffsetChangedListener(offsetChangedListener)
     }

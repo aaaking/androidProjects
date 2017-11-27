@@ -12,36 +12,6 @@
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/viewA"
-            android:background="#930"
-            android:text="A"
-            android:gravity="center"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-
-        <TextView
-            android:id="@+id/viewB"
-            android:background="#6f9433"
-            android:text="B"
-            android:gravity="center"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="70dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-
-        <!--ViewC有了一个elevation属性 -->
-        <TextView
-            android:id="@+id/viewC"
-            android:layout_marginLeft="80dp"
-            android:background="#003232"
-            android:text="C"
-            android:translationZ="10dp"
-            android:gravity="center"
-            android:elevation="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-        <TextView
             android:id="@+id/viewD"
             android:background="@color/green_4DC0A4"
             android:text="D"
@@ -49,9 +19,8 @@
             android:onClick="onClick"
             android:gravity="center"
             android:layout_marginLeft="140dp"
-            android:layout_marginTop="80dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
     </FrameLayout>
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -83,4 +52,46 @@
             android:maxLines="1"
             android:singleLine="true"/>
     </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout android:layout_width="match_parent"
+                                                    android:id="@+id/app_bar_layout"
+                                                    android:layout_height="wrap_content">
+            <FrameLayout android:layout_width="match_parent"
+                         android:id="@+id/scroll_contailer"
+                         android:layout_height="100dp"
+                         app:layout_collapseMode="parallax"
+                         android:minHeight="@dimen/toolbar_height"
+                         app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+                         android:orientation="vertical">
+                <include layout="@layout/toolbar"/>
+            </FrameLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <android.support.design.widget.FloatingActionButton android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:layout_gravity="bottom|end"
+                                                            android:layout_margin="16dp"
+                                                            app:srcCompat="@android:drawable/ic_dialog_email"
+                                                            android:id="@+id/fab"/>
+
+
+    </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Outline
 import android.os.Build
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -38,6 +39,8 @@ class TestAC : BaseActivity() {
         testSwipeback()
         viewD.setClipToOutline(true)
         confirmPasswordView.setOnEditorActionListener { v, actionId, event -> onEditorActionClick(actionId) }
+        list.setLayoutManager(LinearLayoutManager(this))
+        list.adapter = CardAdapter()
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            val viewOutlineProvider = object : ViewOutlineProvider() {
 //                override fun getOutline(view: View, outline: Outline) {
