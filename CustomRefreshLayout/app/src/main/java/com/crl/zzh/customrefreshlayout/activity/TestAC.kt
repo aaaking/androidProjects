@@ -37,7 +37,9 @@ class TestAC : BaseActivity() {
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(resources.getColor(R.color.red_normal))
         testSwipeback()
-        viewD.setClipToOutline(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            viewD.setClipToOutline(true)
+        }
         confirmPasswordView.setOnEditorActionListener { v, actionId, event -> onEditorActionClick(actionId) }
         list.setLayoutManager(LinearLayoutManager(this))
         list.adapter = CardAdapter()
