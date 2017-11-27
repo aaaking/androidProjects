@@ -12,6 +12,7 @@ import android.view.MenuItem
 import com.crl.zzh.customrefreshlayout.activity.CoordinatorTest
 import com.crl.zzh.customrefreshlayout.activity.TestAC
 import com.crl.zzh.customrefreshlayout.extensions.startActivityExt
+import com.crl.zzh.customrefreshlayout.test.Test
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -57,6 +58,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.menu_test -> {
                 TestAC.Companion.start(this)
+            }
+            R.id.test -> {
+                Test.start(this)
             }
         }
         return super.onOptionsItemSelected(item)
