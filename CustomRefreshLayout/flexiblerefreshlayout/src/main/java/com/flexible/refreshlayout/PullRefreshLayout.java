@@ -6,6 +6,7 @@ import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,7 +27,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
     private static final int DRAG_MAX_DISTANCE = 64;
     private static final int INVALID_POINTER = -1;
-    private static final float DRAG_RATE = .5f;
+    private static final float DRAG_RATE = .4f;
 
     private View mTarget;
     private ImageView mRefreshView;
@@ -74,7 +75,8 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         int defaultDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
         mDurationToStartPosition = defaultDuration;
         mDurationToCorrectPosition = defaultDuration;
-        mSpinnerFinalOffset = mTotalDragDistance = dp2px(DRAG_MAX_DISTANCE);
+        mTotalDragDistance = dp2px(DRAG_MAX_DISTANCE);
+        mSpinnerFinalOffset = mTotalDragDistance * 3;
 
         mRefreshView = new ImageView(context);
         setRefreshDrawable(new PlaneDrawable(getContext(), this));
@@ -143,6 +145,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                Log.i("gesture", "onInterceptTouchEvent down");
                 if (!mRefreshing || !mLoading) {
                     setTargetOffsetTop(0, true);
                 }
@@ -165,6 +168,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                 down = canChildScrollDown();
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.i("gesture", "onInterceptTouchEvent move");
                 if (mActivePointerId == INVALID_POINTER) {
                     return false;
                 }
@@ -217,12 +221,17 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                Log.i("gesture", "onInterceptTouchEvent up cancel");
                 mIsBeingDragged = false;
                 mActivePointerId = INVALID_POINTER;
                 mLastDirection = RefreshMode.DISABLED;
                 break;
             case MotionEventCompat.ACTION_POINTER_UP:
+                Log.i("gesture", "onInterceptTouchEvent up second");
                 onSecondaryPointerUp(ev);
+                break;
+            case MotionEventCompat.ACTION_POINTER_DOWN:
+                Log.i("gesture", "onInterceptTouchEvent down second");
                 break;
         }
 
@@ -240,6 +249,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                Log.i("gesture", "onTouchEvent down");
                 mInitialMotionY = ev.getY();
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
@@ -250,6 +260,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                 down = canChildScrollDown();
                 break;
             case MotionEvent.ACTION_MOVE: {
+                Log.i("gesture", "onTouchEvent move");
                 final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
                 if (pointerIndex < 0) {
                     return false;
@@ -317,7 +328,11 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                     //对称轴为tensionSlingshotPercent = 2的二次函数，0到2递增
                     float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
                     float extraMove = (slingshotDist) * tensionPercent * 2;
-                    targetY = (int) ((slingshotDist * mDragPercent) + extraMove);
+                    if (extraMove >= Math.abs(scrollTop)) {
+                        extraMove = Math.abs(scrollTop) * (tensionPercent + 0.5f);
+                    }
+                    targetY = (int) ((mTotalDragDistance * mDragPercent) + extraMove);
+                    Log.i("cal", "mDragPercent:" + mDragPercent + " extraMove:" + extraMove);
                     if (originalDragPercent < 0) {
                         //上拉加载
                         if (mLoadView.getVisibility() != VISIBLE) {
@@ -329,7 +344,6 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                         setTargetOffsetTop(-targetY - mCurrentOffsetTop, true);
                     } else {
                         //下拉刷新
-                        targetY = (int) ((slingshotDist * mDragPercent) + extraMove);
                         if (mRefreshView.getVisibility() != View.VISIBLE) {
                             mRefreshView.setVisibility(View.VISIBLE);
                         }
@@ -342,14 +356,17 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                 break;
             }
             case MotionEventCompat.ACTION_POINTER_DOWN:
+                Log.i("gesture", "onTouchEvent down second");
                 final int index = MotionEventCompat.getActionIndex(ev);
                 mActivePointerId = MotionEventCompat.getPointerId(ev, index);
                 break;
             case MotionEventCompat.ACTION_POINTER_UP:
+                Log.i("gesture", "onTouchEvent up second");
                 onSecondaryPointerUp(ev);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL: {
+                Log.i("gesture", "onTouchEvent up cancel");
                 if (mActivePointerId == INVALID_POINTER) {
                     return false;
                 }
@@ -423,7 +440,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
     private final Animation mAnimateToCorrectPosition = new Animation() {
         @Override
         public void applyTransformation(float interpolatedTime, Transformation t) {
-            int endTarget = mSpinnerFinalOffset;
+            int endTarget = mTotalDragDistance;
             int targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
             int offset = targetTop - mTarget.getTop();
             setTargetOffsetTop(offset, false /* requires update */);
@@ -433,7 +450,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
     private final Animation mAnimateLoadToCorrectPosition = new Animation() {
         @Override
         public void applyTransformation(float interpolatedTime, Transformation t) {
-            int endTarget = -mSpinnerFinalOffset;
+            int endTarget = -mTotalDragDistance;
             int targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
             int offset = targetTop - mTarget.getTop();
             setTargetOffsetTop(offset, false /* requires update */);
