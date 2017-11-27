@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="toppadding_to_fit_statusbar">0dp</dimen>
-    <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
     <dimen name="dp_size_2">2dp</dimen>
     <dimen name="dp_size_4">4dp</dimen>
     <dimen name="dp_size_5">5dp</dimen>
