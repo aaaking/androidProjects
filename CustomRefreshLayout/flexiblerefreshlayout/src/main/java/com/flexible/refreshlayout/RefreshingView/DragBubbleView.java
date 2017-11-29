@@ -1,11 +1,9 @@
-package com.flexible.refreshlayout.LoadingView;
+package com.flexible.refreshlayout.RefreshingView;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,8 +16,6 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
 import com.crl.zzh.flexiblerefreshlayout.R;
-
-import java.util.ArrayList;
 
 /**
  * Created by Joe on 2016/4/3.
