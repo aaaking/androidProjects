@@ -59,16 +59,16 @@ public class ChessApp extends Application {
         Log.i("唯一标识符3", m_szAndroidID);
         //4. The WLAN MAC Address string
         //是另一个唯一ID。但是你需要为你的工程加入android.permission.ACCESS_WIFI_STATE 权限，否则这个地址会为null。
-        WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        String m_szWLANMAC = wm.getConnectionInfo().getMacAddress();
-        Log.i("唯一标识符4", m_szWLANMAC);
+//        WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+//        String m_szWLANMAC = wm.getConnectionInfo().getMacAddress();
+//        Log.i("唯一标识符4", m_szWLANMAC);
         //5. The BT MAC Address string
         //只在有蓝牙的设备上运行。并且要加入android.permission.BLUETOOTH 权限.
-        BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
-        m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        String m_szBTMAC = m_BluetoothAdapter.getAddress();
-        Log.i("唯一标识符5", TextUtils.isEmpty(m_szBTMAC) ? "Empty" : m_szBTMAC);
-        Log.i("唯一标识符6", Installation.id(this));//每次安装都不一样
+//        BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
+//        m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        String m_szBTMAC = m_BluetoothAdapter.getAddress();
+//        Log.i("唯一标识符5", TextUtils.isEmpty(m_szBTMAC) ? "Empty" : m_szBTMAC);
+//        Log.i("唯一标识符6", Installation.id(this));//每次安装都不一样
 //        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
 //        StrictMode.setVmPolicy(builder.build());
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
