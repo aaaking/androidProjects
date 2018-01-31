@@ -11,7 +11,7 @@ android {
         versionCode versionCode
         versionName versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true;
+        vectorDrawables.useSupportLibrary = true
     }
     signingConfigs {
         debug {
