@@ -66,7 +66,7 @@ public class WebViewActivity extends AppCompatActivity {
         languae = BaseTools.getLanguage(this).toLowerCase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        url = "http://www.baidu.com";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
+        url = "http://game.bipa.io/#/";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
         type = getIntent().getIntExtra(Extras.EXTRA_TYPE, 0);
         if (type == TYPE_APP_NOTICE)
             mAppNotify = (AppNotify) getIntent().getSerializableExtra(Extras.EXTRA_DATA);
@@ -109,7 +109,12 @@ public class WebViewActivity extends AppCompatActivity {
         webSettings.setBuiltInZoomControls(false);
 //        webSettings.setUseWideViewPort(true);//集WebView是否应该使支持“视窗”HTML meta标记或应该使用视窗。
         webSettings.setLoadWithOverviewMode(true);  //是否使用WebView加载页面,也就是说,镜头拉出宽度适合在屏幕上的内容。
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        if (18 < Build.VERSION.SDK_INT ){
+            //18 = JellyBean MR2, KITKAT=19
+            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        } else {
+            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        }
         webSettings.setAllowFileAccess(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setAppCacheEnabled(true);
