@@ -9,7 +9,7 @@
         android:layout_height="40dp">
         <Spinner
             android:id="@+id/spinner"
-            android:layout_marginRight="100dp"
+            android:layout_marginRight="80dp"
             android:layout_gravity="left|center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -17,8 +17,57 @@
             android:text="连接"
             android:id="@+id/btn_Connect"
             android:layout_gravity="right|center_vertical"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"/>
     </FrameLayout>
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="断开"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <EditText
+            android:id="@+id/pwd"
+            android:layout_marginRight="120dp"
+            android:layout_width="match_parent"
+            android:hint="设置钱包密码"
+            android:layout_height="match_parent"/>
+        <Button
+            android:text="创建钱包"
+            android:id="@+id/btn_GenerateWallet"
+            android:layout_gravity="right|center_vertical"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:layout_width="60dp"
+            android:hint="钱包地址"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text=""
+            android:layout_marginLeft="60dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/wallet_address"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+    <Button
+        android:enabled="false"
+        android:id="@+id/transfer"
+        android:text="转账0.001ETH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/txhash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
 
 </LinearLayout>
