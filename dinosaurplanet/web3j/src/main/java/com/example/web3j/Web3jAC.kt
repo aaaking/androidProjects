@@ -185,13 +185,15 @@ class Web3jAC : AppCompatActivity() {
         offline_sign.setOnClickListener {
             Thread(Runnable {
                 // get the next available nonce
-                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc7B5F6d0245339674ae4264E44173bC606881651", DefaultBlockParameterName.LATEST).send();
-                var nonce = ethGetTransactionCount.getTransactionCount();
-                // create our transaction  RawTransaction
-                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
-                // sign & send our transaction
-                var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-                var hexValue = Numeric.toHexString(signedMessage);
+//                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc7B5F6d0245339674ae4264E44173bC606881651", DefaultBlockParameterName.LATEST).send();
+//                var nonce = ethGetTransactionCount.getTransactionCount();
+//                // create our transaction  RawTransaction
+//                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
+//                // sign & send our transaction
+//                var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                var hexValue = "0xf8aa1385098bca5a00830249f094122638aeaccdadb35a707c5ffcaa0226e43dc02b80b844a9059cbb0000000000000000000000008717c17c23a44564a8a08510278b9b45074f8f230000000000000000000000000000000000000000000000000de0b6b3a76400002ca09a26b080215c32262a3b9aa77579016db3e3f4bdbdd629a8af9a079d4fc315cda04d8b9c6bf54ab9a23588c6bc27bcb393dd3840c8e4be969486b246d334597b8e"
+                var ethSendTransaction = web3j!!.ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.transactionHash)
             }).start()
         }
         //
