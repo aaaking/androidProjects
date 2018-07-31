@@ -64,24 +64,21 @@ class Web3jAC : AppCompatActivity() {
         var arr_adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data_list)
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = arr_adapter
-        val thread = Thread(Runnable {
-            web3j = Web3jFactory.build(HttpService(spinner.selectedItem.toString()))
-            val web3ClientVersion = web3j?.web3ClientVersion()?.send()
-            val clientVersion = web3ClientVersion?.getWeb3ClientVersion()
-            Log.i("zzh", clientVersion?.toString())
-            runOnUiThread {
-                transfer.isEnabled = credentials != null && web3j != null
-                deploy.isEnabled = credentials != null && web3j != null
-                btn_call.isEnabled = credentials != null && web3j != null
-                btn_newGreeting.isEnabled = credentials != null && web3j != null
-                custom_transaction.isEnabled = credentials != null && web3j != null
-                status.text = if (web3j != null) "连接：" + clientVersion else "断开"
-            }
-        })
         btn_Connect.setOnClickListener {
-            if (thread.getState() == Thread.State.NEW) {
-                thread.start();
-            }
+            Thread(Runnable {
+                web3j = Web3jFactory.build(HttpService(spinner.selectedItem.toString()))
+                val web3ClientVersion = web3j?.web3ClientVersion()?.send()
+                val clientVersion = web3ClientVersion?.getWeb3ClientVersion()
+                Log.i("zzh", clientVersion?.toString())
+                runOnUiThread {
+                    transfer.isEnabled = credentials != null && web3j != null
+                    deploy.isEnabled = credentials != null && web3j != null
+                    btn_call.isEnabled = credentials != null && web3j != null
+                    btn_newGreeting.isEnabled = credentials != null && web3j != null
+                    custom_transaction.isEnabled = credentials != null && web3j != null
+                    status.text = if (web3j != null) "连接：" + clientVersion else "断开"
+                }
+            }).start()
         }
         //
         btn_GenerateWallet.setOnClickListener {
@@ -182,6 +179,19 @@ class Web3jAC : AppCompatActivity() {
                 var hexValue = Numeric.toHexString(signedMessage);
                 var ethSendTransaction = web3j!!.ethSendRawTransaction(hexValue).send();//EthSendTransaction
                 Log.i("zzh", "https://ropsten.etherscan.io/tx/" + ethSendTransaction.transactionHash)
+            }).start()
+        }
+        //offline_sign
+        offline_sign.setOnClickListener {
+            Thread(Runnable {
+                // get the next available nonce
+                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc0c5d06dbddf1c5f0a103c108bde956d1e2a014e", DefaultBlockParameterName.LATEST).send();
+                var nonce = ethGetTransactionCount.getTransactionCount();
+                // create our transaction  RawTransaction
+                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
+                // sign & send our transaction
+                var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                var hexValue = Numeric.toHexString(signedMessage);
             }).start()
         }
     }
