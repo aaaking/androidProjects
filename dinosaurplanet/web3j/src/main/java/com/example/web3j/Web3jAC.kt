@@ -170,7 +170,7 @@ class Web3jAC : AppCompatActivity() {
         custom_transaction.setOnClickListener {
             Thread(Runnable {
                 // get the next available nonce
-                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc0c5d06dbddf1c5f0a103c108bde956d1e2a014e", DefaultBlockParameterName.LATEST).send();
+                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc7B5F6d0245339674ae4264E44173bC606881651", DefaultBlockParameterName.LATEST).send();
                 var nonce = ethGetTransactionCount.getTransactionCount();
                 // create our transaction  RawTransaction
                 var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
@@ -185,7 +185,7 @@ class Web3jAC : AppCompatActivity() {
         offline_sign.setOnClickListener {
             Thread(Runnable {
                 // get the next available nonce
-                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc0c5d06dbddf1c5f0a103c108bde956d1e2a014e", DefaultBlockParameterName.LATEST).send();
+                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc7B5F6d0245339674ae4264E44173bC606881651", DefaultBlockParameterName.LATEST).send();
                 var nonce = ethGetTransactionCount.getTransactionCount();
                 // create our transaction  RawTransaction
                 var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
