@@ -18,8 +18,11 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3jFactory
 import org.web3j.protocol.core.methods.response.Web3ClientVersion
+import org.web3j.tx.Contract
+import org.web3j.tx.ManagedTransaction
 import org.web3j.tx.Transfer
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import java.io.File
 import java.math.BigDecimal
 
@@ -43,10 +46,8 @@ class Web3jAC : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_web3j)
-//        data_list.add("https://etherscan.io/address/0xc7b5f6d0245339674ae4264e44173bc606881651")
-//        data_list.add("https://ropsten.etherscan.io/address/0xc7b5f6d0245339674ae4264e44173bc606881651")
-//        data_list.add("https://kovan.etherscan.io/address/0xc7b5f6d0245339674ae4264e44173bc606881651")
-//        data_list.add("https://rinkeby.etherscan.io/address/0xc7b5f6d0245339674ae4264e44173bc606881651")
+        //difference among these networks
+        //https://ethereum.stackexchange.com/questions/27048/comparison-of-the-different-testnets
         data_list.add("https://mainnet.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89")
         data_list.add("https://ropsten.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89")
         data_list.add("https://kovan.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89")
@@ -61,6 +62,9 @@ class Web3jAC : AppCompatActivity() {
             Log.i("zzh", clientVersion?.toString())
             runOnUiThread {
                 transfer.isEnabled = credentials != null && web3j != null
+                deploy.isEnabled = credentials != null && web3j != null
+                btn_call.isEnabled = credentials != null && web3j != null
+                btn_newGreeting.isEnabled = credentials != null && web3j != null
                 status.text = if (web3j != null) "连接：" + clientVersion else "断开"
             }
         })
@@ -89,6 +93,9 @@ class Web3jAC : AppCompatActivity() {
                 wallet_address.text = credentials!!.getAddress()
                 Log.i("zzh", credentials.toString())
                 transfer.isEnabled = credentials != null && web3j != null
+                deploy.isEnabled = credentials != null && web3j != null
+                btn_call.isEnabled = credentials != null && web3j != null
+                btn_newGreeting.isEnabled = credentials != null && web3j != null
             }
         }
 
@@ -104,6 +111,51 @@ class Web3jAC : AppCompatActivity() {
         transfer.setOnClickListener {
             if (transferThread.getState() == Thread.State.NEW) {
                 transferThread.start();
+            }
+        }
+
+        //deploy
+        val deployThread = Thread(Runnable {
+            val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
+            val contractAddress = contract.contractAddress
+            Log.i("zzh", contractAddress)
+            Log.i("zzh", "View contract at https://ropsten.etherscan.io/address/" + contractAddress)
+            runOnUiThread {
+                contract_address.text = contractAddress
+            }
+        })
+        deploy.setOnClickListener {
+            if (deployThread.getState() == Thread.State.NEW) {
+                deployThread.start();
+            }
+        }
+
+        //call contract function
+        btn_call.setOnClickListener {
+            Thread(Runnable {
+                var myContract = Greeter.load("0xa2264d93ccee94044b71da856e6b09c4e728530e", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
+                var content = myContract.greet().send()
+                Log.i("zzh", "Value stored in remote smart contract: " + content)
+                runOnUiThread {
+                    old_params.setText(content)
+                }
+            }).start()
+        }
+        var newGreetingThread = Thread(Runnable {
+            var myContract = Greeter.load("0xa2264d93ccee94044b71da856e6b09c4e728530e", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
+            val transactionReceipt = myContract.newGreeting(new_params.text.toString()).send()
+            // Events enable us to log specific events happening during the execution of our smart
+            // contract to the blockchain. Index events cannot be logged in their entirety.
+            // For Strings and arrays, the hash of values is provided, not the original value.
+            // For further information, refer to https://docs.web3j.io/filters.html#filters-and-events
+            for (event in myContract.getModifiedEvents(transactionReceipt)) {
+                Log.i("zzh", "Modify event fired, previous value: " + event.oldGreeting + ", new value: " + event.newGreeting)
+                Log.i("zzh", "Indexed event previous value: " + Numeric.toHexString(event.oldGreetingIdx) + ", new value: " + Numeric.toHexString(event.newGreetingIdx))
+            }
+        })
+        btn_newGreeting.setOnClickListener {
+            if (newGreetingThread.getState() == Thread.State.NEW) {
+                newGreetingThread.start();
             }
         }
     }

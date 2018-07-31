@@ -69,5 +69,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""/>
+    <Button
+        android:enabled="false"
+        android:id="@+id/deploy"
+        android:text="deploy contract"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/contract_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="contract address"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/old_params"
+            android:layout_marginRight="120dp"
+            android:layout_width="match_parent"
+            android:hint="招呼"
+            android:layout_height="match_parent"/>
+        <Button
+            android:text="call greet"
+            android:enabled="false"
+            android:id="@+id/btn_call"
+            android:layout_gravity="right|center_vertical"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <EditText
+            android:id="@+id/new_params"
+            android:layout_marginRight="120dp"
+            android:layout_width="match_parent"
+            android:hint="招呼"
+            android:layout_height="match_parent"/>
+        <Button
+            android:text="call newGreeting"
+            android:enabled="false"
+            android:id="@+id/btn_newGreeting"
+            android:layout_gravity="right|center_vertical"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
 
 </LinearLayout>
