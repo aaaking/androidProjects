@@ -92,8 +92,8 @@ class Web3jAC : AppCompatActivity() {
                 if (!path.exists()) {
                     path.mkdir()
                 }
-                var password = pwd.text.toString()
-                var fileName = password + ".json"//WalletUtils.generateLightNewWalletFile(password, File(path.toString()))
+                var password = "12345678"//pwd.text.toString()
+                var fileName = "original" + ".json"//WalletUtils.generateLightNewWalletFile(password, File(path.toString()))
                 Log.e("zzh", "generateWallet: $path/$fileName")
                 credentials = WalletUtils.loadCredentials(password, path.toString() + "/" + fileName)
                 Log.i("zzh", credentials!!.getAddress())
@@ -111,9 +111,9 @@ class Web3jAC : AppCompatActivity() {
         val transferThread = Thread(Runnable {
             // FIXME: Request some Ether for the Rinkeby test network at https://www.rinkeby.io/#faucet
             val transferReceipt = Transfer.sendFunds(web3j, credentials, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigDecimal.ONE, Convert.Unit.FINNEY).send()
-            Log.i("zzh", "Transaction complete, view it at https://ropsten.etherscan.io/tx/" + transferReceipt.transactionHash)
+            Log.i("zzh", "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash)
             runOnUiThread {
-                txhash.text = "Transaction complete, view it at https://ropsten.etherscan.io/tx/" + transferReceipt.transactionHash
+                txhash.text = "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash
             }
         })
         transfer.setOnClickListener {
@@ -127,7 +127,7 @@ class Web3jAC : AppCompatActivity() {
             val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
             val contractAddress = contract.contractAddress
             Log.i("zzh", contractAddress)
-            Log.i("zzh", "View contract at https://ropsten.etherscan.io/address/" + contractAddress)
+            Log.i("zzh", "View contract at https://rinkeby.etherscan.io/address/" + contractAddress)
             runOnUiThread {
                 contract_address.text = contractAddress
             }
@@ -178,7 +178,7 @@ class Web3jAC : AppCompatActivity() {
                 var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
                 var hexValue = Numeric.toHexString(signedMessage);
                 var ethSendTransaction = web3j!!.ethSendRawTransaction(hexValue).send();//EthSendTransaction
-                Log.i("zzh", "https://ropsten.etherscan.io/tx/" + ethSendTransaction.transactionHash)
+                Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.transactionHash)
             }).start()
         }
         //offline_sign
