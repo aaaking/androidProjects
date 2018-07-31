@@ -13,10 +13,18 @@ import android.util.Log
 import kotlinx.android.synthetic.main.ac_web3j.*
 import android.widget.ArrayAdapter
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.RawTransaction
+import org.web3j.crypto.TransactionEncoder
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3jFactory
+import org.web3j.protocol.admin.Admin
+import org.web3j.protocol.admin.AdminFactory
+import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount
+import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.core.methods.response.Web3ClientVersion
 import org.web3j.tx.Contract
 import org.web3j.tx.ManagedTransaction
@@ -25,6 +33,7 @@ import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.io.File
 import java.math.BigDecimal
+import java.math.BigInteger
 
 
 /**
@@ -65,6 +74,7 @@ class Web3jAC : AppCompatActivity() {
                 deploy.isEnabled = credentials != null && web3j != null
                 btn_call.isEnabled = credentials != null && web3j != null
                 btn_newGreeting.isEnabled = credentials != null && web3j != null
+                custom_transaction.isEnabled = credentials != null && web3j != null
                 status.text = if (web3j != null) "连接：" + clientVersion else "断开"
             }
         })
@@ -96,6 +106,7 @@ class Web3jAC : AppCompatActivity() {
                 deploy.isEnabled = credentials != null && web3j != null
                 btn_call.isEnabled = credentials != null && web3j != null
                 btn_newGreeting.isEnabled = credentials != null && web3j != null
+                custom_transaction.isEnabled = credentials != null && web3j != null
             }
         }
 
@@ -157,6 +168,21 @@ class Web3jAC : AppCompatActivity() {
             if (newGreetingThread.getState() == Thread.State.NEW) {
                 newGreetingThread.start();
             }
+        }
+        // custom_transaction
+        custom_transaction.setOnClickListener {
+            Thread(Runnable {
+                // get the next available nonce
+                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc0c5d06dbddf1c5f0a103c108bde956d1e2a014e", DefaultBlockParameterName.LATEST).send();
+                var nonce = ethGetTransactionCount.getTransactionCount();
+                // create our transaction  RawTransaction
+                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
+                // sign & send our transaction
+                var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                var hexValue = Numeric.toHexString(signedMessage);
+                var ethSendTransaction = web3j!!.ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                Log.i("zzh", "https://ropsten.etherscan.io/tx/" + ethSendTransaction.transactionHash)
+            }).start()
         }
     }
 

@@ -117,4 +117,10 @@
             android:layout_height="wrap_content"/>
     </FrameLayout>
 
+    <Button
+        android:id="@+id/custom_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="custom_transaction"/>
+
 </LinearLayout>
