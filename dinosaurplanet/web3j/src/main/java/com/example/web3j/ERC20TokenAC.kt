@@ -21,6 +21,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.Contract
 import org.web3j.tx.ManagedTransaction
+import org.web3j.utils.Numeric
 import java.math.BigInteger
 
 /**
@@ -107,8 +108,16 @@ class ERC20TokenAC : AppCompatActivity() {
         transfer.setOnClickListener {
             Thread(Runnable {
                 var transferReceipt = mTokenContract.transfer(spinner.selectedItem.toString(), BigInteger.valueOf(1e8.toLong())).send()
+                var eventsStr = ""
+                var listE = mTokenContract.getTransferEvents(transferReceipt)
+                Log.i("zzh", listE?.size.toString())
+                for (event in listE) {
+                    eventsStr = eventsStr + "transfer from address " + event._from + " and to address " + event._to + " and value is " + event._value + "。LOG: " + event.log.toString() + "\n"
+                    Log.i("zzh", eventsStr)
+                }
                 runOnUiThread {
                     transfer_receipt.text = "https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash
+                    transfer_events.text = eventsStr
                 }
             }).start()
         }

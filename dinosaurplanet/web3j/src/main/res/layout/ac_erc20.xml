@@ -46,7 +46,14 @@
     <TextView
         android:text="transfer_receipt"
         android:layout_width="wrap_content"
+        android:textColor="@android:color/holo_red_light"
         android:layout_height="wrap_content"
         android:id="@+id/transfer_receipt"/>
+    <TextView
+        android:text="transfer_events"
+        android:layout_width="wrap_content"
+        android:textColor="@android:color/holo_blue_bright"
+        android:layout_height="wrap_content"
+        android:id="@+id/transfer_events"/>
 
 </LinearLayout>
