@@ -66,7 +66,7 @@ class ERC20TokenAC : AppCompatActivity() {
             web3j = Web3jFactory.build(HttpService("https://rinkeby.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89"))
             val web3ClientVersion = web3j?.web3ClientVersion()?.send()
             val clientVersion = web3ClientVersion?.getWeb3ClientVersion()
-            mTokenContract = Zzhc_sol_ZZHToken.load("0x21a0d94b867659ba7487e8028122892d34e29c3f", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
+            mTokenContract = Zzhc_sol_ZZHToken.load("0x122638aeaccdadb35a707c5ffcaa0226e43dc02b", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
             runOnUiThread {
                 connect_info.text = "节点连接信息：\n" + clientVersion
                 balance.isEnabled = web3j != null && credentials != null
@@ -107,7 +107,7 @@ class ERC20TokenAC : AppCompatActivity() {
         //transfer
         transfer.setOnClickListener {
             Thread(Runnable {
-                var transferReceipt = mTokenContract.transfer(spinner.selectedItem.toString(), BigInteger.valueOf(1e8.toLong())).send()
+                var transferReceipt = mTokenContract.transfer(spinner.selectedItem.toString(), BigInteger.valueOf(1e18.toLong())).send()
                 var eventsStr = ""
                 var listE = mTokenContract.getTransferEvents(transferReceipt)
                 Log.i("zzh", listE?.size.toString())

@@ -1,13 +1,14 @@
 // solcjs --bin --abi --optimize zzhc.sol -o ./
 // web3j solidity generate --javaTypes zzhc_sol_ZZHToken.bin zzhc_sol_ZZHToken.abi -o ./ -p com.organisation.name
+// 10000, "ZZH Token", 8, "ZZH"   	0x21a0d94b867659ba7487e8028122892d34e29c3f
+// 10000, "ZZH Token 2", 18, "ZZH2" 0x122638aeaccdadb35a707c5ffcaa0226e43dc02b
 pragma solidity ^0.4.16;
-contract Token{
+contract Token {
     uint256 public totalSupply;
 
     function balanceOf(address _owner) public constant returns (uint256 balance);
     function transfer(address _to, uint256 _value) public returns (bool success);
-    function transferFrom(address _from, address _to, uint256 _value) public returns
-    (bool success);
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success);
 
     function approve(address _spender, uint256 _value) public returns (bool success);
 
@@ -15,17 +16,15 @@ contract Token{
     (uint256 remaining);
 
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Approval(address indexed _owner, address indexed _spender, uint256
-    _value);
+    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
 contract ZZHToken is Token {
-
     string public name;                   //名称，例如"My test token"
     uint8 public decimals;               //返回token使用的小数点后几位。比如如果设置为3，就是支持0.001表示.
     string public symbol;               //token简称,like MTT
 
-    function ZZHToken(uint256 _initialAmount, string _tokenName, uint8 _decimalUnits, string _tokenSymbol) public {
+    constructor (uint256 _initialAmount, string _tokenName, uint8 _decimalUnits, string _tokenSymbol) public {
         totalSupply = _initialAmount * 10 ** uint256(_decimalUnits);         // 设置初始总量
         balances[msg.sender] = totalSupply; // 初始token数量给予消息发送者，因为是构造函数，所以这里也是合约的创建者
 
@@ -41,7 +40,7 @@ contract ZZHToken is Token {
         require(_to != 0x0);
         balances[msg.sender] -= _value;//从消息发送者账户中减去token数量_value
         balances[_to] += _value;//往接收账户增加token数量_value
-        Transfer(msg.sender, _to, _value);//触发转币交易事件
+        emit Transfer(msg.sender, _to, _value);//触发转币交易事件
         return true;
     }
 
@@ -52,7 +51,7 @@ contract ZZHToken is Token {
         balances[_to] += _value;//接收账户增加token数量_value
         balances[_from] -= _value; //支出账户_from减去token数量_value
         allowed[_from][msg.sender] -= _value;//消息发送者可以从账户_from中转出的数量减少_value
-        Transfer(_from, _to, _value);//触发转币交易事件
+        emit Transfer(_from, _to, _value);//触发转币交易事件
         return true;
     }
     function balanceOf(address _owner) public constant returns (uint256 balance) {
@@ -63,7 +62,7 @@ contract ZZHToken is Token {
     function approve(address _spender, uint256 _value) public returns (bool success)
     {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
