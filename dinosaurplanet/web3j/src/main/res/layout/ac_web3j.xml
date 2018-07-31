@@ -129,5 +129,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="offline_sign"/>
+    <Button
+        android:id="@+id/btn_erc20_token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test erc20 token"/>
 
 </LinearLayout>

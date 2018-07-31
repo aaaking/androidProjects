@@ -39,7 +39,7 @@ import java.math.BigInteger
 /**
  * Created by 周智慧 on 30/07/2018.
  */
-private val REQUEST_PERMISSION_WRITE_STORAGE = 0
+val REQUEST_PERMISSION_WRITE_STORAGE = 0
 
 fun startWeb3jAC(activity: Activity) {
     with(Intent(activity, Web3jAC::class.java)) {
@@ -194,6 +194,8 @@ class Web3jAC : AppCompatActivity() {
                 var hexValue = Numeric.toHexString(signedMessage);
             }).start()
         }
+        //
+        btn_erc20_token.setOnClickListener { startERC20TokenAC(this@Web3jAC) }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

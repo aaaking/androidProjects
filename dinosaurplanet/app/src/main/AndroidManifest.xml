@@ -22,6 +22,7 @@
         <activity android:name="com.bipa.android.webview.WebViewActivity">
         </activity>
         <activity android:name="com.example.web3j.Web3jAC"/>
+        <activity android:name="com.example.web3j.ERC20TokenAC"/>
     </application>
 
 </manifest>
