@@ -129,9 +129,7 @@ class ERC20TokenAC : AppCompatActivity() {
     }
 
     fun initObservable() {
-        web3j.catchUpToLatestTransactionObservable(DefaultBlockParameterName.EARLIEST).subscribe { tx ->
-            Log.i("zzh", "catchUpToLatestTransactionObservable: " + tx.hash)
-        }
+        ////////////////////Block and transaction filters
         //个新的区块添加到区块链中
         var subscription1 = web3j.blockObservable(false).subscribe { block ->
             Log.i("zzh", "blockObservable: " + block.block.number)
@@ -144,14 +142,18 @@ class ERC20TokenAC : AppCompatActivity() {
         var subscription3 = web3j.pendingTransactionObservable().subscribe { tx ->
             Log.i("zzh", "pendingTransactionObservable: " + tx.hash)
         }
+        ////////////////////Replay filters
         //已经收到了所有的区块链信息，同时又有新的区块被创建：
-        var subscription4 = web3j.catchUpToLatestAndSubscribeToNewBlocksObservable(DefaultBlockParameterName.EARLIEST, true).subscribe { ethBlock ->
-            ethBlock.block.transactions.forEach { t ->
-                val receipt = web3j.ethGetTransactionReceipt((t as Transaction).hash).send().result
-                val logs = receipt.logs
-                Log.i("zzh", "catchUpToLatestAndSubscribeToNewBlocksObservable: " + logs.toString())
-            }
-        }
+//        var subscription4 = web3j.catchUpToLatestAndSubscribeToNewBlocksObservable(DefaultBlockParameterName.EARLIEST, true).subscribe { ethBlock ->
+//            ethBlock.block.transactions.forEach { t ->
+//                val receipt = web3j.ethGetTransactionReceipt((t as Transaction).hash).send().result
+//                val logs = receipt.logs
+//                Log.i("zzh", "catchUpToLatestAndSubscribeToNewBlocksObservable: " + logs.toString())
+//            }
+//        }
+//        web3j.catchUpToLatestTransactionObservable(DefaultBlockParameterName.EARLIEST).subscribe { tx ->
+//            Log.i("zzh", "catchUpToLatestTransactionObservable: " + tx.hash)
+//        }
         //取消订阅事件
 //        subscription4.unsubscribe();
     }
