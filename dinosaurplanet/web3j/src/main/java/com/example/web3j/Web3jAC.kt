@@ -12,10 +12,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import kotlinx.android.synthetic.main.ac_web3j.*
 import android.widget.ArrayAdapter
-import org.web3j.crypto.Credentials
-import org.web3j.crypto.RawTransaction
-import org.web3j.crypto.TransactionEncoder
-import org.web3j.crypto.WalletUtils
+import org.web3j.abi.FunctionEncoder
+import org.web3j.abi.TypeReference
+import org.web3j.abi.datatypes.Address
+import org.web3j.abi.datatypes.Function
+import org.web3j.abi.datatypes.Type
+import org.web3j.abi.datatypes.generated.Uint256
+import org.web3j.crypto.*
+import org.web3j.crypto.WalletUtils.loadBip39Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3jFactory
@@ -23,6 +27,7 @@ import org.web3j.protocol.admin.Admin
 import org.web3j.protocol.admin.AdminFactory
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount
 import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.core.methods.response.Web3ClientVersion
@@ -32,8 +37,10 @@ import org.web3j.tx.Transfer
 import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
 import java.io.File
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 
 
 /**
@@ -209,5 +216,116 @@ class Web3jAC : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    //ETH转账签名
+    fun signedEthTransactionData(to: String, //转账的钱包地址
+                                 nonce: BigInteger,//获取到的交易次数
+                                 gasPrice: BigInteger, //
+                                 gasLimit: BigInteger, //
+                                 value: Double, //转账的值
+                                 credentials: Credentials): String {
+        //把十进制的转换成ETH的Wei, 1ETH = 10^18 Wei
+        val realValue = Convert.toWei(value.toString(), Convert.Unit.ETHER)
+        val rawTransaction = RawTransaction.createEtherTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                to,
+                realValue.toBigIntegerExact())
+        //手续费= (gasPrice * gasLimit ) / 10^18 ether
+        //使用TransactionEncoder对RawTransaction进行签名操作
+        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+        //转换成0x开头的字符串
+        return Numeric.toHexString(signedMessage)
+    }
+
+    //基于以太坊的代币转账签名
+    fun signedContractTransactionData(contractAddress: String,//代币的智能合约地址
+                                      toAdress: String,//对方的地址
+                                      nonce: BigInteger,//获取到交易数量
+                                      gasPrice: BigInteger,
+                                      gasLimit: BigInteger,
+                                      value: Double, decimal: Double,
+                                      credentials: Credentials): String {
+        //因为每个代币可以规定自己的小数位, 所以实际的转账值=数值 * 10^小数位
+        val realValue = BigDecimal.valueOf(value * Math.pow(10.0, decimal))
+        //0xa9059cbb代表某个代币的转账方法hex(transfer) + 对方的转账地址hex + 转账的值的hex
+        val data = methodHeader("transfer(address,uint256)")//Params.Abi.transfer + // 0xa9059cbb
+        Numeric.toHexStringNoPrefixZeroPadded(Numeric.toBigInt(toAdress), 64) +
+                Numeric.toHexStringNoPrefixZeroPadded(realValue.toBigInteger(), 64)
+        val rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                contractAddress,
+                data)
+
+        //使用TransactionEncoder对RawTransaction进行签名操作
+        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+        //转换成0x开头的字符串
+        return Numeric.toHexString(signedMessage)
+    }
+
+    fun methodHeader(method: String): String {
+        val bytes = method.toByteArray()
+        val bytes1 = org.web3j.crypto.Hash.sha3(bytes)
+        val hex = Numeric.toHexString(bytes1, 0, 4, true)
+        return hex
+    }
+
+    @Throws(IOException::class, CipherException::class)
+    fun signContractTransaction(contractAddress: String,
+                                to: String,
+                                nonce: BigInteger,
+                                gasPrice: BigInteger,
+                                gasLimit: BigInteger,
+                                amount: BigDecimal,
+                                decimal: BigDecimal,
+                                crenditial: Credentials,
+                                password: String): String {
+        val realValue = amount.multiply(decimal)
+        val function = Function("transfer",
+                Arrays.asList<Type<out Any>>(Address(to), Uint256(realValue.toBigInteger())),
+                Arrays.asList<TypeReference<*>>())
+        val data = FunctionEncoder.encode(function)
+        val rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                contractAddress,
+                data)
+        var signedMessage = TransactionEncoder.signMessage(rawTransaction, crenditial)
+        return Numeric.toHexString(signedMessage);
+    }
+
+    //基于以太坊的代币转账签名2,这里我们提供另外一种web3j既有的封装实现,不用关心内部参数是如何拼接的.(推荐)
+    @Throws(IOException::class, CipherException::class)
+    fun signContractTransaction2(contractAddress: String,
+                                to: String,
+                                nonce: BigInteger,
+                                gasPrice: BigInteger,
+                                gasLimit: BigInteger,
+                                amount: BigDecimal,
+                                decimal: BigDecimal,
+                                crenditial: Credentials,
+                                password: String) {
+        val realValue = amount.multiply(decimal)
+        val function = Function("transfer",
+                Arrays.asList<Type<out Any>>(Address(to), Uint256(realValue.toBigInteger())),
+                Arrays.asList<TypeReference<*>>())
+        val data = FunctionEncoder.encode(function)
+        val rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                contractAddress,
+                data)
+
+        val transaction = Transaction.createFunctionCallTransaction(
+                to, nonce, gasPrice,
+                gasLimit, contractAddress, BigInteger("0"),
+                data)
+        val transactionResponse = web3j!!.ethSendTransaction(transaction).sendAsync().get()
     }
 }
