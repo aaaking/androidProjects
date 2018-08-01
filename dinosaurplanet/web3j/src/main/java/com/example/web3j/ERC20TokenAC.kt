@@ -17,6 +17,10 @@ import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.Web3jFactory
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.DefaultBlockParameterNumber
+import org.web3j.protocol.core.methods.response.EthBlock
+import org.web3j.protocol.core.methods.response.Transaction
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.Contract
@@ -63,7 +67,7 @@ class ERC20TokenAC : AppCompatActivity() {
         //
         //connect network
         Thread(Runnable {
-            web3j = Web3jFactory.build(HttpService("https://rinkeby.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89"))
+            web3j = Web3jFactory.build(HttpService("http://47.52.224.7:8545"))//https://rinkeby.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89
             val web3ClientVersion = web3j?.web3ClientVersion()?.send()
             val clientVersion = web3ClientVersion?.getWeb3ClientVersion()
             mTokenContract = Zzhc_sol_ZZHToken.load("0x122638aeaccdadb35a707c5ffcaa0226e43dc02b", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
@@ -72,6 +76,7 @@ class ERC20TokenAC : AppCompatActivity() {
                 balance.isEnabled = web3j != null && credentials != null
                 transfer.isEnabled = web3j != null && credentials != null
             }
+            initObservable()
         }).start()
     }
 
@@ -121,5 +126,33 @@ class ERC20TokenAC : AppCompatActivity() {
                 }
             }).start()
         }
+    }
+
+    fun initObservable() {
+        web3j.catchUpToLatestTransactionObservable(DefaultBlockParameterName.EARLIEST).subscribe { tx ->
+            Log.i("zzh", "catchUpToLatestTransactionObservable: " + tx.hash)
+        }
+        //个新的区块添加到区块链中
+        var subscription1 = web3j.blockObservable(false).subscribe { block ->
+            Log.i("zzh", "blockObservable: " + block.block.number)
+        }
+        //所有添加到区块链中的交易
+        var subscription2 = web3j.transactionObservable().subscribe { tx ->
+            Log.i("zzh", "transactionObservable: " + tx.hash)
+        }
+        //一些待确认的交易记录
+        var subscription3 = web3j.pendingTransactionObservable().subscribe { tx ->
+            Log.i("zzh", "pendingTransactionObservable: " + tx.hash)
+        }
+        //已经收到了所有的区块链信息，同时又有新的区块被创建：
+        var subscription4 = web3j.catchUpToLatestAndSubscribeToNewBlocksObservable(DefaultBlockParameterName.EARLIEST, true).subscribe { ethBlock ->
+            ethBlock.block.transactions.forEach { t ->
+                val receipt = web3j.ethGetTransactionReceipt((t as Transaction).hash).send().result
+                val logs = receipt.logs
+                Log.i("zzh", "catchUpToLatestAndSubscribeToNewBlocksObservable: " + logs.toString())
+            }
+        }
+        //取消订阅事件
+//        subscription4.unsubscribe();
     }
 }
