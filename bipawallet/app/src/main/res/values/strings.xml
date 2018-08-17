@@ -1,0 +1,185 @@
+<resources>
+    <string name="app_name">BipaWallet</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_asset">Assets</string>
+    <string name="title_record">Records</string>
+    <string name="title_contact">Contacts</string>
+    <string name="title_mine">Me</string>
+    <string name="mine_center">Personal Center</string>
+    <string name="message_center">Message Center</string>
+    <string name="helper_center">Support</string>
+    <string name="system_setting">Settings</string>
+    <string name="about_us">About</string>
+    <string name="login">login</string>
+
+    <string name="country_region">Country/Region</string>
+    <string name="phone">mobile phone number</string>
+    <string name="send">send</string>
+    <string name="ver_code">mobile verification code</string>
+    <string name="ver_code_time">resend after %d seconds</string>
+    <string name="forget_password">Forgot password</string>
+    <string name="register">register</string>
+    <string name="language_sel">Language</string>
+    <string name="currency_sel">Currency Unit</string>
+    <string name="cur_version">Current version</string>
+    <string name="new_contact">New contacts</string>
+
+    <string name="done">confirm</string>
+    <string name="last_name">Surname</string>
+    <string name="first_name">Name</string>
+    <string name="money_addr">Wallet address</string>
+    <string name="add_phone">Phone</string>
+    <string name="add_mail">Email</string>
+
+    <string name="choose">screen</string>
+
+    <string name="inpay">income</string>
+    <string name="outpay">spending</string>
+    <string name="succeed">success</string>
+    <string name="fail">fail</string>
+    <string name="processing">pending</string>
+    <string name="money_name">Wallet Name</string>
+    <string name="account_asset">Total Assets(RMB)</string>
+
+    <string name="scan">scan</string>
+    <string name="manage">Manage wallet</string>
+    <string name="create">Create wallet</string>
+    <string name="importWallet">Import wallet</string>
+    <string name="wallet_name">Wallet Name</string>
+    <string name="account_money">account balance</string>
+    <string name="export_key">Export private key</string>
+    <string name="export_keystore">Export Keystore</string>
+    <string name="delete">delete</string>
+    <string name="copy">copy</string>
+    <string name="password">password</string>
+    <string name="tip">I have read and agreed</string>
+    <string name="waring">Security warning: since the private key is not encrypted and the export is at risk, it is recommended to use mnemonic and wallet for backup</string>
+    <string name="privacy">Service and privacy terms</string>
+    <string name="tip_wallet">Note:</string>
+    <string name="tip_wallet_first">1.Your wallet won\'t store your password, and you won\'t be able to retrieve it. Keep that in mind</string>
+    <string name="tip_wallet_second">2. Wallet password is an important certificate for transactions. To prevent cracking, please use multiple combinations</string>
+
+    <string name="ks_wallet">Keystore official wallet</string>
+    <string name="privacy_key">private key</string>
+    <string name="input_password">Please enter your password</string>
+    <string name="what_keystore">What is the Keystore</string>
+    <string name="what_key">What is a private key</string>
+    <string name="now_money">has</string>
+    <string name="transfer">Transfer</string>
+    <string name="redraw">Make collections</string>
+    <string name="wallet_address">Payee\'s wallet address</string>
+    <string name="transfer_amount">Transfer amount</string>
+    <string name="custom_gas_price">Custom Gas Price</string>
+    <string name="custom_gas">Custom Gas</string>
+    <string name="worker_fee">Gas:</string>
+    <string name="ps">ps</string>
+    <string name="waiting">Please waiting</string>
+    <string name="choose_currency">Select the currency</string>
+    <string name="input_check_failed">Please fill in all fields</string>
+    <string name="radiobutton_failed">Please agree to the privacy policy</string>
+    <string name="copy_succeed">copy success</string>
+    <string name="input_decemal">Please fill in hexadecimal data</string>
+    <string name="how_param">How to set parameters</string>
+    <string name="high_setting">Advanced options</string>
+    <string name="add_new_attention">Add new attention</string>
+    <string name="search_hint">Please enter the name you want to search for</string>
+    <string name="wallet_introduction">Bipa wallet is secure, convenient and professional. It has powerful transfer and payment functions. It aims to provide more convenient and simple services for ordinary users, and is committed to making block chain technology more close to life.</string>
+
+
+    <string name="use_tip">Service agreement</string>
+    <string name="privacy_item">Privacy policy</string>
+    <string name="version_log">Version of the log</string>
+    <string name="version_update">Version update</string>
+
+    <string name="outpay_current">Monthly expenditure</string>
+    <string name="inpay_current">Monthly income</string>
+
+    <string name="remain_money">balance</string>
+    <string name="waring_export_key">Safety warning</string>
+    <string name="tip_export_key">The private key is unencrypted and the export is risky. It is recommended to use QR codes and keystore for backup.</string>
+    <string name="store_recommend">Suggestions on Preservation</string>
+    <string name="store_recommend_tip">Please do not take a direct screenshot. It is recommended that the offline device transmit this file by scanning QR codes, copy and paste the Keystore file or the screenshot QR code to a safe and offline place for saving.</string>
+    <string name="store_recommend_qr">It is recommended that the offline device transmits this file by scanning the QR code, or take a screenshot of the QR code and save it in a safe and offline place.</string>
+
+    <string name="qrcode">QR code</string>
+    <string name="no_network_transfer">Do not use network transmission</string>
+    <string name="no_network_transfer_tip">Please do not transfer private key files through network tools, and do not save them to email, notepad, network disk, chat tools, etc. Once acquired by hackers, irreparable asset losses will be caused.</string>
+    //
+
+    <string name="password_case">Password safe preservation.</string>
+    <string name="password_case_tip">If you want to save online, it is recommended to use password storage software such as 1Password, which has a higher security level, to save the Keystore.</string>
+    //
+    <string name="inpay_id">Collection ID:</string>
+    <string name="pay_method">Payment ID:</string>
+    <string name="pay_now">Immediate payment</string>
+    <string name="pay_confirm">Payment confirmation</string>
+    <string name="confirm">confirm</string>
+    <string name="share">share</string>
+    <string name="input_money">Please enter the amount received</string>
+    <string name="hash_key">Hash:</string>
+    <string name="time">time:</string>
+    <string name="address_from">Transfer address (From):</string>
+    <string name="trad_money">Transaction Value:</string>
+    <string name="currency">token:</string>
+    <string name="trade_detail">Transaction details</string>
+    <string name="all">all</string>
+
+    <string name="pay_succeed">Pay for success</string>
+    <string name="pay_failed">Pay for failure</string>
+
+    <string name="pay_tip">Due to the block chain feature, there is a delay in the transaction to the account. Please wait patiently.</string>
+    <string name="pay_password">password</string>
+    <string name="transport_tip_hint">Please fill in hexadecimal data</string>
+    <string name="ok">confirm</string>
+    <string name="cancel">cancel</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="mail_error">Email address is invalid</string>
+    <string name="phone_error">The phone number is invalid.</string>
+    <string name="copy_address_error">Please create or import your wallet first.</string>
+    <string name="chinese_currency">CNY</string>
+    <string name="english_currency">USD</string>
+    <string name="copy_address">Copy the wallet address</string>
+    <string name="get_paid_style">Payment method</string>
+    <string name="support_token">Choose the currency that this wallet supports</string>
+    <string name="share_currency_error">Please select the currency type</string>
+    <string name="scan_error">Error scanning content, please scan again</string>
+    <string name="transfer_succeed">Transfer success</string>
+    <string name="pay_succeed_tip">Congratulations! You have paid successfully</string>
+    <string name="pay_failed_tip">Too bad! Failure to pay</string>
+    <string name="address_wrong">The wallet address format is incorrect</string>
+
+    <string name="p_input_key">Please enter the private key</string>
+    <string name="p_input_store">Please enter keystore</string>
+
+    <string name="send_code">Resend after %d seconds</string>
+    <string name="p_input_name">Please enter the wallet name</string>
+
+    <string name="begin_transfer">Initiate a transfe</string>
+    <string name="transfering">pending</string>
+    <string name="failed_transfer">failed</string>
+    <string name="succeed_transfer">success</string>
+    <string name="address_to">To:</string>
+    <string name="min_password">The password is at least 9 bits</string>
+    <string name="version_latest">The version is newest.</string>
+    <string name="download">download</string>
+    <string name="has_latest_version">Please download the latest installation package</string>
+    <string name="open_storage">Please open storage permissions</string>
+    <string name="open_contact">Please open address book permissions</string>
+
+    <string name="no_internet">No network.</string>
+    <string name="s_wallet">wallet-</string>
+    <string name="s_wallet_trans">transfer accounts</string>
+    <string name="s_chinese">Chinese</string>
+    <string name="s_english">English</string>
+
+    <string name="s_fast">fast</string>
+    <string name="s_slow">slow</string>
+
+    <string name="s_amount">Amount</string>
+    <string name="s_date">Date</string>
+    <string name="s_price">price</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_scan"
+            android:icon="@drawable/scan"
+            android:title="@string/scan" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/manage"
+            android:title="@string/manage" />
+        <item
+            android:id="@+id/nav_create"
+            android:icon="@drawable/create"
+            android:title="@string/create" />
+        <item
+            android:id="@+id/nav_import"
+            android:icon="@drawable/export"
+            android:title="@string/importWallet" />
+    </group>
+
+
+</menu>

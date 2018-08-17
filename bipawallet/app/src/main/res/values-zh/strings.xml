@@ -1,0 +1,185 @@
+<resources>
+    <string name="app_name">BipaWallet</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_asset">资产</string>
+    <string name="title_record">交易记录</string>
+    <string name="title_contact">联系人</string>
+    <string name="title_mine">我的</string>
+    <string name="mine_center">个人中心</string>
+    <string name="message_center">消息中心</string>
+    <string name="helper_center">帮助中心</string>
+    <string name="system_setting">系统设置</string>
+    <string name="about_us">关于我们</string>
+    <string name="login">登录</string>
+
+    <string name="country_region">国家/地区</string>
+    <string name="phone">手机号码</string>
+    <string name="send">发送</string>
+    <string name="ver_code">手机验证码</string>
+    <string name="ver_code_time">%d秒后可重发</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="register">注册</string>
+    <string name="language_sel">语言选择</string>
+    <string name="currency_sel">货币单位</string>
+    <string name="cur_version">当前版本</string>
+    <string name="new_contact">新建联系人</string>
+
+    <string name="done">确认</string>
+    <string name="last_name">姓氏</string>
+    <string name="first_name">名字</string>
+    <string name="money_addr">钱包地址</string>
+    <string name="add_phone">添加手机</string>
+    <string name="add_mail">添加邮箱</string>
+
+    <string name="choose">筛选</string>
+
+    <string name="inpay">收入</string>
+    <string name="outpay">支出</string>
+    <string name="succeed">成功</string>
+    <string name="fail">失败</string>
+    <string name="processing">进行中</string>
+    <string name="money_name">钱包名称</string>
+    <string name="account_asset">账户资产(¥)</string>
+
+    <string name="scan">扫一扫</string>
+    <string name="manage">管理钱包</string>
+    <string name="create">创建钱包</string>
+    <string name="importWallet">导入钱包</string>
+    <string name="wallet_name">钱包姓名</string>
+    <string name="account_money">账户余额</string>
+    <string name="export_key">导出私钥</string>
+    <string name="export_keystore">导出keystore</string>
+    <string name="delete">删除</string>
+    <string name="copy">复制</string>
+    <string name="password">密码</string>
+    <string name="tip">我已阅读并同意</string>
+    <string name="waring">安全警告：由于私钥未进行加密，导出存在风险，建议使用助记词和钱包进行备份</string>
+    <string name="privacy">服务及隐私条款</string>
+    <string name="tip_wallet">注: </string>
+    <string name="tip_wallet_first">1. 钱包不会存储密码，也无法找回密码，请务必牢记</string>
+    <string name="tip_wallet_second">2. 钱包密码是用于交易的重要凭证，为防止破解，请使用多种搭配</string>
+
+    <string name="ks_wallet">keystore</string>
+    <string name="privacy_key">私钥</string>
+    <string name="input_password">请输入密码</string>
+    <string name="what_keystore">什么是Keystore</string>
+    <string name="what_key">什么是私钥</string>
+    <string name="now_money">持有</string>
+    <string name="transfer">转账</string>
+    <string name="redraw">收钱</string>
+    <string name="wallet_address">收款人钱包地址</string>
+    <string name="transfer_amount">转账金额</string>
+    <string name="custom_gas_price">自定义 Gas Price</string>
+    <string name="custom_gas">自定义 Gas</string>
+    <string name="worker_fee">矿工费用:</string>
+    <string name="ps">备注</string>
+    <string name="waiting">请等待</string>
+    <string name="choose_currency">选择货币</string>
+    <string name="input_check_failed">请填入所有字段</string>
+    <string name="radiobutton_failed">请同意隐私条款</string>
+    <string name="copy_succeed">复制成功</string>
+    <string name="input_decemal">请填写十六进制数据</string>
+    <string name="how_param">如何设置参数</string>
+    <string name="high_setting">高级选项</string>
+    <string name="add_new_attention">添加新关注</string>
+    <string name="search_hint">请输入要搜索的名称</string>
+    <string name="wallet_introduction">比派钱包以安全、便捷、专业为核心特点，拥有强大的转账与支付功能，旨在为普通用户提供更便利简单的服务，致力于使区块链技术更加贴近生活。</string>
+
+
+    <string name="use_tip">使用协议</string>
+    <string name="privacy_item">隐私条款</string>
+    <string name="version_log">版本日志</string>
+    <string name="version_update">版本更新</string>
+
+    <string name="outpay_current">当月支出</string>
+    <string name="inpay_current">当月收入</string>
+
+    <string name="remain_money">余额</string>
+    <string name="waring_export_key">安全警告</string>
+    <string name="tip_export_key">私钥未经加密，导出存在风险，建议使用二维码和keystore进行备份。</string>
+    <string name="store_recommend">保存建议</string>
+    <string name="store_recommend_tip">请勿直接截图，建议离线设备通过扫二维码方式传输本文件，复制粘贴Keystore文件或截图二维码到安全、离线的地方保存。</string>
+    <string name="store_recommend_qr">建议离线设备通过扫二维码方式传输本文件，或截图二维码到安全、离线的地方保存。</string>
+
+    <string name="qrcode">二维码</string>
+    <string name="no_network_transfer">请勿使用网络传输</string>
+    <string name="no_network_transfer_tip">请勿通过网络工具传输私钥文件，请勿保存至邮箱、记事本、网盘、聊天工具等，一旦被黑客获取将造成不可挽回的资产损失。</string>
+//
+
+    <string name="password_case">密码保险箱保存</string>
+    <string name="password_case_tip">如需在线保存，则建议使用安全等级更高的1Password 等密码保管软件保存Keystore。</string>
+//
+    <string name="inpay_id">收款ID:</string>
+    <string name="pay_method">支付方式:</string>
+    <string name="pay_now">立即支付</string>
+    <string name="pay_confirm">支付确认</string>
+    <string name="confirm">确定</string>
+    <string name="share">分享</string>
+    <string name="input_money">请输入收款金额</string>
+    <string name="hash_key">哈希值(Hash):</string>
+    <string name="time">时间(time):</string>
+    <string name="address_from">转账地址(From):</string>
+    <string name="address_to">收款地址(To):</string>
+    <string name="trad_money">交易金额(Value):</string>
+    <string name="currency">货币类型(token):</string>
+    <string name="trade_detail">交易详情</string>
+    <string name="all">全部</string>
+
+    <string name="pay_succeed">支付成功</string>
+    <string name="pay_failed">支付失败</string>
+
+    <string name="pay_tip">由于区块链特性，交易到账有时间上的延迟，请耐心等候</string>
+    <string name="pay_password">密码</string>
+    <string name="transport_tip_hint">请填写十六进制数据</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="mail_error">无效的邮件地址</string>
+    <string name="phone_error">无效的电话号码</string>
+    <string name="copy_address_error">请先创建或导入钱包</string>
+
+    <string name="chinese_currency">人民币</string>
+    <string name="english_currency">美元</string>
+    <string name="copy_address">复制钱包地址</string>
+    <string name="get_paid_style">收款方式</string>
+    <string name="support_token">选择本钱包支持的货币</string>
+    <string name="share_currency_error">请选择货币类型</string>
+    <string name="scan_error">扫描内容有误请重新扫描</string>
+    <string name="transfer_succeed">转账成功</string>
+
+    <string name="pay_succeed_tip">恭喜！您已经支付成功</string>
+    <string name="pay_failed_tip">糟糕！支付失败</string>
+    <string name="address_wrong">钱包地址格式不正确</string>
+
+    <string name="p_input_key">请输入私钥</string>
+    <string name="p_input_store">请输入keystore</string>
+
+    <string name="send_code">%d秒后可重发</string>
+    <string name="p_input_name">请输入钱包名称</string>
+
+    <string name="begin_transfer">发起转账</string>
+    <string name="transfering">转账中</string>
+    <string name="failed_transfer">转账失败</string>
+    <string name="succeed_transfer">转账成功</string>
+    <string name="min_password">密码最少为9位</string>
+    <string name="version_latest">版本已经最新</string>
+
+    <string name="download">下载</string>
+    <string name="has_latest_version">有最新安装包，请下载</string>
+    <string name="open_storage">请打开存储权限</string>
+    <string name="open_contact">请打开通讯录权限</string>
+    <string name="no_internet">没有网络</string>
+    <string name="s_wallet">钱包</string>
+    <string name="s_wallet_trans">转账</string>
+    <string name="s_chinese">简体中文</string>
+    <string name="s_english">英语</string>
+    <string name="s_fast">快</string>
+    <string name="s_slow">慢</string>
+    <string name="s_amount">数量</string>
+    <string name="s_date">日期</string>
+    <string name="s_price">价格</string>
+</resources>
