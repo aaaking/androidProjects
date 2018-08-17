@@ -3,6 +3,7 @@ package com.bipa.android.webview;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +67,7 @@ public class WebViewActivity extends AppCompatActivity {
         languae = BaseTools.getLanguage(this).toLowerCase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        url = "http://game.bipa.io/#/";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
+        url = "http://game.bipa.io";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
         type = getIntent().getIntExtra(Extras.EXTRA_TYPE, 0);
         if (type == TYPE_APP_NOTICE)
             mAppNotify = (AppNotify) getIntent().getSerializableExtra(Extras.EXTRA_DATA);
@@ -129,6 +130,12 @@ public class WebViewActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("openapp.nasnano")) {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    WebViewActivity.this.startActivity(intent);
+                    return true;
+                }
                 mWebView.loadUrl(url);
                 return true;
             }

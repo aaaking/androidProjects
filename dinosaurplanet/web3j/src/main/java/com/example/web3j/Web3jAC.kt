@@ -131,7 +131,8 @@ class Web3jAC : AppCompatActivity() {
 
         //deploy
         val deployThread = Thread(Runnable {
-            val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
+            //val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
+            val contract = Demo_sol_demo.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
             val contractAddress = contract.contractAddress
             Log.i("zzh", contractAddress)
             Log.i("zzh", "View contract at https://rinkeby.etherscan.io/address/" + contractAddress)
