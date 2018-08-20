@@ -67,7 +67,7 @@ public class WebViewActivity extends AppCompatActivity {
         languae = BaseTools.getLanguage(this).toLowerCase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        url = "http://game.bipa.io";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
+        url = "http://119.134.251.212:3001?channel=bipa&amp;gid=6&amp;serverId=1&amp;uid=100000005&amp;time=1534749816026&amp;sign=54714c574ac9ec730e23099ebe270a03";//getIntent().getStringExtra(Extras.EXTRA_URL);http://game.bipa.io/#/   http://dinosaur.bipa.io/
         type = getIntent().getIntExtra(Extras.EXTRA_TYPE, 0);
         if (type == TYPE_APP_NOTICE)
             mAppNotify = (AppNotify) getIntent().getSerializableExtra(Extras.EXTRA_DATA);

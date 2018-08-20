@@ -26,16 +26,46 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:host="com.bipa.wallet" android:pathPrefix="/launch" android:scheme="bipa"/>
+            </intent-filter>
         </activity>
         <activity android:name=".Main.NavActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.bipa.wallet.transfer"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:host="com.bipa.wallet" android:pathPrefix="/main" android:scheme="bipa"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".Base.BaseActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Mine.LoginActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Mine.SettingActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="com.bipa.wallet" android:pathPrefix="/setting" android:scheme="bipa"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".Contact.AddContactActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Asset.ManageWalletActivity"

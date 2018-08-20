@@ -114,7 +114,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         switchFragment(R.id.content, null,
                 fragment, null);
         requestPermission();
-
+        if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
+            scanDone(getIntent().getData().getQueryParameter("params"));
+        }
     }
 
     protected void initView() {
