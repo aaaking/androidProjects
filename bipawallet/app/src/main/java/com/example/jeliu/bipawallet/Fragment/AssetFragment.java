@@ -42,12 +42,20 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.utils.Convert;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -195,11 +203,30 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     private void loadData() {
+//        loadBalance();
         String address = UserInfoManager.getInst().getCurrentWalletAddress();
         if (address != null) {
             showWaiting();
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.BALANCE_URL + "?address="+address, null, this);
+        }
+    }
+
+    private void loadBalance() {
+        if (Common.mCredentials != null && Common.mCredentials.getAddress() != null) {
+            try {
+                EthGetBalance ethGetBalance = Common.mWeb3j.ethGetBalance(Common.mCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
+                BigInteger wei = ethGetBalance.getBalance();
+                BigDecimal balance = Convert.fromWei(wei.toString(), Convert.Unit.ETHER);
+                String address = UserInfoManager.getInst().getCurrentWalletAddress();
+//                HZWalletManager.getInst().updateWalletInfo(address, "");
+                adapter.notifyDataSetChanged();
+                updateUI(address);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -233,10 +260,10 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     @Override
     public boolean onSuccess(JSONObject jsonObject, String url) {
-        if (url.contains(Constant.BALANCE_URL)) {
+        if (url.contains(Constant.BALANCE_URL)) {//{"code":0,"msg":"suc","balance":[{"token":"eth","value":18.679879996},{"token":"wxc","value":100}]}
             if (!super.onSuccess(jsonObject, url)) {
-            return true;
-        }
+                return true;
+            }
             try {
                 JSONArray balance = jsonObject.getJSONArray("balance");
                 String address = UserInfoManager.getInst().getCurrentWalletAddress();
@@ -246,7 +273,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (url.contains(Constant.ESTIMATEGAS_URL)) {
+        } else
+        if (url.contains(Constant.ESTIMATEGAS_URL)) {
             if (!super.onSuccess(jsonObject, url)) {
                 return true;
             }

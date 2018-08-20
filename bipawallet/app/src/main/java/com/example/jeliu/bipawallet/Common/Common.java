@@ -1,6 +1,7 @@
 package com.example.jeliu.bipawallet.Common;
 
 import android.app.Activity;
+import org.web3j.protocol.http.HttpService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -39,6 +40,8 @@ import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,8 +63,11 @@ public class Common {
 
     public static final double s_ether = 1000000000;
     public static String WALLET_PATH = "";
+    public static Web3j mWeb3j;
+    public static Credentials mCredentials;
 
     public static void setWalletPath(Context context) {
+        mWeb3j = Web3jFactory.build(new HttpService("http://47.52.224.7:8545"));
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
             File file = context.getExternalFilesDir(null);
             if (file != null) {
@@ -385,8 +391,8 @@ public class Common {
             public void run() {
                 try {
                     String fileName = WalletUtils.generateWalletFile(pwd, ECKeyPair.create(new BigInteger(pk, 16)), destDir, false);
-                    Credentials credentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    cb.onWalletResult(credentials);
+                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    cb.onWalletResult(mCredentials);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
@@ -415,8 +421,8 @@ public class Common {
 //            new OutputStreamWriter(HZApplication.getInst().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
                     outputStreamWriter.write(ks);
                     outputStreamWriter.close();
-                    Credentials credentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    cb.onWalletResult(credentials);
+                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    cb.onWalletResult(mCredentials);
                 } catch (Exception e) {
                     cb.onWalletResult(null);
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
@@ -436,8 +442,8 @@ public class Common {
             public void run() {
                 try {
                     String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
-                    Credentials credentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
-                    cb.onWalletResult(credentials);
+                    mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
+                    cb.onWalletResult(mCredentials);
                 } catch (Exception e) {
                     cb.onWalletResult(null);
                     Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
