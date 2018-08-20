@@ -54,6 +54,7 @@ import com.example.jeliu.bipawallet.Contact.AddContactActivity;
 import com.example.jeliu.bipawallet.Fragment.AssetFragment;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import org.json.JSONArray;
@@ -90,6 +91,15 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        if (UserInfoManager.getInst().isEmptyWallet()) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
+        } else {
+            if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
+                scanDone(getIntent().getData().getQueryParameter("params"));
+            }
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -114,9 +124,6 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         switchFragment(R.id.content, null,
                 fragment, null);
         requestPermission();
-        if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
-            scanDone(getIntent().getData().getQueryParameter("params"));
-        }
     }
 
     protected void initView() {
