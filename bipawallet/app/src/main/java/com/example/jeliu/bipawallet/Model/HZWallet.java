@@ -9,6 +9,7 @@ import java.util.List;
 
 public class HZWallet {
     public String name;
+    public String fileName;
     public String address;
     public int profileIndex;
     public List<HZToken> tokenList = new ArrayList<>();

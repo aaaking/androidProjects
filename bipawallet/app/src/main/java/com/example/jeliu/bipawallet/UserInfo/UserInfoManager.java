@@ -70,10 +70,11 @@ public class UserInfoManager {
                 HZWallet wallet = new HZWallet();
                 wallet.address = key;
                 String name = wallets.get(key);
-                String splits[] = name.split("______");
-                if (splits.length == 2) {
+                String splits[] = name.split(s_split);
+                if (splits.length > 2) {
                     wallet.name = splits[0];
                     wallet.profileIndex = Integer.valueOf(splits[1]);
+                    wallet.fileName = splits[2];
                 } else {
                     continue;
                 }
@@ -224,10 +225,11 @@ public class UserInfoManager {
         currentWalletAddress = address;
     }
 
-    public void insertWallet(String name, String address, int profile) {
-        wallets.put(address, String.format("%s%s%d", name, s_split, profile));
+    public void insertWallet(String name, String address, int profile, String fileName) {
+        wallets.put(address, String.format("%s%s%d%s", name, s_split, profile, s_split, fileName));
         HZWallet wallet = new HZWallet();
         wallet.name = name;
+        wallet.fileName = fileName;
         wallet.address = address;
         wallet.profileIndex = profile;
         HZWalletManager.getInst().addWallet(wallet);

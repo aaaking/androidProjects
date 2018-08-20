@@ -256,13 +256,13 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
     }
 
     @Override
-    public void onWalletResult(Credentials credentials) {
+    public void onWalletResult(Credentials credentials, String fileName) {
         if (credentials != null) {
             String address = credentials.getAddress();
             if (address != null) {
                 hideWaiting();
                 String name = etKeyName.getText().toString();
-                UserInfoManager.getInst().insertWallet(name, address, 0);
+                UserInfoManager.getInst().insertWallet(name, address, 0, fileName);
                 UserInfoManager.getInst().setCurrentWalletAddress(address);
                 setResult(RESULT_OK);
                 finish();

@@ -162,12 +162,12 @@ public class CreateWalletActivity extends BaseActivity implements IWallet {
     }
 
     @Override
-    public void onWalletResult(Credentials credentials) {
+    public void onWalletResult(Credentials credentials, String fileName) {
         if (credentials != null) {
             String address = credentials.getAddress();
             if (address != null) {
                 String name = etName.getText().toString();
-                UserInfoManager.getInst().insertWallet(name, address, currentProfileIndex);
+                UserInfoManager.getInst().insertWallet(name, address, currentProfileIndex, fileName);
                 UserInfoManager.getInst().setCurrentWalletAddress(address);
                 hideWaiting();
                 setResult(RESULT_OK);

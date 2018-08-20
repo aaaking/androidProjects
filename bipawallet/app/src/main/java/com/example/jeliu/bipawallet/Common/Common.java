@@ -392,12 +392,12 @@ public class Common {
                 try {
                     String fileName = WalletUtils.generateWalletFile(pwd, ECKeyPair.create(new BigInteger(pk, 16)), destDir, false);
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    cb.onWalletResult(mCredentials);
+                    cb.onWalletResult(mCredentials, fileName);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                 } catch (CipherException e) {
-                    cb.onWalletResult(null);
+                    cb.onWalletResult(null, "");
                     e.printStackTrace();
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -422,9 +422,9 @@ public class Common {
                     outputStreamWriter.write(ks);
                     outputStreamWriter.close();
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    cb.onWalletResult(mCredentials);
+                    cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
-                    cb.onWalletResult(null);
+                    cb.onWalletResult(null, null);
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -443,9 +443,9 @@ public class Common {
                 try {
                     String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
                     mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
-                    cb.onWalletResult(mCredentials);
+                    cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
-                    cb.onWalletResult(null);
+                    cb.onWalletResult(null, "");
                     Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
