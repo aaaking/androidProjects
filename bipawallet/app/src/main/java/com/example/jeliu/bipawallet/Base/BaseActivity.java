@@ -86,6 +86,7 @@ import butterknife.OnClick;
  */
 
 public class BaseActivity extends AppCompatActivity implements RequestResult {
+    public static int REQUEST_PERMISSION_WRITE_STORAGE = 0;
     private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果

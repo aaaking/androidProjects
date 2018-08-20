@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,8 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
+import com.example.jeliu.bipawallet.Network.IWallet;
+import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
@@ -31,11 +35,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.WalletUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
@@ -47,8 +59,24 @@ import java.util.Map;
 public class Common {
 
     public static final double s_ether = 1000000000;
+    public static String WALLET_PATH = "";
 
-    public static JSONObject objectToJSONObject(Object object){
+    public static void setWalletPath(Context context) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
+            File file = context.getExternalFilesDir(null);
+            if (file != null) {
+                WALLET_PATH = file.getAbsolutePath() + File.separator + "walletfile";
+            } else {
+                WALLET_PATH = context.getFilesDir() + File.separator + "walletfile";
+            }
+        } else {
+            if (context.getCacheDir() != null) {
+                WALLET_PATH = context.getFilesDir() + File.separator + "walletfile";
+            }
+        }
+    }
+
+    public static JSONObject objectToJSONObject(Object object) {
         Object json = null;
         JSONObject jsonObject = null;
         try {
@@ -62,7 +90,7 @@ public class Common {
         return jsonObject;
     }
 
-    public static JSONArray objectToJSONArray(Object object){
+    public static JSONArray objectToJSONArray(Object object) {
         Object json = null;
         JSONArray jsonArray = null;
         try {
@@ -231,7 +259,7 @@ public class Common {
         });
 
         TextView tvHash = popupView.findViewById(R.id.textView_hash);
-        tvHash.setText("hash值: "+ hash);
+        tvHash.setText("hash值: " + hash);
 
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -240,7 +268,7 @@ public class Common {
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               // popupWindow.dismiss();
+                // popupWindow.dismiss();
                 return true;
             }
         });
@@ -259,7 +287,7 @@ public class Common {
     public static void showPayFailed(final Context context, View llRoot, String value, String hash) {
         int gravity = Gravity.BOTTOM;
 
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.layout_pay_failed, null);
 
         ImageView ivQues = popupView.findViewById(R.id.imageView_question);
@@ -281,7 +309,7 @@ public class Common {
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               // popupWindow.dismiss();
+                // popupWindow.dismiss();
                 return true;
             }
         });
@@ -315,6 +343,7 @@ public class Common {
 
     /**
      * 获取版本号
+     *
      * @return 当前应用的版本号
      */
     public static String getVersion() {
@@ -329,13 +358,12 @@ public class Common {
         }
     }
 
-    public static void WriteJsonFile(String strcontent,String strFilePath)
-    {
+    public static void WriteJsonFile(String strcontent, String strFilePath) {
         //每次写入时，都换行写
         try {
             File file = new File(strFilePath);
             if (!file.exists()) {
-               // Log.d("TestFile", "Create the file:" + strFilePath);
+                // Log.d("TestFile", "Create the file:" + strFilePath);
                 file.createNewFile();
             }
             RandomAccessFile raf = new RandomAccessFile(file, "rw");
@@ -347,82 +375,79 @@ public class Common {
         }
     }
 
-//    private void dotest() {
-//        Web3j web3 = Web3j.build(new HttpService());  // defaults to http://localhost:8545/
-//        Credentials credentials = WalletUtils.loadCredentials("password", "/path/to/walletfile");
-//
-//    }
+    public static Credentials loadWalletByPrivateKey(final String pwd, final String pk, final IWallet cb) {
+        final File destDir = new File(WALLET_PATH);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String fileName = WalletUtils.generateWalletFile(pwd, ECKeyPair.create(new BigInteger(pk, 16)), destDir, false);
+                    Credentials credentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    cb.onWalletResult(credentials);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                } catch (CipherException e) {
+                    cb.onWalletResult(null);
+                    e.printStackTrace();
+                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).start();
+        return null;
+    }
 
-    //
-//    fun loadWallet() {
-//        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        if (!path.exists()) {
-//            path.mkdir()
-//        }
-//        var fileName = "original" + ".json"//WalletUtils.generateLightNewWalletFile(password, File(path.toString()))
-//        Log.e("zzh", "generateWallet: $path/$fileName")
-//        credentials = WalletUtils.loadCredentials("12345678", path.toString() + "/" + fileName)
-//        wallet_address.text = "钱包地址：\n" + credentials!!.getAddress()
-//        //
-//        //connect network
-//        Thread(Runnable {
-//            web3j = Web3jFactory.build(HttpService("http://47.52.224.7:8545"))//https://rinkeby.infura.io/v3/1ef6eda7b4cb4444b3b6907f2086ba89
-//            val web3ClientVersion = web3j?.web3ClientVersion()?.send()
-//            val clientVersion = web3ClientVersion?.getWeb3ClientVersion()
-//            mTokenContract = Zzhc_sol_ZZHToken.load("0x122638aeaccdadb35a707c5ffcaa0226e43dc02b", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
-//            runOnUiThread {
-//                connect_info.text = "节点连接信息：\n" + clientVersion
-//                balance.isEnabled = web3j != null && credentials != null
-//                transfer.isEnabled = web3j != null && credentials != null
-//            }
-//            initObservable()
-//        }).start()
-//    }
+    public static Credentials loadWalletByKeyStore(final String pwd, final String ks, final IWallet cb) {
+        final File destDir = new File(WALLET_PATH);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("'UTC--'yyyy-MM-dd'T'HH-mm-ss.SSS'--'");
+        final String fileName =  dateFormat.format(new Date()) + "new-address" + ".json";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OutputStreamWriter outputStreamWriter =  new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
+//            new OutputStreamWriter(HZApplication.getInst().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
+                    outputStreamWriter.write(ks);
+                    outputStreamWriter.close();
+                    Credentials credentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    cb.onWalletResult(credentials);
+                } catch (Exception e) {
+                    cb.onWalletResult(null);
+                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).start();
+        return null;
+    }
 //
-//    public void createLocalWallet() {
-//        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-//        if (!path.exists()) {
-//            path.mkdir();
-//        }
-//        String fileName = "original" + ".json";
-//        try {
-//            String keystore = WalletUtils.generateLightNewWalletFile("123456", new File(path.toString() + "/" + fileName));
-//            Log.d("Tag", keystore);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchProviderException e) {
-//            e.printStackTrace();
-//        } catch (InvalidAlgorithmParameterException e) {
-//            e.printStackTrace();
-//        } catch (CipherException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-////        try {
-////            Credentials credentials = WalletUtils.loadCredentials("password", path.toString() + "/" + fileName);
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        } catch (CipherException e) {
-////            e.printStackTrace();
-////        }
-//    }
-//
-//    public void loadWallet() {
-//        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-//        if (!path.exists()) {
-//            path.mkdir();
-//        }
-//        String fileName = "original" + ".json";
-//        try {
-//            Credentials credentials = WalletUtils.loadCredentials("123456", path.toString() + "/" + fileName);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (CipherException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
+    public static Credentials createLocalWallet(final String pwd, final IWallet cb) {
+        final File destDir = new File(WALLET_PATH);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
+                    Credentials credentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
+                    cb.onWalletResult(credentials);
+                } catch (Exception e) {
+                    cb.onWalletResult(null);
+                    Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return null;
+    }
+
 //    String signedEthTransactionData(String to, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, double value, Credentials credentials) {
 //        //把十进制的转换成ETH的Wei, 1ETH = 10^18 Wei
 //        BigDecimal realValue = Convert.toWei(value +"", Convert.Unit.ETHER);
