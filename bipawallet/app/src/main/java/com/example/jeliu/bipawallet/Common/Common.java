@@ -1,15 +1,14 @@
 package com.example.jeliu.bipawallet.Common;
 
 import android.app.Activity;
-import org.web3j.protocol.http.HttpService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Network.IWallet;
-import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
@@ -42,6 +40,7 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.http.HttpService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -397,9 +396,11 @@ public class Common {
                     e.printStackTrace();
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                 } catch (CipherException e) {
+                    Looper.prepare();
                     cb.onWalletResult(null, "");
                     e.printStackTrace();
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
             }
         }).start();
@@ -424,8 +425,10 @@ public class Common {
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
+                    Looper.prepare();
                     cb.onWalletResult(null, null);
                     Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
             }
         }).start();
@@ -445,9 +448,11 @@ public class Common {
                     mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
+                    Looper.prepare();
                     cb.onWalletResult(null, "");
                     Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
+                    Looper.loop();
                 }
             }
         }).start();

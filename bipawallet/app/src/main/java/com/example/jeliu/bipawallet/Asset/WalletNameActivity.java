@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,8 +20,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Base.BaseActivity;
+import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Fragment.ExportPrivateKeyFragment;
@@ -34,7 +37,14 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,15 +84,6 @@ public class WalletNameActivity extends BaseActivity {
         } else {
             showInputPassword(2);
         }
-    }
-
-    private void deleteWallet(String password) {
-        showWaiting();
-        HZHttpRequest request = new HZHttpRequest();
-        Map<String, String> param = new HashMap<>();
-        param.put("address", walletAddress);
-        param.put("password", password);
-        request.requestPost(Constant.DELETEACCOUNT, param, this);
     }
 
     private void deleteWalletImp() {
@@ -134,13 +135,102 @@ public class WalletNameActivity extends BaseActivity {
         builder.show();
     }
 
-    private void exportPrivateKey(String password) {
+    private void exportPrivateKey(final String password) {
         showWaiting();
-        HZHttpRequest request = new HZHttpRequest();
-        Map<String, String> param = new HashMap<>();
-        param.put("address", walletAddress);
-        param.put("password", password);
-        request.requestPost(Constant.GET_PRIVATEKEY, param, this);
+        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    if (credentials != null) {
+                        ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+                        fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16), false);
+                        fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+                    }
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+                hideWaiting();
+            }
+        }).start();
+//        HZHttpRequest request = new HZHttpRequest();
+//        Map<String, String> param = new HashMap<>();
+//        param.put("address", walletAddress);
+//        param.put("password", password);
+//        request.requestPost(Constant.GET_PRIVATEKEY, param, this);
+    }
+
+    private void exportKeystore(final String password) {
+        showWaiting();
+        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
+                    if (credentials == null || !file.exists() || file.length() <= 0) {
+                        return;
+                    }
+                    StringBuilder text = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        text.append('\n');
+                    }
+                    br.close();
+                    ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+                    fragment.setPrivateKey(text.toString(), true);
+                    fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+                hideWaiting();
+            }
+        }).start();
+//        HZHttpRequest request = new HZHttpRequest();
+//        Map<String, String> param = new HashMap<>();
+//        param.put("password", password);
+//        param.put("address", walletAddress);
+//        request.requestPost(Constant.GET_KEYSTORE, param, this);
+    }
+
+    private void deleteWallet(final String password) {
+        showWaiting();
+        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
+                    if (credentials == null || !file.exists() || file.length() <= 0) {
+                        return;
+                    }
+                    file.delete();
+                    deleteWalletImp();
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+                hideWaiting();
+            }
+        }).start();
+//        HZHttpRequest request = new HZHttpRequest();
+//        Map<String, String> param = new HashMap<>();
+//        param.put("address", walletAddress);
+//        param.put("password", password);
+//        request.requestPost(Constant.DELETEACCOUNT, param, this);
     }
 
     @Override
@@ -148,27 +238,29 @@ public class WalletNameActivity extends BaseActivity {
         if (!super.onSuccess(jsonObject, url)) {
             return true;
         }
-
-        if (url.contains(Constant.GET_PRIVATEKEY)) {
-            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-            try {
-                String privateKey = jsonObject.getString("privatekey");
-                fragment.setPrivateKey(privateKey, false);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
-        } else if (url.contains(Constant.GET_KEYSTORE)) {
-            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-            try {
-                String privateKey = jsonObject.getString("keystore");
-                fragment.setPrivateKey(privateKey, true);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
-        } else if (url.contains(Constant.BALANCE_URL)) {
+//        if (url.contains(Constant.GET_PRIVATEKEY)) {
+//            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+//            try {
+//                String privateKey = jsonObject.getString("privatekey");
+//                fragment.setPrivateKey(privateKey, false);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+//        } else if (url.contains(Constant.GET_KEYSTORE)) {
+//            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+//            try {
+//                String privateKey = jsonObject.getString("keystore");
+//                fragment.setPrivateKey(privateKey, true);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+//        } else if (url.contains(Constant.DELETEACCOUNT)) {
+//            deleteWalletImp();
+//        } else
+        if (url.contains(Constant.BALANCE_URL)) {
             try {
                 JSONArray balance = jsonObject.getJSONArray("balance");
                 HZWalletManager.getInst().updateWalletInfo(walletAddress, balance);
@@ -176,8 +268,6 @@ public class WalletNameActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (url.contains(Constant.DELETEACCOUNT)) {
-            deleteWalletImp();
         }
         return false;
     }
@@ -200,15 +290,6 @@ public class WalletNameActivity extends BaseActivity {
         });
 
         popupWindow.showAtLocation(llRoot, gravity, 0, 0);
-    }
-
-    private void exportKeystore(String password) {
-        showWaiting();
-        HZHttpRequest request = new HZHttpRequest();
-        Map<String, String> param = new HashMap<>();
-        param.put("password", password);
-        param.put("address", walletAddress);
-        request.requestPost(Constant.GET_KEYSTORE, param, this);
     }
 
     @Override

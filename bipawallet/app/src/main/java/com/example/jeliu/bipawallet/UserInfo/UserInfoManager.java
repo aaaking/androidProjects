@@ -29,10 +29,10 @@ import java.util.HashMap;
  */
 
 public class UserInfoManager {
-    private static UserInfoManager s_inst = new UserInfoManager();
+    private static String s_split = "______";
+    private static UserInfoManager s_inst;
 
     private int prifoles[] = {R.drawable.hs, R.drawable.mty, R.drawable.px, R.drawable.qe, R.drawable.sz, R.drawable.xn };
-    private static String s_split = "______";
     private boolean firstRun;
 
     private HashMap<String, String> wallets = new HashMap<>();
@@ -49,6 +49,9 @@ public class UserInfoManager {
     private int usd = 0;
 
     public static UserInfoManager getInst() {
+        if (s_inst == null) {
+            s_inst = new UserInfoManager();
+        }
         return s_inst;
     }
 
@@ -71,10 +74,12 @@ public class UserInfoManager {
                 wallet.address = key;
                 String name = wallets.get(key);
                 String splits[] = name.split(s_split);
-                if (splits.length > 2) {
+                if (splits.length >= 2) {
                     wallet.name = splits[0];
                     wallet.profileIndex = Integer.valueOf(splits[1]);
-                    wallet.fileName = splits[2];
+                    if (splits.length >= 3) {
+                        wallet.fileName = splits[2];
+                    }
                 } else {
                     continue;
                 }
@@ -159,7 +164,7 @@ public class UserInfoManager {
             for (String key : wallets.keySet()) {
                 String name = wallets.get(key);
                 String splits[] = name.split(s_split);
-                if (splits.length == 2) {
+                if (splits.length >= 2) {
                     names.add(splits[0]+"___"+key);
                 }
             }
@@ -168,14 +173,17 @@ public class UserInfoManager {
 
             for (String name : names) {
                 String splits[] = name.split("___");
-                if (splits.length == 2) {
+                if (splits.length >= 2) {
                     String com = wallets.get(splits[1]);
                     JSONObject jsonObject = new JSONObject();
                     String tmp[] = com.split(s_split);
-                    if (tmp.length == 2) {
+                    if (tmp.length >= 2) {
                         try {
                             jsonObject.put(splits[1], tmp[0]);
                             jsonObject.put("profile", tmp[1]);
+                            if (tmp.length >= 3) {
+                                jsonObject.put("fileName", tmp[2]);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
