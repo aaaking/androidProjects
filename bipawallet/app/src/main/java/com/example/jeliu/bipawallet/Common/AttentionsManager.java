@@ -17,11 +17,14 @@ import java.util.List;
  */
 
 public class AttentionsManager {
-    private static AttentionsManager s_inst = new AttentionsManager();
+    private static AttentionsManager s_inst;
 
     private List<String> attentions = new ArrayList<>();
 
     public static AttentionsManager getInst() {
+        if (s_inst == null) {
+            s_inst = new AttentionsManager();
+        }
         return s_inst;
     }
 
