@@ -58,6 +58,9 @@ public class WelcomeActivity extends BaseActivity {
         if(requestCode == Constant.create_wallet_request_code || requestCode == Constant.import_wallet_request_code || requestCode == Constant.manage_wallet_request_code) {
             if (resultCode == RESULT_OK) {
                 Intent i = new Intent(WelcomeActivity.this, NavActivity.class);
+                if (getIntent().getStringExtra("js") != null) {
+                    i.putExtra("js", getIntent().getStringExtra("js"));
+                }
                 startActivity(i);
                 finish();
             }

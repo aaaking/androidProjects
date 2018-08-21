@@ -49,10 +49,17 @@ public class SplashActivity extends AppCompatActivity {
         PriceManager.getInst().setup();
         if (UserInfoManager.getInst().isEmptyWallet()) {
             Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
+            if (getIntent().getData() != null) {
+                i.putExtra("js", getIntent().getData().toString());
+            }
             startActivity(i);
             finish();
         } else {
             Intent i = new Intent(SplashActivity.this, NavActivity.class);
+            if (getIntent().getData() != null) {
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("js", getIntent().getData().toString());
+            }
             startActivity(i);
             finish();
         }

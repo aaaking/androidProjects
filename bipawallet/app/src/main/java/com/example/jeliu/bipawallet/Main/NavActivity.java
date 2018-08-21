@@ -1,43 +1,23 @@
 package com.example.jeliu.bipawallet.Main;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Asset.AddNewAttentionActivity;
 import com.example.jeliu.bipawallet.Asset.CreateWalletActivity;
@@ -46,13 +26,9 @@ import com.example.jeliu.bipawallet.Asset.ManageWalletActivity;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.BaseFragment;
 import com.example.jeliu.bipawallet.Common.BottomNavigationViewHelper;
-import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.FragmentFactory;
-import com.example.jeliu.bipawallet.Common.MultiSelect.MultiSelectActivity;
-import com.example.jeliu.bipawallet.Contact.AddContactActivity;
 import com.example.jeliu.bipawallet.Fragment.AssetFragment;
-import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
@@ -63,8 +39,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by liuming on 06/05/2018.
@@ -91,15 +65,6 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
-        if (UserInfoManager.getInst().isEmptyWallet()) {
-            startActivity(new Intent(this, WelcomeActivity.class));
-            finish();
-            return;
-        } else {
-            if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
-                scanDone(getIntent().getData().getQueryParameter("params"));
-            }
-        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -120,10 +85,24 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
         fragmentManager = getSupportFragmentManager();
 
-        BaseFragment fragment = FragmentFactory.getInstanceByIndex(currentIndex);
-        switchFragment(R.id.content, null,
-                fragment, null);
+        BaseFragment fragment = FragmentFactory.createAssetFrg();
+        switchFragment(R.id.content, null, fragment, null);
         requestPermission();
+        tryPay();
+    }
+
+    public void tryPay() {
+        if (UserInfoManager.getInst().isEmptyWallet()) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
+        } else {
+            if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
+//            if (getIntent().getStringExtra("js") != null) {
+//                Uri js = Uri.parse(getIntent().getStringExtra("js"));
+                scanDone(getIntent().getData().getQueryParameter("params"));
+            }
+        }
     }
 
     protected void initView() {
@@ -238,11 +217,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         if (!checkAddress(barcode)) {
             return;
         }
-
         BaseFragment fragment = FragmentFactory.getInstanceByIndex(currentIndex);
         if (fragment instanceof AssetFragment) {
-            AssetFragment assetFragment = (AssetFragment)fragment;
-            assetFragment.gotoPay(barcode);
+            ((AssetFragment) fragment).gotoPay(barcode);
         }
     }
 
@@ -351,8 +328,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         }
     }
 
-    private void switchFragment(int id, BaseFragment from,
-                                BaseFragment to, String tag) {
+    private void switchFragment(int id, BaseFragment from, BaseFragment to, String tag) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         if (from == null) {

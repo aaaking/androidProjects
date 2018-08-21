@@ -392,10 +392,7 @@ public class Common {
                     String fileName = WalletUtils.generateWalletFile(pwd, ECKeyPair.create(new BigInteger(pk, 16)), destDir, false);
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
                     cb.onWalletResult(mCredentials, fileName);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                } catch (CipherException e) {
+                } catch (Exception e) {
                     Looper.prepare();
                     cb.onWalletResult(null, "");
                     e.printStackTrace();

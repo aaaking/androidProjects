@@ -5,7 +5,6 @@ import com.example.jeliu.bipawallet.Fragment.AssetFragment;
 import com.example.jeliu.bipawallet.Fragment.ContactsFragment;
 import com.example.jeliu.bipawallet.Fragment.MineFragment;
 import com.example.jeliu.bipawallet.Fragment.RecordFragment;
-import com.example.jeliu.bipawallet.R;
 
 /**
  * Created by liuming on 05/05/2018.
@@ -16,6 +15,12 @@ public class FragmentFactory {
     private static BaseFragment mRecord;
     private static BaseFragment mContact;
     private static BaseFragment mMe;
+
+    public static BaseFragment createAssetFrg() {
+        BaseFragment fragment = new AssetFragment();
+        mAsset = fragment;
+        return mAsset;
+    }
 
     public static BaseFragment getInstanceByIndex(int index) {
         BaseFragment fragment = null;

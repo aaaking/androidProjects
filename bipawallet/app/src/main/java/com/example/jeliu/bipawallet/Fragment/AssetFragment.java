@@ -24,26 +24,21 @@ import android.widget.TextView;
 import com.example.jeliu.bipawallet.Asset.TransferActivity;
 import com.example.jeliu.bipawallet.Asset.WithdrawActivity;
 import com.example.jeliu.bipawallet.Base.BaseFragment;
-import com.example.jeliu.bipawallet.Base.HZBaseAdapter;
 import com.example.jeliu.bipawallet.Common.AttentionsManager;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Common.PriceChangedListener;
 import com.example.jeliu.bipawallet.Common.PriceManager;
-import com.example.jeliu.bipawallet.Main.HeaderAdapter;
 import com.example.jeliu.bipawallet.Model.HZToken;
 import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
-import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.utils.Convert;
@@ -52,7 +47,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -89,12 +83,14 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     private String payAddress;
     private String payToken;
+    private String uid;
     private double payValue;
     double gasLimit;
     double gasPrice;
     double currentGasPrice;
 
-    @OnClick({R.id.imageView_scan, R.id.imageView_look}) void onScan(View view) {
+    @OnClick({R.id.imageView_scan, R.id.imageView_look})
+    void onScan(View view) {
         if (view.getId() == R.id.imageView_scan) {
             Intent intent = new Intent(getActivity(), WithdrawActivity.class);
             startActivity(intent);
@@ -114,8 +110,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     private AmountAdapter adapter;
-    //private JSONArray balance;
     private boolean moneyShow = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset, null);
@@ -141,7 +137,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         if (address != null) {
             tvAddress.setText(address);
             String name = UserInfoManager.getInst().getCurrentWalletName();
-            tvName.setText(name);HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+            tvName.setText(name);
+            HZWallet wallet = HZWalletManager.getInst().getWallet(address);
             if (wallet != null) {
                 ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
             }
@@ -202,13 +199,13 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         super.onCreate(savedInstance);
     }
 
-    private void loadData() {
+    public void loadData() {
 //        loadBalance();
         String address = UserInfoManager.getInst().getCurrentWalletAddress();
         if (address != null) {
             showWaiting();
             HZHttpRequest request = new HZHttpRequest();
-            request.requestGet(Constant.BALANCE_URL + "?address="+address, null, this);
+            request.requestGet(Constant.BALANCE_URL + "?address=" + address, null, this);
         }
     }
 
@@ -248,6 +245,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
+            uid = jsonObject.getString("uid");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
             loadGas();
@@ -260,6 +258,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     @Override
     public boolean onSuccess(JSONObject jsonObject, String url) {
+        hideWaiting();
         if (url.contains(Constant.BALANCE_URL)) {//{"code":0,"msg":"suc","balance":[{"token":"eth","value":18.679879996},{"token":"wxc","value":100}]}
             if (!super.onSuccess(jsonObject, url)) {
                 return true;
@@ -273,8 +272,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else
-        if (url.contains(Constant.ESTIMATEGAS_URL)) {
+        } else if (url.contains(Constant.ESTIMATEGAS_URL)) {
             if (!super.onSuccess(jsonObject, url)) {
                 return true;
             }
@@ -296,11 +294,25 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 try {
                     String tx = jsonObject.getString("tx");
                     Common.showPaySucceed(getActivity(), llRoot, tx);
+                    HZHttpRequest request = new HZHttpRequest();
+                    Map<String, String> param = new HashMap<>();
+                    String address = UserInfoManager.getInst().getCurrentWalletAddress();
+                    param.put("from", address);
+                    param.put("to", payAddress);
+                    param.put("value", payValue + "");
+                    param.put("gasprice", currentGasPrice + "");
+                    param.put("gaslimit", gasLimit + "");
+                    param.put("token", payToken);
+                    param.put("type", "2");
+                    param.put("uid", uid);
+                    param.put("serialNumber", tx);
+                    request.requestPost("game.bipa.io/api/charge/platform", param, this);
+//                    request.requestPost("http://192.168.1.212:9999/charge/platform", param, this);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             } else {
-                Common.showPayFailed(getActivity(), llRoot, payValue+"", payAddress);
+                Common.showPayFailed(getActivity(), llRoot, payValue + "", payAddress);
             }
         }
         return false;
@@ -314,7 +326,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 double value = token.value;
                 total += value;
             }
-            tvMoney.setText(""+total);
+            tvMoney.setText("" + total);
         }
     }
 
@@ -332,7 +344,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.layout_popup_pay, null);
         TextView tvMoney = popupView.findViewById(R.id.textView_money);
-        tvMoney.setText(payValue+"");
+        tvMoney.setText(payValue + "");
 
         TextView tvAddress = popupView.findViewById(R.id.tv_address);
         tvAddress.setText(payAddress);
@@ -340,9 +352,9 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         TextView tvPay = popupView.findViewById(R.id.tv_pay);
         tvPay.setText(payToken);
         final TextView tvSeek = popupView.findViewById(R.id.textView_seek);
-        Double d = new Double(gasPrice/ Common.s_ether*gasLimit);
+        Double d = new Double(gasPrice / Common.s_ether * gasLimit);
         String format = String.format("%f", d);
-        tvSeek.setText(format+" ether");
+        tvSeek.setText(format + " ether");
 
         SeekBar seekBar;
         seekBar = popupView.findViewById(R.id.seekBar);
@@ -356,9 +368,9 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 }
                 double fee = gasPrice * progress;
                 // etSimpleFee.setText(fee+"");
-                Double d = new Double(fee/ Common.s_ether*gasLimit);
+                Double d = new Double(fee / Common.s_ether * gasLimit);
                 String format = String.format("%f", d);
-                tvSeek.setText(format+" ether");
+                tvSeek.setText(format + " ether");
                 currentGasPrice = fee;
             }
 
@@ -382,7 +394,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               // popupWindow.dismiss();
+                // popupWindow.dismiss();
                 return true;
             }
         });
@@ -408,7 +420,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View textEntryView = inflater.inflate(
                 R.layout.layout_input_password, null);
-        final EditText etPassword = (EditText)textEntryView.findViewById(R.id.editText_password);
+        final EditText etPassword = (EditText) textEntryView.findViewById(R.id.editText_password);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
@@ -437,9 +449,9 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         param.put("from", address);
         param.put("to", payAddress);
         param.put("password", password);
-        param.put("value", payValue+"");
-        param.put("gasprice", currentGasPrice+"");
-        param.put("gaslimit", gasLimit+"");
+        param.put("value", payValue + "");
+        param.put("gasprice", currentGasPrice + "");
+        param.put("gaslimit", gasLimit + "");
         param.put("token", payToken);
 
         if (payToken.equalsIgnoreCase("eth")) {
@@ -511,8 +523,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                     if (token.token.equalsIgnoreCase(attentionName)) {
                         find = true;
                         holder.tvName.setText(token.token);
-                        holder.tvMoney.setText(token.value+"");
-                        holder.tvAbout.setText(PriceManager.getInst().tokenPrice(token.token, token.value)+"");
+                        holder.tvMoney.setText(token.value + "");
+                        holder.tvAbout.setText(PriceManager.getInst().tokenPrice(token.token, token.value) + "");
                         break;
                     }
                 }
