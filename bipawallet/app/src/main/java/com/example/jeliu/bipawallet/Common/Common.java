@@ -62,7 +62,7 @@ public class Common {
 
     public static final double s_ether = 1000000000;
     public static String WALLET_PATH = "";
-    public static Web3j mWeb3j;
+    private static Web3j mWeb3j;
     public static Credentials mCredentials;
 
     public static void setWalletPath(Context context) {
@@ -79,6 +79,13 @@ public class Common {
                 WALLET_PATH = context.getFilesDir() + File.separator + "walletfile";
             }
         }
+    }
+
+    public static Web3j getWeb3j() {
+        if (mWeb3j == null) {
+            mWeb3j = Web3jFactory.build(new HttpService("http://47.52.224.7:8545"));
+        }
+        return mWeb3j;
     }
 
     public static JSONObject objectToJSONObject(Object object) {

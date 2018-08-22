@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Asset.TransferActivity;
 import com.example.jeliu.bipawallet.Asset.WithdrawActivity;
@@ -39,10 +42,21 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.tx.ManagedTransaction;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -212,7 +226,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     private void loadBalance() {
         if (Common.mCredentials != null && Common.mCredentials.getAddress() != null) {
             try {
-                EthGetBalance ethGetBalance = Common.mWeb3j.ethGetBalance(Common.mCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
+                EthGetBalance ethGetBalance = Common.getWeb3j().ethGetBalance(Common.mCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
                 BigInteger wei = ethGetBalance.getBalance();
                 BigDecimal balance = Convert.fromWei(wei.toString(), Convert.Unit.ETHER);
                 String address = UserInfoManager.getInst().getCurrentWalletAddress();
@@ -245,7 +259,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
-            uid = jsonObject.getString("uid");
+            uid = jsonObject.optString("uid");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
             loadGas();
@@ -297,9 +311,13 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     public void sendToPlatformAfterPay(JSONObject jsonObject, String url) {
+        hideWaiting();
         try {
             String tx = jsonObject.getString("tx");
             Common.showPaySucceed(getActivity(), llRoot, tx);
+            if (uid == null || uid.trim().length() <= 0) {
+                return;
+            }
             HZHttpRequest request = new HZHttpRequest();
             Map<String, String> param = new HashMap<>();
             String address = UserInfoManager.getInst().getCurrentWalletAddress();
@@ -443,10 +461,11 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         builder.show();
     }
 
-    private void doPay(String password) {
+    private void doPay(final String password) {
+        showWaiting();
         HZHttpRequest request = new HZHttpRequest();
         Map<String, String> param = new HashMap<>();
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        final String address = UserInfoManager.getInst().getCurrentWalletAddress();
         param.put("from", address);
         param.put("to", payAddress);
         param.put("password", password);
@@ -454,13 +473,46 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         param.put("gasprice", currentGasPrice + "");
         param.put("gaslimit", gasLimit + "");
         param.put("token", payToken);
-
         if (payToken.equalsIgnoreCase("eth")) {
-            request.requestPost(Constant.SEND_ETH_URL, param, this);
+//            request.requestPost(Constant.SEND_ETH_URL, param, this);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+                    try {
+                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                        EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
+                        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+                        RawTransaction rawTransaction =
+                                RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE,
+                                        new BigDecimal(gasLimit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
+                        // sign & send our transaction
+                        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                        String hexValue = Numeric.toHexString(signedMessage);
+                        EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                        Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.getTransactionHash());
+                        final JSONObject js = new JSONObject();
+                        js.put("tx", ethSendTransaction.getTransactionHash());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendToPlatformAfterPay(js, Constant.SEND_ETH_URL);
+                            }
+                        });
+                    } catch (Exception e) {
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                        hideWaiting();
+                        Looper.loop();
+                    }
+                    hideWaiting();
+                }
+            });
+            thread.start();
         } else {
             request.requestPost(Constant.SEND_ERC_URL, param, this);
         }
-        showWaiting();
     }
 
     @Override
