@@ -279,43 +279,44 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             try {
                 gasLimit = jsonObject.getDouble("gasLimit");
                 UserInfoManager.getInst().gasLimited = gasLimit;
-
                 gasPrice = jsonObject.getDouble("gasPrice");
                 UserInfoManager.getInst().gasPrice = gasPrice;
                 currentGasPrice = gasPrice;
-
                 showPay();
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else if (url.contains(Constant.SEND_ETH_URL) || url.contains(Constant.SEND_ERC_URL)) {
             if (super.onSuccess(jsonObject, url)) {
-                try {
-                    String tx = jsonObject.getString("tx");
-                    Common.showPaySucceed(getActivity(), llRoot, tx);
-                    HZHttpRequest request = new HZHttpRequest();
-                    Map<String, String> param = new HashMap<>();
-                    String address = UserInfoManager.getInst().getCurrentWalletAddress();
-                    param.put("from", address);
-                    param.put("to", payAddress);
-                    param.put("value", payValue + "");
-                    param.put("gasprice", currentGasPrice + "");
-                    param.put("gaslimit", gasLimit + "");
-                    param.put("token", payToken);
-                    param.put("type", "2");
-                    param.put("uid", uid);
-                    param.put("serialNumber", tx);
-                    request.requestPost("game.bipa.io/api/charge/platform", param, this);
-//                    request.requestPost("http://192.168.1.212:9999/charge/platform", param, this);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                sendToPlatformAfterPay(jsonObject, url);
             } else {
                 Common.showPayFailed(getActivity(), llRoot, payValue + "", payAddress);
             }
         }
         return false;
+    }
+
+    public void sendToPlatformAfterPay(JSONObject jsonObject, String url) {
+        try {
+            String tx = jsonObject.getString("tx");
+            Common.showPaySucceed(getActivity(), llRoot, tx);
+            HZHttpRequest request = new HZHttpRequest();
+            Map<String, String> param = new HashMap<>();
+            String address = UserInfoManager.getInst().getCurrentWalletAddress();
+            param.put("from", address);
+            param.put("to", payAddress);
+            param.put("value", payValue + "");
+            param.put("gasprice", currentGasPrice + "");
+            param.put("gaslimit", gasLimit + "");
+            param.put("token", payToken);
+            param.put("type", "2");
+            param.put("uid", uid);
+            param.put("serialNumber", tx);
+            request.requestPost("game.bipa.io/api/charge/platform", param, this);
+//            request.requestPost("http://192.168.1.212:9999/charge/platform", param, this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateUI(String address) {
