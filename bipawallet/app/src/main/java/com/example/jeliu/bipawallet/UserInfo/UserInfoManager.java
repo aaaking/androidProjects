@@ -234,7 +234,7 @@ public class UserInfoManager {
     }
 
     public void insertWallet(String name, String address, int profile, String fileName) {
-        wallets.put(address, String.format("%s%s%d%s", name, s_split, profile, s_split, fileName));
+        wallets.put(address, String.format("%s%s%d%s%s", name, s_split, profile, s_split, fileName));
         HZWallet wallet = new HZWallet();
         wallet.name = name;
         wallet.fileName = fileName;

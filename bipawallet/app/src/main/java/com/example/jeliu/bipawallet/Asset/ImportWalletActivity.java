@@ -261,7 +261,7 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
             String address = credentials.getAddress();
             if (address != null) {
                 hideWaiting();
-                String name = etKeyName.getText().toString();
+                String name = th.getCurrentTab() == 0 ? etStoreName.getText().toString() : etKeyName.getText().toString();
                 UserInfoManager.getInst().insertWallet(name, address, 0, fileName);
                 UserInfoManager.getInst().setCurrentWalletAddress(address);
                 setResult(RESULT_OK);
