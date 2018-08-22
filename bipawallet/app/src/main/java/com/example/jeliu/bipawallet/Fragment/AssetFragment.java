@@ -38,11 +38,11 @@ import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
+import com.example.jeliu.bipawallet.contracts.Wxc;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
@@ -51,12 +51,12 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.ManagedTransaction;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -473,12 +473,12 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         param.put("gasprice", currentGasPrice + "");
         param.put("gaslimit", gasLimit + "");
         param.put("token", payToken);
+        final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         if (payToken.equalsIgnoreCase("eth")) {
 //            request.requestPost(Constant.SEND_ETH_URL, param, this);
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    HZWallet wallet = HZWalletManager.getInst().getWallet(address);
                     try {
                         Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
                         EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
@@ -510,6 +510,35 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 }
             });
             thread.start();
+        } else if (payToken.equalsIgnoreCase("wxc")) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                        Wxc contractWxc = Wxc.load("0x99c3a52653fa192606bfd8b9c276028022feb40e", Common.getWeb3j(), credentials, ManagedTransaction.GAS_PRICE, new BigDecimal(gasLimit).toBigInteger());
+                        BigInteger decimal = contractWxc.decimals().send();
+                        BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
+                        TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
+                        Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + transferReceipt.getTransactionHash());
+                        final JSONObject js = new JSONObject();
+                        js.put("tx", transferReceipt.getTransactionHash());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendToPlatformAfterPay(js, Constant.SEND_ERC_URL);
+                            }
+                        });
+                    } catch (Exception e) {
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                        hideWaiting();
+                        Looper.loop();
+                    }
+                    hideWaiting();
+                }
+            }).start();
         } else {
             request.requestPost(Constant.SEND_ERC_URL, param, this);
         }
