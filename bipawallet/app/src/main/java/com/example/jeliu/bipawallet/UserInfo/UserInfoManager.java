@@ -2,6 +2,7 @@ package com.example.jeliu.bipawallet.UserInfo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Common.HZWalletManager;
@@ -32,7 +33,7 @@ public class UserInfoManager {
     private static String s_split = "______";
     private static UserInfoManager s_inst;
 
-    private int prifoles[] = {R.drawable.hs, R.drawable.mty, R.drawable.px, R.drawable.qe, R.drawable.sz, R.drawable.xn };
+    private int prifoles[] = {R.drawable.hs, R.drawable.mty, R.drawable.px, R.drawable.qe, R.drawable.sz, R.drawable.xn};
     private boolean firstRun;
 
     private HashMap<String, String> wallets = new HashMap<>();
@@ -63,12 +64,13 @@ public class UserInfoManager {
         //get from shared prefs
         Gson gson = new Gson();
         String storedHashMapString = settings.getString("wallets", "");
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
         wallets = gson.fromJson(storedHashMapString, type);
         if (wallets == null || wallets.size() == 0) {
             wallets = new HashMap<>();
         } else {
-            currentWalletAddress = (String)wallets.keySet().toArray()[0];
+            currentWalletAddress = (String) wallets.keySet().toArray()[0];
             for (String key : wallets.keySet()) {
                 HZWallet wallet = new HZWallet();
                 wallet.address = key;
@@ -99,6 +101,15 @@ public class UserInfoManager {
     }
 
     public boolean isEmptyWallet() {
+        if (wallets.size() == 0) {
+            return true;
+        } else {
+            String address = (String) wallets.keySet().toArray()[0];
+            final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+            if (wallet == null || TextUtils.isEmpty(wallet.fileName)) {
+                return true;
+            }
+        }
         return (wallets.size() == 0);
     }
 
@@ -148,8 +159,7 @@ public class UserInfoManager {
         return wallets;
     }
 
-    public class FishNameComparator implements Comparator<String>
-    {
+    public class FishNameComparator implements Comparator<String> {
         public int compare(String left, String right) {
             return left.compareTo(right);
         }
@@ -165,7 +175,7 @@ public class UserInfoManager {
                 String name = wallets.get(key);
                 String splits[] = name.split(s_split);
                 if (splits.length >= 2) {
-                    names.add(splits[0]+"___"+key);
+                    names.add(splits[0] + "___" + key);
                 }
             }
 
@@ -275,7 +285,7 @@ public class UserInfoManager {
     private void saveContacts() {
         Gson gson = new Gson();
         String tmp[] = new String[contacts.size()];
-        for (int i = 0; i < contacts.size(); ++ i) {
+        for (int i = 0; i < contacts.size(); ++i) {
             HZContact c = contacts.get(i);
             String s = gson.toJson(c);
             if (s != null) {
@@ -290,7 +300,7 @@ public class UserInfoManager {
 
         Gson gson = new Gson();
         String tmp[] = new String[privateKeys.size()];
-        for (int i = 0; i < privateKeys.size(); ++ i) {
+        for (int i = 0; i < privateKeys.size(); ++i) {
             HZPrivateKey c = privateKeys.get(i);
             String s = gson.toJson(c);
             if (s != null) {
@@ -303,8 +313,8 @@ public class UserInfoManager {
     public boolean saveArray(String[] array, String arrayName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(arrayName +"_size", array.length);
-        for(int i=0;i<array.length;i++)
+        editor.putInt(arrayName + "_size", array.length);
+        for (int i = 0; i < array.length; i++)
             editor.putString(arrayName + "_" + i, array[i]);
         return editor.commit();
     }
@@ -313,7 +323,7 @@ public class UserInfoManager {
         SharedPreferences prefs = mContext.getSharedPreferences("UserInfo", 0);
         int size = prefs.getInt(arrayName + "_size", 0);
         String array[] = new String[size];
-        for(int i=0;i<size;i++)
+        for (int i = 0; i < size; i++)
             array[i] = prefs.getString(arrayName + "_" + i, null);
         return array;
     }
