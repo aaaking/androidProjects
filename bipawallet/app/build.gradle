@@ -12,7 +12,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-//        multiDexEnabled true
 ////        jackOptions {
 ////            enabled true
 ////        }
@@ -66,6 +65,9 @@ dependencies {
 
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.google.zxing:core:3.3.0'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.1' //https://github.com/ReactiveX/RxJava/releases
 
     implementation 'com.android.support:multidex:1.0.3'
 //    api 'org.web3j:core:3.5.0'
