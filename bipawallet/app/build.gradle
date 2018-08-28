@@ -51,20 +51,20 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:appcompat-v7:27.+'
-    compile 'com.android.support:design:27.+'
-    compile 'com.android.support:support-vector-drawable:27.+'
-    compile 'com.jakewharton:butterknife:8.8.1'
+    api 'com.squareup.picasso:picasso:2.5.2'
+    api 'com.android.support:appcompat-v7:27.+'
+    api 'com.android.support:design:27.+'
+    api 'com.android.support:support-vector-drawable:27.+'
+    api 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.makeramen:roundedimageview:2.3.0'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    compile "de.halfbit:pinned-section-listview:1.0.0"
-    compile 'com.github.lecho:hellocharts-android:v1.5.8'
+    api 'com.makeramen:roundedimageview:2.3.0'
+    api 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    api "de.halfbit:pinned-section-listview:1.0.0"
+    api 'com.github.lecho:hellocharts-android:v1.5.8'
 
-    compile 'com.makeramen:roundedimageview:2.3.0'
-    compile 'com.google.zxing:core:3.3.0'
+    api 'com.makeramen:roundedimageview:2.3.0'
+    api 'com.google.zxing:core:3.3.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.1' //https://github.com/ReactiveX/RxJava/releases

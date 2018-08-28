@@ -396,7 +396,8 @@ public class Common {
             @Override
             public void run() {
                 try {
-                    String fileName = WalletUtils.generateWalletFile(pwd, ECKeyPair.create(new BigInteger(pk, 16)), destDir, false);
+                    ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
+                    String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
