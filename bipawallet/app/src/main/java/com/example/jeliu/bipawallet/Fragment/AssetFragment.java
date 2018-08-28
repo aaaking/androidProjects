@@ -39,6 +39,7 @@ import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +60,9 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +100,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     private String payAddress;
     private String payToken;
+    private String serialNum;
     private String uid;
     private double payValue;
     double gasLimit;
@@ -256,10 +260,12 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     public void gotoPay(String scanCode) {
+        Log.i("zzh-scanCode", scanCode);
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
             uid = jsonObject.optString("uid");
+            serialNum = jsonObject.optString("serialNum");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
             loadGas();
@@ -313,11 +319,10 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     public void sendToPlatformAfterPay(JSONObject jsonObject, String url) {
         hideWaiting();
         try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            String time = String.valueOf(new Date().getTime());
             String tx = jsonObject.getString("tx");
             Common.showPaySucceed(getActivity(), llRoot, tx);
-            if (uid == null || uid.trim().length() <= 0) {
-                return;
-            }
             HZHttpRequest request = new HZHttpRequest();
             Map<String, String> param = new HashMap<>();
             String address = UserInfoManager.getInst().getCurrentWalletAddress();
@@ -330,9 +335,18 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             param.put("type", "2");
             param.put("uid", uid);
             param.put("serialNumber", tx);
-            request.requestPost("game.bipa.io/api/charge/platform", param, this);
-//            request.requestPost("http://192.168.1.212:9999/charge/platform", param, this);
-        } catch (JSONException e) {
+            //these for another api call
+            param.put("hash", tx);
+            param.put("serialNum", serialNum);
+            param.put("time",  time);
+            md5.update((time + "bipa321" + tx).getBytes());
+            param.put("sign", Util.bytesToHex(md5.digest()));
+            if (uid != null && uid.trim().length() > 0) {
+                request.requestPost("game.bipa.io/api/charge/platform", param, this);
+            }
+            request.requestPost("http://192.168.1.212:1111/orders", param, this);
+            Log.i("zzh", param.toString());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
