@@ -463,21 +463,6 @@ public class Common {
         return null;
     }
 
-//    String signedEthTransactionData(String to, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, double value, Credentials credentials) {
-//        //把十进制的转换成ETH的Wei, 1ETH = 10^18 Wei
-//        BigDecimal realValue = Convert.toWei(value +"", Convert.Unit.ETHER);
-//        RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-//                nonce,
-//                gasPrice,
-//                gasLimit,
-//                to,
-//                realValue.toBigIntegerExact());
-//        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-//        //转换成0x开头的字符串
-//
-//        return Numeric.toHexString(signedMessage);
-//    }
-//
 //    public static byte[] strToByteArray(String str) {
 //        if (str == null) {
 //            return null;
