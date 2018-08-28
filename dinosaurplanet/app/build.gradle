@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion compileSdk
     defaultConfig {
         applicationId "com.bipa.android.dinosaurplanet"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,7 +28,7 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     api project(path: ":webview")
     api project(path: ":web3j")
-    implementation 'com.android.support:appcompat-v7:28.0.0-alpha3'
+    implementation supportDependencies.appcompat
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
