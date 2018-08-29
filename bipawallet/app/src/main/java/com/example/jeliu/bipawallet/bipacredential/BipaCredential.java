@@ -7,6 +7,7 @@ import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
@@ -54,13 +55,13 @@ public class BipaCredential {
         return safePK;
     }
 
-    public static void encryptPK(String address, String pwd, String pk) {
+    public static void encryptPK(String pwd, Credentials credentials) {
         try {
-            SafePK safePK = encryptToSafePK(pwd, pk);
+            SafePK safePK = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16));
             Log.i("zzh-safePK-to-encrypt", safePK.s_pk);
             ECKeyPair keyPair = ECKeyPair.create(new BigInteger(safePK.s_pk, 16));
             WalletFile walletFile = Wallet.createLight(pwd, keyPair);//its address is wrong
-            walletFile.setAddress(address);
+            walletFile.setAddress(credentials.getAddress().substring(2).toLowerCase());
             SharedPreferences sp = HZApplication.getInst().getSharedPreferences(SP_SAFE_BIPA, 0);
             SharedPreferences.Editor localEditor = sp.edit();
             BipaWalletFile bipaWalletFile = new BipaWalletFile();
@@ -69,7 +70,7 @@ public class BipaCredential {
             bipaWalletFile.s_salt = safePK.s_salt;
             Gson gson = new Gson();
             String jsonStr = gson.toJson(bipaWalletFile);
-            localEditor.putString(address, jsonStr);
+            localEditor.putString(credentials.getAddress().substring(2).toLowerCase(), jsonStr);
             localEditor.apply();
         } catch (Exception e) {
             Log.i("zzh-encryptPK-err", e.toString());
@@ -80,7 +81,7 @@ public class BipaCredential {
         try {
             SharedPreferences sp = HZApplication.getInst().getSharedPreferences(SP_SAFE_BIPA, 0);
             Gson gson = new Gson();
-            String storedHashMapString = sp.getString(address, "");
+            String storedHashMapString = sp.getString(address.toLowerCase(), "");
             java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
             }.getType();
             BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);

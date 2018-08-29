@@ -24,6 +24,7 @@ import com.example.jeliu.bipawallet.Network.IWallet;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
+import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -399,6 +400,7 @@ public class Common {
                     ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
                     String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    BipaCredential.encryptPK(pwd, mCredentials);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
                     Looper.prepare();
@@ -428,6 +430,7 @@ public class Common {
                     outputStreamWriter.write(ks);
                     outputStreamWriter.close();
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    BipaCredential.encryptPK(pwd, mCredentials);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
                     Looper.prepare();
@@ -451,6 +454,7 @@ public class Common {
                 try {
                     String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
                     mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
+                    BipaCredential.encryptPK(pwd, mCredentials);
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
                     Looper.prepare();
