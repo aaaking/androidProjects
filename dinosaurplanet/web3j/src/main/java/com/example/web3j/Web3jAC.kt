@@ -99,8 +99,8 @@ class Web3jAC : AppCompatActivity() {
                 if (!path.exists()) {
                     path.mkdir()
                 }
-                var password = "12345678"//pwd.text.toString()
-                var fileName = "original" + ".json"//WalletUtils.generateLightNewWalletFile(password, File(path.toString()))
+                var password = "1111"//pwd.text.toString()
+                var fileName = "0" + ".json"//WalletUtils.generateLightNewWalletFile(password, File(path.toString()))
                 Log.e("zzh", "generateWallet: $path/$fileName")
                 credentials = WalletUtils.loadCredentials(password, path.toString() + "/" + fileName)
                 Log.i("zzh", credentials!!.getAddress())
@@ -116,12 +116,20 @@ class Web3jAC : AppCompatActivity() {
 
         //transfer
         val transferThread = Thread(Runnable {
-            // FIXME: Request some Ether for the Rinkeby test network at https://www.rinkeby.io/#faucet
-            val transferReceipt = Transfer.sendFunds(web3j, credentials, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigDecimal.ONE, Convert.Unit.FINNEY).send()
-            Log.i("zzh", "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash)
-            runOnUiThread {
-                txhash.text = "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash
-            }
+            val ethGetBalance = web3j!!
+                    .ethGetBalance(credentials!!.getAddress(), DefaultBlockParameterName.LATEST)
+                    .sendAsync()
+                    .get()
+
+            val wei = ethGetBalance.getBalance();
+            Log.i("zzh", Convert.fromWei(BigDecimal(wei), Convert.Unit.ETHER).toString())
+            Log.i("zzh", Convert.toWei("10", Convert.Unit.ETHER).toBigInteger().toString())
+//            // FIXME: Request some Ether for the Rinkeby test network at https://www.rinkeby.io/#faucet
+//            val transferReceipt = Transfer.sendFunds(web3j, credentials, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigDecimal.ONE, Convert.Unit.FINNEY).send()
+//            Log.i("zzh", "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash)
+//            runOnUiThread {
+//                txhash.text = "Transaction complete, view it at https://rinkeby.etherscan.io/tx/" + transferReceipt.transactionHash
+//            }
         })
         transfer.setOnClickListener {
             if (transferThread.getState() == Thread.State.NEW) {
@@ -178,10 +186,10 @@ class Web3jAC : AppCompatActivity() {
         custom_transaction.setOnClickListener {
             Thread(Runnable {
                 // get the next available nonce
-                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0xc7B5F6d0245339674ae4264E44173bC606881651", DefaultBlockParameterName.LATEST).send();
+                var ethGetTransactionCount = web3j!!.ethGetTransactionCount("0x3f17f1962b36e491b30a40b2405849e597ba5fb5", DefaultBlockParameterName.LATEST).send();
                 var nonce = ethGetTransactionCount.getTransactionCount();
                 // create our transaction  RawTransaction
-                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x8717c17c23a44564a8a08510278b9b45074f8f23", BigInteger.valueOf(1e15.toLong()));
+                var rawTransaction = RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "0x4BaBf11D785922DDDb51076AC0030FDC41778607", Convert.toWei("9.3", Convert.Unit.ETHER).toBigInteger());
                 // sign & send our transaction
                 var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
                 var hexValue = Numeric.toHexString(signedMessage);
