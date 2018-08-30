@@ -28,6 +28,7 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
+import com.example.jeliu.bipawallet.bipacredential.BipaWallet;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -458,26 +459,32 @@ public class Common {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String seed = BipaCredential.getSaltIV(pwd);
-                byte[] iv = seed.substring(0, 16).getBytes();
-                byte[] salt = seed.substring(0, 32).getBytes();
-                ///////
-                byte[] datas = BipaCredential.retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
+                WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
+                String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
+                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk)) {
+                    Looper.prepare();
+                    cb.onWalletResult(null, null);
+                    Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                    return;
+                }
                 try {
-                    ECKeyPair pair = ECKeyPair.create(datas);
-                    Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
+                    ECKeyPair pair = ECKeyPair.create(new BigInteger(pk, 16));
                     String fileName = WalletUtils.generateWalletFile(pwd, pair, destDir, false);
                     mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
 
-                    WalletFile walletFile = Wallet.createLight(pwd, ECKeyPair.create(new BigInteger(safePK, 16)));//its address is wrong
+                    WalletFile walletFile = Wallet.createLight(pwd, ECKeyPair.create(new BigInteger(safePK.substring(0, 64), 16)));//its address is wrong
                     walletFile.setAddress(mCredentials.getAddress().substring(2).toLowerCase());
+                    BipaWalletFile bipaWalletFile = new BipaWalletFile();
+                    BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
+                    bipaWalletFile.miss_mac = safePK.substring(64);//missingWallet.getCrypto().getMac();
+
                     SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                     SharedPreferences.Editor localEditor = sp.edit();
                     Gson gson = new Gson();
-                    String jsonStr = gson.toJson(walletFile);
+                    String jsonStr = gson.toJson(bipaWalletFile);
                     localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), jsonStr);
                     localEditor.apply();
-
                     cb.onWalletResult(mCredentials, fileName);
                 } catch (Exception e) {
                     Looper.prepare();
@@ -503,14 +510,15 @@ public class Common {
             @Override
             public void run() {
                 String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
-                if (TextUtils.isEmpty(safePK)) {
+                WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
+                String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
+                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk)) {
                     Looper.prepare();
                     cb.onWalletResult(null, null);
                     Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
                     Looper.loop();
                     return;
                 }
-                String pk = BipaCredential.getPK(bipaWalletFile, safePK, pwd);
                 //
                 try {
                     ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));

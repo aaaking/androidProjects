@@ -1,12 +1,14 @@
 package com.example.jeliu.bipawallet.bipacredential;
 
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
@@ -33,16 +35,16 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class BipaCredential {
     public static final String SP_SAFE_BIPA = "s_bipa";
-    private static final int IV_SIZE = 16;
-    private static final int KEY_SIZE = 32;
-    private static final int N_LIGHT = 1 << 12;
-    private static final int P_LIGHT = 6;
+    public static final int IV_SIZE = 16;
+    public static final int KEY_SIZE = 32;
+    public static final int N_LIGHT = 1 << 12;
+    public static final int P_LIGHT = 6;
 
     private static final int N_STANDARD = 1 << 18;
     private static final int P_STANDARD = 1;
 
-    private static final int R = 8;
-    private static final int DKLEN = 32;
+    public static final int R = 8;
+    public static final int DKLEN = 32;
 
     public static String getSaltIV(String pwd) {
         String result = "93eccc213675ba2045b0452f931f84f49906c25e033d408e91b050dbd61e02b1";//pwd="1"
@@ -58,34 +60,34 @@ public class BipaCredential {
         return result;
     }
 
-    public static SafePK encryptToSafePK(String pwd, String pk) {
+    public static WalletFile encryptToSafePK(String pwd, String pk) {
         Log.i("zzh-pk", pk);
-        SafePK safePK = new SafePK();
+//        SafePK safePK = new SafePK();
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
         String seed = getSaltIV(pwd);
         byte[] iv = seed.substring(0, 16).getBytes();
         byte[] salt = seed.substring(0, 32).getBytes();
-        safePK.s_iv = Numeric.toHexStringNoPrefix(iv);
-        safePK.s_salt = Numeric.toHexStringNoPrefix(salt);
-        byte[] privateKeyBytes = Numeric.toBytesPadded(keyPair.getPrivateKey(), KEY_SIZE);
-        byte[] encryptedData = encryptData(privateKeyBytes, iv, deriveKeySecurely(pwd, KEY_SIZE, salt));
-        safePK.s_pk = Numeric.toHexStringNoPrefix(encryptedData);
-        return safePK;
+//        safePK.s_iv = Numeric.toHexStringNoPrefix(iv);
+//        safePK.s_salt = Numeric.toHexStringNoPrefix(salt);
+//        byte[] privateKeyBytes = Numeric.toBytesPadded(keyPair.getPrivateKey(), KEY_SIZE);
+//        byte[] encryptedData = encryptData(privateKeyBytes, iv, deriveKeySecurely(pwd, KEY_SIZE, salt));
+//        String s_pk = Numeric.toHexStringNoPrefix(encryptedData);
+        WalletFile bipaWalletFile = BipaWalletFile.generateMissingWallet(keyPair, pwd, salt, iv);
+        return bipaWalletFile;
     }
 
     public static void encryptPK(String pwd, Credentials credentials) {
         try {
-            SafePK safePK = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16));
-            Log.i("zzh-safePK-to-encrypt", safePK.s_pk);
-            ECKeyPair keyPair = ECKeyPair.create(new BigInteger(safePK.s_pk, 16));
+            WalletFile missingWallet = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16));
+            Log.i("zzh-safePK-to-encrypt", missingWallet.getCrypto().getCiphertext());
+            ECKeyPair keyPair = ECKeyPair.create(new BigInteger(missingWallet.getCrypto().getCiphertext(), 16));
             WalletFile walletFile = Wallet.createLight(pwd, keyPair);//its address is wrong
             walletFile.setAddress(credentials.getAddress().substring(2).toLowerCase());
             SharedPreferences sp = HZApplication.getInst().getSharedPreferences(SP_SAFE_BIPA, 0);
             SharedPreferences.Editor localEditor = sp.edit();
             BipaWalletFile bipaWalletFile = new BipaWalletFile();
             BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
-//            bipaWalletFile.s_iv = safePK.s_iv;
-//            bipaWalletFile.s_salt = safePK.s_salt;
+            bipaWalletFile.miss_mac = missingWallet.getCrypto().getMac();
             Gson gson = new Gson();
             String jsonStr = gson.toJson(bipaWalletFile);
             localEditor.putString(credentials.getAddress().substring(2).toLowerCase(), jsonStr);
@@ -120,15 +122,22 @@ public class BipaCredential {
         }
     }
 
-    public static String getPK(BipaWalletFile bipaWalletFile, String safePK, String pwd) {
-        String seed = getSaltIV(pwd);
-        byte[] iv = seed.substring(0, 16).getBytes();
-        byte[] salt = seed.substring(0, 32).getBytes();
+    public static String getPK(WalletFile missingWallet, String safePK, String pwd) {
+        if (TextUtils.isEmpty(safePK)) {
+            return "";
+        }
         String pk = "";
-        byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
-        ECKeyPair pair = ECKeyPair.create(datas);
-        Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
-        return pair.getPrivateKey().toString(16);
+        ECKeyPair pair = null;
+        try {
+            pair = Wallet.decrypt(pwd, missingWallet);
+            pk =  pair.getPrivateKey().toString(16);
+        } catch (CipherException e) {
+            e.printStackTrace();
+            Log.i("zzh-getPK-err", e.toString());
+        }
+//        byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
+        Log.i("zzh-PK-decrypted", pk);
+        return pk;
     }
 
     public static String getSafePK(BipaWalletFile bipaWalletFile, String pwd) {
@@ -137,7 +146,7 @@ public class BipaCredential {
             WalletFile walletFile = new WalletFile();
             BipaWalletFile.duplicateToEth(walletFile, bipaWalletFile);
             ECKeyPair keyPair = Wallet.decrypt(pwd, walletFile);
-            safePK = keyPair.getPrivateKey().toString(16);
+            safePK = keyPair.getPrivateKey().toString(16) + bipaWalletFile.miss_mac;
             Log.i("zzh-getSafePK-decrypted", safePK);
         } catch (Exception e) {
             Log.i("zzh-getSafePK-err", e.toString());

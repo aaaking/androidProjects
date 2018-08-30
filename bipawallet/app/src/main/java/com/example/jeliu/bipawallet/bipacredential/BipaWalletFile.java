@@ -1,8 +1,18 @@
 package com.example.jeliu.bipawallet.bipacredential;
 
+import android.text.TextUtils;
+
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletFile;
+import org.web3j.utils.Numeric;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.UUID;
+
+import javax.crypto.Cipher;
 
 /**
  * Created by 周智慧 on 2018/8/29.
@@ -65,11 +75,10 @@ public class BipaWalletFile implements Serializable {
 
         bipaWalletFile.crypto = (crypto);
     }
-//    public String s_iv;
-//    public String s_salt;
     public String address;
     public BipaWalletFile.Crypto crypto;
     public String id;
+    public String miss_mac;
     public int version;
 
     @Override
@@ -249,5 +258,56 @@ public class BipaWalletFile implements Serializable {
             result = 31 * result + (salt != null ? salt.hashCode() : 0);
             return result;
         }
+    }
+
+    public static WalletFile generateMissingWallet(ECKeyPair keyPair, String pwd, byte[] salt, byte[] iv) {
+        try {
+            byte[] derivedKey = BipaWallet.generateDerivedScryptKey(pwd.getBytes(Charset.forName("UTF-8")), salt, BipaCredential.N_LIGHT, BipaCredential.R, BipaCredential.P_LIGHT, BipaCredential.DKLEN);
+            byte[] encryptKey = Arrays.copyOfRange(derivedKey, 0, 16);
+            byte[] privateKeyBytes = Numeric.toBytesPadded(keyPair.getPrivateKey(), BipaCredential.KEY_SIZE);
+            byte[] cipherText = BipaWallet.performCipherOperation(Cipher.ENCRYPT_MODE, iv, encryptKey, privateKeyBytes);
+            byte[] mac = BipaWallet.generateMac(derivedKey, cipherText);
+            return BipaWallet.createWalletFile(keyPair, cipherText, iv, salt, mac, BipaCredential.N_LIGHT, BipaCredential.P_LIGHT);
+        } catch (CipherException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static WalletFile findMissingWallet(String safePK, String pwd) {
+        WalletFile walletFile = new WalletFile();
+        walletFile.setAddress("missing");
+
+        if (TextUtils.isEmpty(safePK)) {
+            return walletFile;
+        }
+
+        String seed = BipaCredential.getSaltIV(pwd);
+        byte[] iv = seed.substring(0, 16).getBytes();
+        byte[] salt = seed.substring(0, 32).getBytes();
+
+        WalletFile.Crypto crypto = new WalletFile.Crypto();
+        crypto.setCipher(BipaWallet.CIPHER);
+        crypto.setCiphertext(safePK.substring(0, 64));
+        walletFile.setCrypto(crypto);
+
+        WalletFile.CipherParams cipherParams = new WalletFile.CipherParams();
+        cipherParams.setIv(Numeric.toHexStringNoPrefix(iv));
+        crypto.setCipherparams(cipherParams);
+
+        crypto.setKdf(BipaWallet.SCRYPT);
+        WalletFile.ScryptKdfParams kdfParams = new WalletFile.ScryptKdfParams();
+        kdfParams.setDklen(BipaCredential.DKLEN);
+        kdfParams.setN(BipaCredential.N_LIGHT);
+        kdfParams.setP(BipaCredential.P_LIGHT);
+        kdfParams.setR(BipaCredential.R);
+        kdfParams.setSalt(Numeric.toHexStringNoPrefix(salt));
+        crypto.setKdfparams(kdfParams);
+
+        crypto.setMac(safePK.substring(64));
+        walletFile.setCrypto(crypto);
+        walletFile.setId(UUID.randomUUID().toString());
+        walletFile.setVersion(BipaWallet.CURRENT_VERSION);
+        return walletFile;
     }
 }

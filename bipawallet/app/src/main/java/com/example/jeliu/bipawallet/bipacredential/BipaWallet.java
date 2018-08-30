@@ -2,11 +2,16 @@ package com.example.jeliu.bipawallet.bipacredential;
 
 import org.spongycastle.crypto.generators.SCrypt;
 import org.web3j.crypto.CipherException;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
+import org.web3j.crypto.Keys;
+import org.web3j.crypto.WalletFile;
+import org.web3j.utils.Numeric;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,6 +24,11 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by 周智慧 on 2018/8/29.
  */
 public class BipaWallet {
+    public static final int CURRENT_VERSION = 3;
+
+    public static final String CIPHER = "aes-128-ctr";
+    public static final String AES_128_CTR = "pbkdf2";
+    public static final String SCRYPT = "scrypt";
     public static byte[] generateDerivedScryptKey(byte[] password, byte[] salt, int n, int r, int p, int dkLen) throws CipherException {
         return SCrypt.generate(password, salt, n, r, p, dkLen);
     }
@@ -91,4 +101,35 @@ public class BipaWallet {
 //        byte[] privateKey = performCipherOperation(Cipher.DECRYPT_MODE, iv, encryptKey, cipherText);
 //        return ECKeyPair.create(privateKey);
 //    }
+
+    public static WalletFile createWalletFile(ECKeyPair ecKeyPair, byte[] cipherText, byte[] iv, byte[] salt, byte[] mac, int n, int p) {
+
+        WalletFile walletFile = new WalletFile();
+        walletFile.setAddress(Keys.getAddress(ecKeyPair));
+
+        WalletFile.Crypto crypto = new WalletFile.Crypto();
+        crypto.setCipher(CIPHER);
+        crypto.setCiphertext(Numeric.toHexStringNoPrefix(cipherText));
+        walletFile.setCrypto(crypto);
+
+        WalletFile.CipherParams cipherParams = new WalletFile.CipherParams();
+        cipherParams.setIv(Numeric.toHexStringNoPrefix(iv));
+        crypto.setCipherparams(cipherParams);
+
+        crypto.setKdf(SCRYPT);
+        WalletFile.ScryptKdfParams kdfParams = new WalletFile.ScryptKdfParams();
+        kdfParams.setDklen(BipaCredential.DKLEN);
+        kdfParams.setN(n);
+        kdfParams.setP(p);
+        kdfParams.setR(BipaCredential.R);
+        kdfParams.setSalt(Numeric.toHexStringNoPrefix(salt));
+        crypto.setKdfparams(kdfParams);
+
+        crypto.setMac(Numeric.toHexStringNoPrefix(mac));
+        walletFile.setCrypto(crypto);
+        walletFile.setId(UUID.randomUUID().toString());
+        walletFile.setVersion(CURRENT_VERSION);
+
+        return walletFile;
+    }
 }
