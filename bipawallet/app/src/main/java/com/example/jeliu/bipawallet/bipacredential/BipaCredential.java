@@ -31,6 +31,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * https://blog.csdn.net/DrkCore/article/details/69931654
+ * https://crypto.stackexchange.com/questions/43486/reducing-the-output-of-aes-to-64-bit   aes不能指定加密结果的长度，为了使加密结果长度为64位，使用以太坊的加密算法
  * Created by 周智慧 on 2018/8/28.
  */
 public class BipaCredential {
