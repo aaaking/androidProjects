@@ -3,12 +3,15 @@ package com.example.jeliu.bipawallet.Common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +28,9 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
+import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -35,18 +41,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Wallet;
+import org.web3j.crypto.WalletFile;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
@@ -420,12 +427,12 @@ public class Common {
             destDir.mkdirs();
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("'UTC--'yyyy-MM-dd'T'HH-mm-ss.SSS'--'");
-        final String fileName =  dateFormat.format(new Date()) + "new-address" + ".json";
+        final String fileName = dateFormat.format(new Date()) + "new-address" + ".json";
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    OutputStreamWriter outputStreamWriter =  new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
+                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
 //            new OutputStreamWriter(HZApplication.getInst().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
                     outputStreamWriter.write(ks);
                     outputStreamWriter.close();
@@ -442,7 +449,90 @@ public class Common {
         }).start();
         return null;
     }
-//
+
+    public static Credentials loadWalletByPKBipa(final String pwd, final String safePK, final IWallet cb) {
+        final File destDir = new File(WALLET_PATH);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String seed = BipaCredential.getSaltIV(pwd);
+                byte[] iv = seed.substring(0, 16).getBytes();
+                byte[] salt = seed.substring(0, 32).getBytes();
+                ///////
+                byte[] datas = BipaCredential.retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
+                try {
+                    ECKeyPair pair = ECKeyPair.create(datas);
+                    Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
+                    String fileName = WalletUtils.generateWalletFile(pwd, pair, destDir, false);
+                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+
+                    WalletFile walletFile = Wallet.createLight(pwd, ECKeyPair.create(new BigInteger(safePK, 16)));//its address is wrong
+                    walletFile.setAddress(mCredentials.getAddress().substring(2).toLowerCase());
+                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences.Editor localEditor = sp.edit();
+                    Gson gson = new Gson();
+                    String jsonStr = gson.toJson(walletFile);
+                    localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), jsonStr);
+                    localEditor.apply();
+
+                    cb.onWalletResult(mCredentials, fileName);
+                } catch (Exception e) {
+                    Looper.prepare();
+                    cb.onWalletResult(null, null);
+                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            }
+        }).start();
+        return null;
+    }
+
+    public static Credentials loadWalletByKSBipa(final String pwd, final String ks, final IWallet cb) {
+        final File destDir = new File(WALLET_PATH);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        Gson gson = new Gson();
+        java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
+        }.getType();
+        final BipaWalletFile bipaWalletFile = gson.fromJson(ks.replace("&quot;", "\""), type);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
+                if (TextUtils.isEmpty(safePK)) {
+                    Looper.prepare();
+                    cb.onWalletResult(null, null);
+                    Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                    return;
+                }
+                String pk = BipaCredential.getPK(bipaWalletFile, safePK, pwd);
+                //
+                try {
+                    ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
+                    String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
+                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                    //
+                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences.Editor localEditor = sp.edit();
+                    localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), ks.replace("&quot;", "\""));
+                    localEditor.apply();
+                    cb.onWalletResult(mCredentials, fileName);
+                } catch (Exception e) {
+                    Looper.prepare();
+                    cb.onWalletResult(null, null);
+                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            }
+        }).start();
+        return null;
+    }
+
     public static Credentials createLocalWallet(final String pwd, final IWallet cb) {
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {

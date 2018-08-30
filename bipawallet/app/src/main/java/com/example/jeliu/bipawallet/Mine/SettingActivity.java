@@ -7,12 +7,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.jeliu.bipawallet.Asset.WalletNameActivity;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
-import com.example.jeliu.bipawallet.Main.NavActivity;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.SplashActivity;
-import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import butterknife.BindView;
@@ -27,7 +24,6 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.spinner_language)
     Spinner spLanguage;
 
-
     @BindView(R.id.spinner_currency)
     Spinner spCurrency;
 
@@ -35,6 +31,7 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        String safePK = "123";
         ButterKnife.bind(this);
 
         setTitle(getString(R.string.system_setting));
@@ -86,5 +83,10 @@ public class SettingActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

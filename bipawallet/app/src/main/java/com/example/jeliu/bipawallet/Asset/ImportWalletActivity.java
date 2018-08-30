@@ -52,11 +52,11 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
     @BindView(R.id.et_key_password)
     EditText etKeyPassword;
 
-    @BindView(R.id.radioButton_keystore)
-    CheckBox rbKeyStore;
+    @BindView(R.id.radioButton_keystore) CheckBox rbKeyStore;
+    @BindView(R.id.ck_cryto) CheckBox ck_cryto;
 
-    @BindView(R.id.rb_key)
-    CheckBox rbKey;
+    @BindView(R.id.rb_key) CheckBox rbKey;
+    @BindView(R.id.ck_cryto_pk) CheckBox ck_cryto_pk;
 
     @BindView(R.id.imageView_eye_store)
     ImageView ivEyeStore;
@@ -185,7 +185,11 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
 
     public void loadWallet(int way, String pwd) {
         showWaiting();
-        Credentials credentials = way == 0 ? Common.loadWalletByKeyStore(pwd, etKeyStore.getText().toString(), this) : Common.loadWalletByPrivateKey(pwd, etKey.getText().toString(), this);
+        if (way == 0) {
+            Credentials credentials = ck_cryto.isChecked() ? Common.loadWalletByKSBipa(pwd, etKeyStore.getText().toString(), this) : Common.loadWalletByKeyStore(pwd, etKeyStore.getText().toString(), this);
+        } else {
+            Credentials credentials = ck_cryto_pk.isChecked() ? Common.loadWalletByPKBipa(pwd, etKey.getText().toString(), this) : Common.loadWalletByPrivateKey(pwd, etKey.getText().toString(), this);
+        }
     }
 
     @Override

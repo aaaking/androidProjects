@@ -65,8 +65,8 @@ public class BipaWalletFile implements Serializable {
 
         bipaWalletFile.crypto = (crypto);
     }
-    public String s_iv;
-    public String s_salt;
+//    public String s_iv;
+//    public String s_salt;
     public String address;
     public BipaWalletFile.Crypto crypto;
     public String id;

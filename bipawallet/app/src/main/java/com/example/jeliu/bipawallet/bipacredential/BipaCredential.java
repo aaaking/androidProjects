@@ -17,11 +17,14 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -41,12 +44,27 @@ public class BipaCredential {
     private static final int R = 8;
     private static final int DKLEN = 32;
 
+    public static String getSaltIV(String pwd) {
+        String result = "93eccc213675ba2045b0452f931f84f49906c25e033d408e91b050dbd61e02b1";//pwd="1"
+        KeySpec spec = new PBEKeySpec(pwd.toCharArray(), "bipa_salt".getBytes(), 10, 256);
+        try {
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = keyFactory.generateSecret(spec).getEncoded();
+            Log.i("zzh-getSaltIV", Numeric.toHexStringNoPrefix(hash));
+            result = Numeric.toHexStringNoPrefix(hash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static SafePK encryptToSafePK(String pwd, String pk) {
         Log.i("zzh-pk", pk);
         SafePK safePK = new SafePK();
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
-        byte[] iv = retrieveIv();
-        byte[] salt = retrieveSalt();
+        String seed = getSaltIV(pwd);
+        byte[] iv = seed.substring(0, 16).getBytes();
+        byte[] salt = seed.substring(0, 32).getBytes();
         safePK.s_iv = Numeric.toHexStringNoPrefix(iv);
         safePK.s_salt = Numeric.toHexStringNoPrefix(salt);
         byte[] privateKeyBytes = Numeric.toBytesPadded(keyPair.getPrivateKey(), KEY_SIZE);
@@ -66,8 +84,8 @@ public class BipaCredential {
             SharedPreferences.Editor localEditor = sp.edit();
             BipaWalletFile bipaWalletFile = new BipaWalletFile();
             BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
-            bipaWalletFile.s_iv = safePK.s_iv;
-            bipaWalletFile.s_salt = safePK.s_salt;
+//            bipaWalletFile.s_iv = safePK.s_iv;
+//            bipaWalletFile.s_salt = safePK.s_salt;
             Gson gson = new Gson();
             String jsonStr = gson.toJson(bipaWalletFile);
             localEditor.putString(credentials.getAddress().substring(2).toLowerCase(), jsonStr);
@@ -91,12 +109,40 @@ public class BipaCredential {
             String safePK = keyPair.getPrivateKey().toString(16);
             Log.i("zzh-safePK-decrypted", safePK);
             ///////
-            byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), Numeric.hexStringToByteArray(bipaWalletFile.s_iv), Numeric.hexStringToByteArray(bipaWalletFile.s_salt));
+            String seed = getSaltIV(pwd);
+            byte[] iv = seed.substring(0, 16).getBytes();
+            byte[] salt = seed.substring(0, 32).getBytes();
+            byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
             ECKeyPair pair = ECKeyPair.create(datas);
             Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
         } catch (Exception e) {
             Log.i("zzh-decryptPK-err", e.toString());
         }
+    }
+
+    public static String getPK(BipaWalletFile bipaWalletFile, String safePK, String pwd) {
+        String seed = getSaltIV(pwd);
+        byte[] iv = seed.substring(0, 16).getBytes();
+        byte[] salt = seed.substring(0, 32).getBytes();
+        String pk = "";
+        byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
+        ECKeyPair pair = ECKeyPair.create(datas);
+        Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
+        return pair.getPrivateKey().toString(16);
+    }
+
+    public static String getSafePK(BipaWalletFile bipaWalletFile, String pwd) {
+        String safePK = "";
+        try {
+            WalletFile walletFile = new WalletFile();
+            BipaWalletFile.duplicateToEth(walletFile, bipaWalletFile);
+            ECKeyPair keyPair = Wallet.decrypt(pwd, walletFile);
+            safePK = keyPair.getPrivateKey().toString(16);
+            Log.i("zzh-getSafePK-decrypted", safePK);
+        } catch (Exception e) {
+            Log.i("zzh-getSafePK-err", e.toString());
+        }
+        return safePK;
     }
 
     private static byte[] encryptData(byte[] data, byte[] iv, SecretKey key) {
@@ -158,7 +204,7 @@ public class BipaCredential {
      * Retrieve encrypted data using a password. If data is stored with an insecure key, re-encrypt
      * with a secure key.
      */
-    private static byte[] retrieveData(String pwd, byte[] encryptedData, byte[] iv, byte[] salt) {
+    public static byte[] retrieveData(String pwd, byte[] encryptedData, byte[] iv, byte[] salt) {
         SecretKey secureKey = deriveKeySecurely(pwd, KEY_SIZE, salt);
         byte[] decryptedData = decryptData(encryptedData, iv, secureKey);
         return (decryptedData);
