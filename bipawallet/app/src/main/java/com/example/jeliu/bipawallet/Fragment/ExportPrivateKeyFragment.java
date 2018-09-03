@@ -8,11 +8,13 @@ import android.support.v4.app.DialogFragment;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,11 +44,15 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     private String safePrivateKey;
     private boolean forKeyStore;
 
-    @BindView(R.id.textView_key) TextView tvKey;
-    @BindView(R.id.textView_safe_key) TextView tvSafeKey;
+    @BindView(R.id.textView_key)
+    TextView tvKey;
+    @BindView(R.id.textView_safe_key)
+    TextView tvSafeKey;
 
-    @BindView(R.id.imageView_qr) ImageView ivQr;
-    @BindView(R.id.imageView_safe_qr) ImageView ivSafeQr;
+    @BindView(R.id.imageView_qr)
+    ImageView ivQr;
+    @BindView(R.id.imageView_safe_qr)
+    ImageView ivSafeQr;
 
     @BindView(R.id.tabHost)
     TabHost tabHost;
@@ -54,11 +60,15 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     @BindView(R.id.tv_transfer)
     TextView tvTransfer;
 
+    @BindView(R.id.scrollview)
+    ScrollView scrollview;
+
     @BindView(R.id.tv_transfer_tip)
     TextView tvTransferTip;
 
 
-    @OnClick(R.id.button_copy) void onCopy() {
+    @OnClick(R.id.button_copy)
+    void onCopy() {
         ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setText(privateKey);
         Toast.makeText(getActivity(), getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
@@ -66,8 +76,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         //getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.fragment_private_key, container);
         ButterKnife.bind(this, view);
@@ -84,6 +93,38 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         initTabhost();
         initQRCode();
         handleDiffer();
+//        View.OnTouchListener listener = new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                tvKey.getParent().requestDisallowInterceptTouchEvent(false);
+//                tvSafeKey.getParent().requestDisallowInterceptTouchEvent(false);
+//                return true;
+//            }
+//        };
+        scrollview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                tvKey.getParent().requestDisallowInterceptTouchEvent(false);
+                tvSafeKey.getParent().requestDisallowInterceptTouchEvent(false);
+                return false;
+            }
+        });
+        tvKey.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                tvKey.getParent().requestDisallowInterceptTouchEvent(true);
+                tvSafeKey.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        tvSafeKey.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                tvKey.getParent().requestDisallowInterceptTouchEvent(true);
+                tvSafeKey.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         return view;
     }
 
@@ -92,12 +133,12 @@ public class ExportPrivateKeyFragment extends DialogFragment {
 
         //在TabHost创建标签，然后设置：标题／图标／标签页布局
         if (forKeyStore) {
-            tabHost.addTab(tabHost.newTabSpec("key").setIndicator("keystore",null).setContent(R.id.tab1));
+            tabHost.addTab(tabHost.newTabSpec("key").setIndicator("keystore", null).setContent(R.id.tab1));
         } else {
-            tabHost.addTab(tabHost.newTabSpec("key").setIndicator(getResources().getString(R.string.privacy_key),null).setContent(R.id.tab1));
+            tabHost.addTab(tabHost.newTabSpec("key").setIndicator(getResources().getString(R.string.privacy_key), null).setContent(R.id.tab1));
 
         }
-        tabHost.addTab(tabHost.newTabSpec("code").setIndicator(getResources().getString(R.string.qrcode),null).setContent(R.id.tab2));
+        tabHost.addTab(tabHost.newTabSpec("code").setIndicator(getResources().getString(R.string.qrcode), null).setContent(R.id.tab2));
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -117,7 +158,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
             Bitmap bm = Common.encodeAsBitmap(privateKey, BarcodeFormat.QR_CODE, 200, 200);
             Bitmap safeBm = Common.encodeAsBitmap(safePrivateKey, BarcodeFormat.QR_CODE, 200, 200);
 
-            if(bm != null) {
+            if (bm != null) {
                 ivQr.setImageBitmap(bm);
             }
             if (safeBm != null) {

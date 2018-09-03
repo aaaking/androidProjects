@@ -31,8 +31,10 @@
                     android:orientation="vertical">
 
                     <ScrollView
+                        android:id="@+id/scrollview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:fillViewport="true">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -49,6 +51,8 @@
 
                             <TextView
                                 android:id="@+id/textView_safe_key"
+                                android:overScrollMode="always"
+                                android:scrollbarStyle="insideInset"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/export_margin"
@@ -123,6 +127,8 @@
 
                             <TextView
                                 android:id="@+id/textView_key"
+                                android:overScrollMode="always"
+                                android:scrollbarStyle="insideInset"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/export_margin"
