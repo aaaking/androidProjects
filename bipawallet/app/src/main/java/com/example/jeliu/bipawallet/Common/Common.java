@@ -461,7 +461,7 @@ public class Common {
             public void run() {
                 WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
                 String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
-                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk)) {
+                if (TextUtils.isEmpty(safePK) || safePK.length() < 64 || TextUtils.isEmpty(pk)) {
                     Looper.prepare();
                     cb.onWalletResult(null, null);
                     Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();

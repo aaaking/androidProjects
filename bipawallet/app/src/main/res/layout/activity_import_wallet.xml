@@ -126,16 +126,9 @@
                             android:id="@+id/ck_cryto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="是否经过比派加密"
                             android:layout_marginLeft="20dp" />
 
-                        <TextView
-                            android:id="@+id/tv_cryto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:text="是否经过比派加密"
-                            android:textColor="@color/privacy_color" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -275,16 +268,9 @@
                             android:id="@+id/ck_cryto_pk"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="是否经过比派加密"
                             android:layout_marginLeft="20dp" />
 
-                        <TextView
-                            android:id="@+id/tv_cryto_pk"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:text="是否经过比派加密"
-                            android:textColor="@color/privacy_color" />
                     </LinearLayout>
 
                     <LinearLayout
