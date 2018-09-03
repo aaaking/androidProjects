@@ -39,13 +39,14 @@ import butterknife.OnClick;
 
 public class ExportPrivateKeyFragment extends DialogFragment {
     private String privateKey;
+    private String safePrivateKey;
     private boolean forKeyStore;
 
-    @BindView(R.id.textView_key)
-    TextView tvKey;
+    @BindView(R.id.textView_key) TextView tvKey;
+    @BindView(R.id.textView_safe_key) TextView tvSafeKey;
 
-    @BindView(R.id.imageView_qr)
-    ImageView ivQr;
+    @BindView(R.id.imageView_qr) ImageView ivQr;
+    @BindView(R.id.imageView_safe_qr) ImageView ivSafeQr;
 
     @BindView(R.id.tabHost)
     TabHost tabHost;
@@ -75,9 +76,16 @@ public class ExportPrivateKeyFragment extends DialogFragment {
             //tvKey.setTextIsSelectable(true);
             tvKey.setMovementMethod(new ScrollingMovementMethod());
         }
+        if (safePrivateKey != null) {
+            tvSafeKey.setText(safePrivateKey);
+            //tvKey.setTextIsSelectable(true);
+            tvSafeKey.setMovementMethod(new ScrollingMovementMethod());
+        }
         initTabhost();
         initQRCode();
         handleDiffer();
+        tvSafeKey.setVisibility(View.GONE);
+        ivSafeQr.setVisibility(View.GONE);
 
         return view;
     }
@@ -110,9 +118,13 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         try {
             // generate a 150x150 QR code
             Bitmap bm = Common.encodeAsBitmap(privateKey, BarcodeFormat.QR_CODE, 200, 200);
+            Bitmap safeBm = Common.encodeAsBitmap(safePrivateKey, BarcodeFormat.QR_CODE, 200, 200);
 
             if(bm != null) {
                 ivQr.setImageBitmap(bm);
+            }
+            if (safeBm != null) {
+                ivSafeQr.setImageBitmap(safeBm);
             }
         } catch (WriterException e) { //eek
         }
@@ -133,4 +145,8 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         this.forKeyStore = forKeyStore;
     }
 
+    public void setSafePrivateKey(String key, boolean forKeyStore) {
+        safePrivateKey = key;
+        this.forKeyStore = forKeyStore;
+    }
 }

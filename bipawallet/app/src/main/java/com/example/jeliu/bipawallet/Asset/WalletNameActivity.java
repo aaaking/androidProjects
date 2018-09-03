@@ -4,6 +4,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Looper;
@@ -22,6 +23,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
@@ -33,6 +35,10 @@ import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
+import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
+import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +82,8 @@ public class WalletNameActivity extends BaseActivity {
     private String walletAddress;
     private AlertDialog alertDialog;
 
-    @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete}) void onClick(View view) {
+    @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete})
+    void onClick(View view) {
         if (view.getId() == R.id.rl_private_key) {
             showInputPassword(0);
         } else if (view.getId() == R.id.rl_keystore) {
@@ -106,7 +113,7 @@ public class WalletNameActivity extends BaseActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         final View textEntryView = inflater.inflate(
                 R.layout.layout_input_password, null);
-        final EditText etPassword = (EditText)textEntryView.findViewById(R.id.editText_password);
+        final EditText etPassword = (EditText) textEntryView.findViewById(R.id.editText_password);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -144,8 +151,18 @@ public class WalletNameActivity extends BaseActivity {
                 try {
                     Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
                     if (credentials != null) {
+                        //
+                        SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                        Gson gson = new Gson();
+                        String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
+                        java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
+                        }.getType();
+                        BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
+                        String safePK = BipaCredential.getSafePK(bipaWalletFile, password);
+
                         ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
                         fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16), false);
+                        fragment.setSafePrivateKey(safePK, false);
                         fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
                     }
                 } catch (Exception e) {
@@ -184,8 +201,17 @@ public class WalletNameActivity extends BaseActivity {
                         text.append('\n');
                     }
                     br.close();
+                    //
+                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+//                    Gson gson = new Gson();
+                    String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
+//                    java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
+//                    }.getType();
+//                    BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
+
                     ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
                     fragment.setPrivateKey(text.toString(), true);
+                    fragment.setSafePrivateKey(storedHashMapString, true);
                     fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
                 } catch (Exception e) {
                     hideWaiting();
@@ -215,6 +241,11 @@ public class WalletNameActivity extends BaseActivity {
                     if (credentials == null || !file.exists() || file.length() <= 0) {
                         return;
                     }
+                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences.Editor localEditor = sp.edit();
+                    localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
+                    localEditor.apply();
+
                     file.delete();
                     deleteWalletImp();
                 } catch (Exception e) {
@@ -307,14 +338,14 @@ public class WalletNameActivity extends BaseActivity {
             if (wallet.tokenList.size() == 0 && shouldRefresh) {
                 showWaiting();
                 HZHttpRequest request = new HZHttpRequest();
-                request.requestGet(Constant.BALANCE_URL + "?address="+address, null, this);
+                request.requestGet(Constant.BALANCE_URL + "?address=" + address, null, this);
             } else {
                 double total = 0;
                 for (HZToken token : wallet.tokenList) {
                     double value = token.value;
                     total += value;
                 }
-                tvMoney.setText(""+total);
+                tvMoney.setText("" + total);
             }
         }
     }

@@ -39,6 +39,24 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
+                            <TextView
+                                android:id="@+id/textView_safe_key"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="20dp"
+                                android:background="@color/header_line"
+                                android:clickable="true"
+                                android:enabled="true"
+                                android:focusable="true"
+                                android:longClickable="true"
+                                android:maxLines="6"
+                                android:padding="5dp"
+                                android:scrollbars="vertical"
+                                android:text=""
+                                android:textIsSelectable="true" />
+
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -129,37 +147,49 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/tab2"
-                    android:layout_width="320dp"
-                    android:layout_height="450dp"
-                    android:orientation="vertical">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:id="@+id/tab2"
+                        android:layout_width="320dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/export_margin"
-                        android:layout_marginRight="@dimen/export_margin"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/waring_export_key"
-                        android:textStyle="bold" />
+                        android:minHeight="450dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/export_margin"
-                        android:layout_marginRight="@dimen/export_margin"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/store_recommend_qr" />
+                        <ImageView
+                            android:id="@+id/imageView_safe_qr"
+                            android:layout_width="300dp"
+                            android:layout_height="300dp"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="fitCenter" />
 
-                    <ImageView
-                        android:id="@+id/imageView_qr"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:layout_gravity="center_horizontal"
-                        android:scaleType="fitCenter" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/export_margin"
+                            android:layout_marginRight="@dimen/export_margin"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/waring_export_key"
+                            android:textStyle="bold" />
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/export_margin"
+                            android:layout_marginRight="@dimen/export_margin"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/store_recommend_qr" />
+
+                        <ImageView
+                            android:id="@+id/imageView_qr"
+                            android:layout_width="300dp"
+                            android:layout_height="300dp"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="fitCenter" />
+                    </LinearLayout>
+                </ScrollView>
 
             </FrameLayout>
         </LinearLayout>
