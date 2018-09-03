@@ -73,6 +73,12 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         cm.setText(privateKey);
         Toast.makeText(getActivity(), getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
     }
+    @OnClick(R.id.button_copy_safe)
+    void onCopySafe() {
+        ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setText(safePrivateKey);
+        Toast.makeText(getActivity(), getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,25 +88,17 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         if (privateKey != null) {
             tvKey.setText(privateKey);
-            //tvKey.setTextIsSelectable(true);
+            tvKey.setTextIsSelectable(true);
             tvKey.setMovementMethod(new ScrollingMovementMethod());
         }
         if (safePrivateKey != null) {
             tvSafeKey.setText(safePrivateKey);
-            //tvKey.setTextIsSelectable(true);
+            tvKey.setTextIsSelectable(true);
             tvSafeKey.setMovementMethod(new ScrollingMovementMethod());
         }
         initTabhost();
         initQRCode();
         handleDiffer();
-//        View.OnTouchListener listener = new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                tvKey.getParent().requestDisallowInterceptTouchEvent(false);
-//                tvSafeKey.getParent().requestDisallowInterceptTouchEvent(false);
-//                return true;
-//            }
-//        };
         scrollview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
