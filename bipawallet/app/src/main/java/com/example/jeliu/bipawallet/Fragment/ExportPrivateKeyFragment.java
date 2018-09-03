@@ -84,9 +84,6 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         initTabhost();
         initQRCode();
         handleDiffer();
-        tvSafeKey.setVisibility(View.GONE);
-        ivSafeQr.setVisibility(View.GONE);
-
         return view;
     }
 

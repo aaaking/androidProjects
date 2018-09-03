@@ -25,7 +25,7 @@ public class HZWalletManager {
 
     public void addWallet(HZWallet wallet) {
         if (walletList.contains(wallet)) {
-            return;
+            walletList.remove(wallet);
         }
         walletList.add(wallet);
     }

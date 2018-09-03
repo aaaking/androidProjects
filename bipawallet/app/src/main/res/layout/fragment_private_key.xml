@@ -38,6 +38,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="加密后的数据"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/textView_safe_key"
@@ -157,6 +165,14 @@
                         android:layout_height="wrap_content"
                         android:minHeight="450dp"
                         android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/export_margin"
+                            android:layout_marginRight="@dimen/export_margin"
+                            android:layout_marginTop="10dp"
+                            android:text="加密后的二维码"
+                            android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/imageView_safe_qr"
