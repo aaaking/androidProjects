@@ -278,7 +278,7 @@ public class BipaWalletFile implements Serializable {
         WalletFile walletFile = new WalletFile();
         walletFile.setAddress("missing");
 
-        if (TextUtils.isEmpty(safePK)) {
+        if (TextUtils.isEmpty(safePK) || safePK.length() <= 64) {
             return walletFile;
         }
 

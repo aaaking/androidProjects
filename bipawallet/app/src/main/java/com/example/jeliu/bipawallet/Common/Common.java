@@ -512,7 +512,7 @@ public class Common {
                 String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
                 WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
                 String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
-                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk)) {
+                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk) || TextUtils.isEmpty(bipaWalletFile.miss_mac) || bipaWalletFile.miss_mac.length() <= 0) {
                     Looper.prepare();
                     cb.onWalletResult(null, null);
                     Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
