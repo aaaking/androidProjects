@@ -19,10 +19,23 @@ android {
 //            javaMaxHeapSize "6g"
 //        }
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("../keystore/bipawallet")
+            storePassword "bipawallet"
+//            //命令行密码
+//            //storePassword System.console().readLine("\ninput Keystore password: ")
+            keyAlias "bipawallet"
+            keyPassword "bipawallet"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 //    compileOptions {
