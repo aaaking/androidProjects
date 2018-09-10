@@ -1,6 +1,8 @@
 //import com.example.jeliu.bipawallet.Model.HZToken;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +28,21 @@ public class Test {
         fs.add(a);
         fs.add(b);
         System.out.println(fs.toString());
+
+        //
+        Date date = new Date();
+
+        String s = DateFormat.getDateInstance(DateFormat.LONG).format(date);
+        System.out.println("ssssssss: " + s);
+
+        String FULL = DateFormat.getDateInstance(DateFormat.FULL).format(date);
+        System.out.println("FULL: " + FULL);
+
+        String MEDIUM = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date);
+        System.out.println("MEDIUM: " + MEDIUM);
+
+        String SHORT = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
+        System.out.println("SHORT: " + SHORT);
 
     }
 

@@ -370,7 +370,11 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         String address = fragment.getAddress();
         UserInfoManager.getInst().setCurrentWalletAddress(address);
         refreshStepFragment();
-        loadData(address);
+        if (address != null) {
+            showWaiting();
+            loadData(address);
+            loadBalance(address);
+        }
     }
 
     private void refreshStepFragment() {
@@ -392,10 +396,8 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         fragment.setOutpay(total);
     }
 
-    private void loadBalance() {
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+    private void loadBalance(String address) {
         if (address != null) {
-            showWaiting();
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.BALANCE_URL + "?address="+address, null, this);
         }
@@ -403,7 +405,6 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
 
     private void loadData(String address) {
         if (address != null) {
-            showWaiting();
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.TRANSCTION_URL + "?address="+address, null, this);
         }
@@ -423,24 +424,18 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
             try {
                 transactions = jsonObject.getJSONArray("txhashs");
                 refresh();
-                loadBalance();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else {
-            if (url.contains(Constant.BALANCE_URL)) {
-                if (!super.onSuccess(jsonObject, url)) {
-                    return true;
-                }
-                try {
-                    JSONArray balance = jsonObject.getJSONArray("balance");
-                    String address = UserInfoManager.getInst().getCurrentWalletAddress();
-                    HZWalletManager.getInst().updateWalletInfo(address, balance);
-                    StepFragment fragment = fragmentList.get(currentItem);
-                    fragment.refreshData();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        } else if (url.contains(Constant.BALANCE_URL)) {
+            try {
+                JSONArray balance = jsonObject.getJSONArray("balance");
+                String address = UserInfoManager.getInst().getCurrentWalletAddress();
+                HZWalletManager.getInst().updateWalletInfo(address, balance);
+                StepFragment fragment = fragmentList.get(currentItem);
+                fragment.refreshData();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         return false;
