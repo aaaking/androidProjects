@@ -23,12 +23,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
+import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.Network.IWallet;
+import com.example.jeliu.bipawallet.Network.NetworkUtil;
+import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
-import com.example.jeliu.bipawallet.bipacredential.BipaWallet;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,7 +52,6 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -397,107 +398,177 @@ public class Common {
     }
 
     public static Credentials loadWalletByPrivateKey(final String pwd, final String pk, final IWallet cb) {
+        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
+            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+            cb.onWalletResult(null, "");
+            return null;
+        }
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-        new Thread(new Runnable() {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
-            public void run() {
-                try {
-                    ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
-                    String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
-                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    BipaCredential.encryptPK(pwd, mCredentials);
-                    cb.onWalletResult(mCredentials, fileName);
-                } catch (Exception e) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, "");
-                    e.printStackTrace();
-                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
+            public boolean onSuccess(JSONObject jsonObject, String url) {
+                Log.i("zzh-getsaltjson", jsonObject.toString());
+                final String saltIVSeed = jsonObject.optString("msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (saltIVSeed == null || saltIVSeed.trim().length() < 32) {
+                                throw new Exception("get salt error");
+                            }
+                            ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
+                            String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
+                            mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                            BipaCredential.encryptPK(pwd, mCredentials, saltIVSeed);
+                            cb.onWalletResult(mCredentials, fileName);
+                        } catch (Exception e) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, "");
+                            e.printStackTrace();
+                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                }).start();
+                return false;
             }
-        }).start();
+
+            @Override
+            public void onFailure(String szValue, String url) {
+                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                cb.onWalletResult(null, "");
+            }
+        });
         return null;
     }
 
     public static Credentials loadWalletByKeyStore(final String pwd, final String ks, final IWallet cb) {
+        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
+            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+            cb.onWalletResult(null, "");
+            return null;
+        }
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("'UTC--'yyyy-MM-dd'T'HH-mm-ss.SSS'--'");
         final String fileName = dateFormat.format(new Date()) + "new-address" + ".json";
-        new Thread(new Runnable() {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
-            public void run() {
-                try {
-                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
+            public boolean onSuccess(JSONObject jsonObject, String url) {
+                Log.i("zzh-getsaltjson", jsonObject.toString());
+                final String saltIVSeed = jsonObject.optString("msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (saltIVSeed == null || saltIVSeed.trim().length() < 32) {
+                                throw new Exception("get salt error");
+                            }
+                            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
 //            new OutputStreamWriter(HZApplication.getInst().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
-                    outputStreamWriter.write(ks);
-                    outputStreamWriter.close();
-                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    BipaCredential.encryptPK(pwd, mCredentials);
-                    cb.onWalletResult(mCredentials, fileName);
-                } catch (Exception e) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, null);
-                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
+                            outputStreamWriter.write(ks);
+                            outputStreamWriter.close();
+                            mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                            BipaCredential.encryptPK(pwd, mCredentials, saltIVSeed);
+                            cb.onWalletResult(mCredentials, fileName);
+                        } catch (Exception e) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, null);
+                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                }).start();
+                return false;
             }
-        }).start();
+
+            @Override
+            public void onFailure(String szValue, String url) {
+                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                cb.onWalletResult(null, "");
+            }
+        });
         return null;
     }
 
     public static Credentials loadWalletByPKBipa(final String pwd, final String safePK, final IWallet cb) {
+        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
+            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+            cb.onWalletResult(null, "");
+            return null;
+        }
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-        new Thread(new Runnable() {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
-            public void run() {
-                WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
-                String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
-                if (TextUtils.isEmpty(safePK) || safePK.length() <= 64 || TextUtils.isEmpty(pk)) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, null);
-                    Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                    return;
-                }
-                try {
-                    ECKeyPair pair = ECKeyPair.create(new BigInteger(pk, 16));
-                    String fileName = WalletUtils.generateWalletFile(pwd, pair, destDir, false);
-                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+            public boolean onSuccess(JSONObject jsonObject, String url) {
+                Log.i("zzh-getsaltjson", jsonObject.toString());
+                final String saltIVSeed = jsonObject.optString("msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd, saltIVSeed);
+                        String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
+                        if (saltIVSeed == null || saltIVSeed.trim().length() < 32 || TextUtils.isEmpty(safePK) || safePK.length() <= 64 || TextUtils.isEmpty(pk)) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, null);
+                            Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                            return;
+                        }
+                        try {
+                            ECKeyPair pair = ECKeyPair.create(new BigInteger(pk, 16));
+                            String fileName = WalletUtils.generateWalletFile(pwd, pair, destDir, false);
+                            mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
 
-                    WalletFile walletFile = Wallet.createLight(pwd, ECKeyPair.create(new BigInteger(safePK.substring(0, 64), 16)));//its address is wrong
-                    walletFile.setAddress(mCredentials.getAddress().substring(2).toLowerCase());
-                    BipaWalletFile bipaWalletFile = new BipaWalletFile();
-                    BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
-                    bipaWalletFile.miss_mac = safePK.substring(64);//missingWallet.getCrypto().getMac();
+                            WalletFile walletFile = Wallet.createLight(pwd, ECKeyPair.create(new BigInteger(safePK.substring(0, 64), 16)));//its address is wrong
+                            walletFile.setAddress(mCredentials.getAddress().substring(2).toLowerCase());
+                            BipaWalletFile bipaWalletFile = new BipaWalletFile();
+                            BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
+                            bipaWalletFile.miss_mac = safePK.substring(64);//missingWallet.getCrypto().getMac();
 
-                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-                    SharedPreferences.Editor localEditor = sp.edit();
-                    Gson gson = new Gson();
-                    String jsonStr = gson.toJson(bipaWalletFile);
-                    localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), jsonStr);
-                    localEditor.apply();
-                    cb.onWalletResult(mCredentials, fileName);
-                } catch (Exception e) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, null);
-                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
+                            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                            SharedPreferences.Editor localEditor = sp.edit();
+                            Gson gson = new Gson();
+                            String jsonStr = gson.toJson(bipaWalletFile);
+                            localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), jsonStr);
+                            localEditor.apply();
+                            cb.onWalletResult(mCredentials, fileName);
+                        } catch (Exception e) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, null);
+                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                }).start();
+                return false;
             }
-        }).start();
+            @Override
+            public void onFailure(String szValue, String url) {
+                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                cb.onWalletResult(null, "");
+            }
+        });
         return null;
     }
 
     public static Credentials loadWalletByKSBipa(final String pwd, final String ks, final IWallet cb) {
+        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
+            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+            cb.onWalletResult(null, "");
+            return null;
+        }
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {
             destDir.mkdirs();
@@ -506,63 +577,98 @@ public class Common {
         java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
         }.getType();
         final BipaWalletFile bipaWalletFile = gson.fromJson(ks.replace("&quot;", "\""), type);
-        new Thread(new Runnable() {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
-            public void run() {
-                String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
-                WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd);
-                String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
-                if (TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk) || TextUtils.isEmpty(bipaWalletFile.miss_mac) || bipaWalletFile.miss_mac.length() <= 0) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, null);
-                    Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                    return;
-                }
-                //
-                try {
-                    ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
-                    String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
-                    mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
-                    //
-                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-                    SharedPreferences.Editor localEditor = sp.edit();
-                    localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), ks.replace("&quot;", "\""));
-                    localEditor.apply();
-                    cb.onWalletResult(mCredentials, fileName);
-                } catch (Exception e) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, null);
-                    Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
+            public boolean onSuccess(JSONObject jsonObject, String url) {
+                Log.i("zzh-getsaltjson", jsonObject.toString());
+                final String saltIVSeed = jsonObject.optString("msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
+                        WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd, saltIVSeed);
+                        String pk = BipaCredential.getPK(missingWallet, safePK, pwd);
+                        if (saltIVSeed == null || saltIVSeed.trim().length() < 32 || TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk) || TextUtils.isEmpty(bipaWalletFile.miss_mac) || bipaWalletFile.miss_mac.length() <= 0) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, null);
+                            Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                            return;
+                        }
+                        //
+                        try {
+                            ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
+                            String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
+                            mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
+                            //
+                            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                            SharedPreferences.Editor localEditor = sp.edit();
+                            localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), ks.replace("&quot;", "\""));
+                            localEditor.apply();
+                            cb.onWalletResult(mCredentials, fileName);
+                        } catch (Exception e) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, null);
+                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                }).start();
+                return false;
             }
-        }).start();
+            @Override
+            public void onFailure(String szValue, String url) {
+                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                cb.onWalletResult(null, "");
+            }
+        });
         return null;
     }
 
     public static Credentials createLocalWallet(final String pwd, final IWallet cb) {
+        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
+            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+            cb.onWalletResult(null, "");
+            return null;
+        }
         final File destDir = new File(WALLET_PATH);
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-        new Thread(new Runnable() {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
-            public void run() {
-                try {
-                    String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
-                    mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
-                    BipaCredential.encryptPK(pwd, mCredentials);
-                    cb.onWalletResult(mCredentials, fileName);
-                } catch (Exception e) {
-                    Looper.prepare();
-                    cb.onWalletResult(null, "");
-                    Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                    Looper.loop();
-                }
+            public boolean onSuccess(JSONObject jsonObject, String url) {
+                final String saltIVSeed = jsonObject.optString("msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (saltIVSeed == null || saltIVSeed.trim().length() < 32) {
+                                throw new Exception("get salt error");
+                            }
+                            String fileName = WalletUtils.generateLightNewWalletFile(pwd, new File(WALLET_PATH));
+                            mCredentials = WalletUtils.loadCredentials(pwd, WALLET_PATH + File.separator + fileName);
+                            BipaCredential.encryptPK(pwd, mCredentials, saltIVSeed);
+                            cb.onWalletResult(mCredentials, fileName);
+                        } catch (Exception e) {
+                            Looper.prepare();
+                            cb.onWalletResult(null, "");
+                            Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                            Looper.loop();
+                        }
+                    }
+                }).start();
+                return false;
             }
-        }).start();
+            @Override
+            public void onFailure(String szValue, String url) {
+                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                cb.onWalletResult(null, "");
+            }
+        });
         return null;
     }
 

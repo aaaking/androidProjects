@@ -274,17 +274,17 @@ public class BipaWalletFile implements Serializable {
         return null;
     }
 
-    public static WalletFile findMissingWallet(String safePK, String pwd) {
+    public static WalletFile findMissingWallet(String safePK, String pwd, String saltIVSeed) {
         WalletFile walletFile = new WalletFile();
         walletFile.setAddress("missing");
 
-        if (TextUtils.isEmpty(safePK) || safePK.length() <= 64) {
+        if (TextUtils.isEmpty(safePK) || safePK.length() <= 64 || saltIVSeed == null || saltIVSeed.trim().length() < 32) {
             return walletFile;
         }
 
-        String seed = BipaCredential.getSaltIV(pwd);
-        byte[] iv = seed.substring(0, 16).getBytes();
-        byte[] salt = seed.substring(0, 32).getBytes();
+//        String seed = BipaCredential.getSaltIV(pwd);
+        byte[] iv = saltIVSeed.substring(0, 16).getBytes();
+        byte[] salt = saltIVSeed.substring(0, 32).getBytes();
 
         WalletFile.Crypto crypto = new WalletFile.Crypto();
         crypto.setCipher(BipaWallet.CIPHER);

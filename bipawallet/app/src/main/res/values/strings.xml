@@ -182,4 +182,6 @@
     <string name="s_amount">Amount</string>
     <string name="s_date">Date</string>
     <string name="s_price">price</string>
+
+    <string name="network_exception">please check the network setting</string>
 </resources>

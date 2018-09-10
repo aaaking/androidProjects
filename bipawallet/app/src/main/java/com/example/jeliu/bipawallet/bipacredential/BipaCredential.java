@@ -61,13 +61,13 @@ public class BipaCredential {
         return result;
     }
 
-    public static WalletFile encryptToSafePK(String pwd, String pk) {
+    public static WalletFile encryptToSafePK(String pwd, String pk, String saltIVSeed) {
         Log.i("zzh-pk", pk);
 //        SafePK safePK = new SafePK();
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
-        String seed = getSaltIV(pwd);
-        byte[] iv = seed.substring(0, 16).getBytes();
-        byte[] salt = seed.substring(0, 32).getBytes();
+//        String seed = getSaltIV(pwd);
+        byte[] iv = saltIVSeed.substring(0, 16).getBytes();
+        byte[] salt = saltIVSeed.substring(0, 32).getBytes();
 //        safePK.s_iv = Numeric.toHexStringNoPrefix(iv);
 //        safePK.s_salt = Numeric.toHexStringNoPrefix(salt);
 //        byte[] privateKeyBytes = Numeric.toBytesPadded(keyPair.getPrivateKey(), KEY_SIZE);
@@ -77,9 +77,9 @@ public class BipaCredential {
         return bipaWalletFile;
     }
 
-    public static void encryptPK(String pwd, Credentials credentials) {
+    public static void encryptPK(String pwd, Credentials credentials, String saltIVSeed) {
         try {
-            WalletFile missingWallet = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16));
+            WalletFile missingWallet = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16), saltIVSeed);
             Log.i("zzh-safePK-to-encrypt", missingWallet.getCrypto().getCiphertext());
             ECKeyPair keyPair = ECKeyPair.create(new BigInteger(missingWallet.getCrypto().getCiphertext(), 16));
             WalletFile walletFile = Wallet.createLight(pwd, keyPair);//its address is wrong

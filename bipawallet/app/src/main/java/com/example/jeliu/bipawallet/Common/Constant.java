@@ -5,7 +5,7 @@ package com.example.jeliu.bipawallet.Common;
  */
 
 public class Constant {
-    public static String BASE_URL = "https://wallet.bipa.io";//http://47.52.224.7:16679";
+    public static String BASE_URL = "https://wallet.bipa.io";//"http://192.168.1.131:3000";////http://47.52.224.7:16679";
 
     public static String CREATE_ACCOUNT_URL = BASE_URL + "/createAccount";
     //announcement
@@ -20,6 +20,7 @@ public class Constant {
 
     //balance
     public static String BALANCE_URL = BASE_URL + "/balance";
+    public static String GET_SALT_IV = BASE_URL + "/getSaltIV";
     //estimateGas
     public static String ESTIMATEGAS_URL = BASE_URL + "/estimateGas";
 

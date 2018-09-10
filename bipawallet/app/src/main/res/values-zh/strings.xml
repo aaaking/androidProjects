@@ -182,4 +182,6 @@
     <string name="s_amount">数量</string>
     <string name="s_date">日期</string>
     <string name="s_price">价格</string>
+
+    <string name="network_exception">请检查网络设置</string>
 </resources>
