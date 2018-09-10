@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
     defaultConfig {
         applicationId "com.example.jeliu.bipawallet"
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -65,9 +65,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     api 'com.squareup.picasso:picasso:2.5.2'
-    api 'com.android.support:appcompat-v7:27.+'
-    api 'com.android.support:design:27.+'
-    api 'com.android.support:support-vector-drawable:27.+'
+
+    api supportDependencies.appcompat
+    api supportDependencies.design
+    api supportDependencies.vector
+
     api 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     testCompile 'junit:junit:4.12'
