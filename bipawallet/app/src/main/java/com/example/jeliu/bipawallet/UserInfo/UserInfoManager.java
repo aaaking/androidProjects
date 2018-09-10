@@ -30,7 +30,7 @@ import java.util.HashMap;
  */
 
 public class UserInfoManager {
-    private static String s_split = "______";
+    public static String s_split = "______";
     private static UserInfoManager s_inst;
 
     private int prifoles[] = {R.drawable.hs, R.drawable.mty, R.drawable.px, R.drawable.qe, R.drawable.sz, R.drawable.xn};

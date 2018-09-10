@@ -96,7 +96,6 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
     private int filterdMonth = 0;
     private int filterdDay = 0;
     List<StepFragment> fragmentList;
-    List<String> datas = new ArrayList<>();
     private int mLastSelect = -1;
     private boolean justStart = false;
 
@@ -260,46 +259,30 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         currentItem = 0;
         justStart = true;
         pager.invalidate();
-        if (datas.size() == 0) {
-            HashMap<String, String> wallets = UserInfoManager.getInst().getWallets();
-            String address = UserInfoManager.getInst().getCurrentWalletAddress();
-            HZWallet currentWallet = HZWalletManager.getInst().getWallet(address);
-            StepFragment fragment = new StepFragment();
-            fragment.init(address, currentWallet.name);
-            fragmentList = new ArrayList<>();
+        HashMap<String, String> wallets = UserInfoManager.getInst().getWallets();
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        HZWallet currentWallet = HZWalletManager.getInst().getWallet(address);
+        StepFragment fragment = new StepFragment();
+        fragment.init(address, currentWallet.name);
+        fragmentList = new ArrayList<>();
+        fragmentList.add(fragment);
+
+        Iterator iter = wallets.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Object key = entry.getKey();
+            if (address.equalsIgnoreCase((String)key)) {
+                continue;
+            }
+            Object val = entry.getValue();
+            fragment = new StepFragment();
+
+            String splits[] = ((String)val).split(UserInfoManager.s_split);
+            if (splits.length >= 2) {
+                fragment.init((String)key, splits[0]);
+            }
             fragmentList.add(fragment);
-            //datas.add(address + "______" + currentWallet.name);
-
-            Iterator iter = wallets.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                Object key = entry.getKey();
-                if (address.equalsIgnoreCase((String)key)) {
-                    continue;
-                }
-                Object val = entry.getValue();
-                fragment = new StepFragment();
-
-                String splits[] = ((String)val).split("______");
-                if (splits.length == 2) {
-                    fragment.init((String)key, splits[0]);
-                    //datas.add(key + "______" + splits[0]);
-                }
-
-                fragmentList.add(fragment);
-            }
-        } else {
-            fragmentList = new ArrayList<>();
-            for (String val : datas) {
-                String splits[] = (val).split("______");
-                if (splits.length == 2) {
-                    StepFragment fragment = new StepFragment();
-                    fragment.init(splits[0], splits[1]);
-                    fragmentList.add(fragment);
-                }
-            }
         }
-
 
         adapter = new StepPagerAdapter(getChildFragmentManager(), fragmentList);
         pager.setAdapter(adapter);
