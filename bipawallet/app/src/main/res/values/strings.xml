@@ -184,4 +184,5 @@
     <string name="s_price">price</string>
 
     <string name="network_exception">please check the network setting</string>
+    <string name="text_after_encrypt">data that has been encrypted</string>
 </resources>

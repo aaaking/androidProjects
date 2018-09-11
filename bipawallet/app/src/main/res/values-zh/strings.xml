@@ -184,4 +184,5 @@
     <string name="s_price">价格</string>
 
     <string name="network_exception">请检查网络设置</string>
+    <string name="text_after_encrypt">加密后的数据</string>
 </resources>

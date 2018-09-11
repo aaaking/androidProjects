@@ -60,8 +60,8 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     @BindView(R.id.tv_transfer)
     TextView tvTransfer;
 
-    @BindView(R.id.scrollview)
-    ScrollView scrollview;
+    @BindView(R.id.tab1)
+    ScrollView tab1;
 
     @BindView(R.id.tv_transfer_tip)
     TextView tvTransferTip;
@@ -99,7 +99,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         initTabhost();
         initQRCode();
         handleDiffer();
-        scrollview.setOnTouchListener(new View.OnTouchListener() {
+        tab1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 tvKey.getParent().requestDisallowInterceptTouchEvent(false);
