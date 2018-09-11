@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +67,11 @@ public class ExportPrivateKeyFragment extends DialogFragment {
 
     @BindView(R.id.tv_transfer_tip)
     TextView tvTransferTip;
+
+    @BindView(R.id.raw_credential_container) View raw_credential_container;
+    @BindView(R.id.raw_qrcode_container) View raw_qrcode_container;
+    @BindView(R.id.switch_raw_data) Switch switch_raw_data;
+    @BindView(R.id.switch_raw_qr) Switch switch_raw_qr;
 
 
     @OnClick(R.id.button_copy)
@@ -123,7 +130,23 @@ public class ExportPrivateKeyFragment extends DialogFragment {
                 return false;
             }
         });
+        setSwitchAction();
         return view;
+    }
+
+    private void setSwitchAction() {
+        CompoundButton.OnCheckedChangeListener ls = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView == switch_raw_data) {
+                    raw_credential_container.setVisibility(switch_raw_data.isChecked() ? View.VISIBLE : View.INVISIBLE);
+                } else if (buttonView == switch_raw_qr) {
+                    raw_qrcode_container.setVisibility(switch_raw_qr.isChecked() ? View.VISIBLE : View.INVISIBLE);
+                }
+            }
+        };
+        switch_raw_data.setOnCheckedChangeListener(ls);
+        switch_raw_qr.setOnCheckedChangeListener(ls);
     }
 
     private void initTabhost() {

@@ -186,4 +186,7 @@
     <string name="network_exception">请检查网络设置</string>
     <string name="text_after_encrypt">加密后的数据</string>
     <string name="whether_bipa_encrypted">是否经过比派加密</string>
+
+    <string name="show_raw_data">显示原始未加密数据</string>
+    <string name="show_raw_qr">显示原始未加密二维码</string>
 </resources>

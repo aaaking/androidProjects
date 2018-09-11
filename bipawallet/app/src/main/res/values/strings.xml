@@ -186,4 +186,7 @@
     <string name="network_exception">please check the network setting</string>
     <string name="text_after_encrypt">data that has been encrypted</string>
     <string name="whether_bipa_encrypted">whether encrypted by bipa</string>
+
+    <string name="show_raw_data">show raw data that has not been encrypted</string>
+    <string name="show_raw_qr">show raw qr code that has not been encrypted</string>
 </resources>

@@ -76,93 +76,108 @@
                             android:text="@string/copy"
                             android:textColor="@color/title_name_color" />
 
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <Switch
+                            android:id="@+id/switch_raw_data"
+                            android:text="@string/show_raw_data"
                             android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/waring_export_key"
-                            android:textStyle="bold" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/raw_credential_container"
+                            android:visibility="invisible"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/tip_export_key" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView30"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/store_recommend"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/waring_export_key"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/textView33"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/store_recommend_tip" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/tip_export_key" />
 
-                        <TextView
-                            android:id="@+id/tv_transfer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/no_network_transfer"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/textView30"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/store_recommend"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_transfer_tip"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/no_network_transfer_tip" />
+                            <TextView
+                                android:id="@+id/textView33"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/store_recommend_tip" />
 
-                        <TextView
-                            android:id="@+id/textView_key"
-                            android:overScrollMode="always"
-                            android:scrollbarStyle="insideInset"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="20dp"
-                            android:background="@color/header_line"
-                            android:clickable="true"
-                            android:enabled="true"
-                            android:focusable="true"
-                            android:longClickable="true"
-                            android:maxLines="6"
-                            android:padding="5dp"
-                            android:scrollbars="vertical"
-                            android:text=""
-                            android:textIsSelectable="true" />
+                            <TextView
+                                android:id="@+id/tv_transfer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/no_network_transfer"
+                                android:textStyle="bold" />
 
-                        <Button
-                            android:id="@+id/button_copy"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="30dp"
-                            android:background="@drawable/button_background"
-                            android:text="@string/copy"
-                            android:textColor="@color/title_name_color" />
+                            <TextView
+                                android:id="@+id/tv_transfer_tip"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/no_network_transfer_tip" />
+
+                            <TextView
+                                android:id="@+id/textView_key"
+                                android:overScrollMode="always"
+                                android:scrollbarStyle="insideInset"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="20dp"
+                                android:background="@color/header_line"
+                                android:clickable="true"
+                                android:enabled="true"
+                                android:focusable="true"
+                                android:longClickable="true"
+                                android:maxLines="6"
+                                android:padding="5dp"
+                                android:scrollbars="vertical"
+                                android:text=""
+                                android:textIsSelectable="true" />
+
+                            <Button
+                                android:id="@+id/button_copy"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginTop="30dp"
+                                android:background="@drawable/button_background"
+                                android:text="@string/copy"
+                                android:textColor="@color/title_name_color" />
+                        </LinearLayout>
+
                     </LinearLayout>
                 </ScrollView>
 
@@ -192,29 +207,45 @@
                             android:layout_gravity="center_horizontal"
                             android:scaleType="fitCenter" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <Switch
+                            android:id="@+id/switch_raw_qr"
+                            android:text="@string/show_raw_qr"
                             android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/waring_export_key"
-                            android:textStyle="bold" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/raw_qrcode_container"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/export_margin"
-                            android:layout_marginRight="@dimen/export_margin"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/store_recommend_qr" />
+                            android:visibility="invisible"
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/imageView_qr"
-                            android:layout_width="300dp"
-                            android:layout_height="300dp"
-                            android:layout_gravity="center_horizontal"
-                            android:scaleType="fitCenter" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/waring_export_key"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/export_margin"
+                                android:layout_marginRight="@dimen/export_margin"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/store_recommend_qr" />
+
+                            <ImageView
+                                android:id="@+id/imageView_qr"
+                                android:layout_width="300dp"
+                                android:layout_height="300dp"
+                                android:layout_gravity="center_horizontal"
+                                android:scaleType="fitCenter" />
+                        </LinearLayout>
+
                     </LinearLayout>
                 </ScrollView>
 
