@@ -64,6 +64,8 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
+import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
+
 /**
  * Created by liuming on 12/05/2018.
  */
@@ -413,7 +415,7 @@ public class Common {
             public boolean onSuccess(JSONObject jsonObject, String url) {
                 Log.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
-                new Thread(new Runnable() {
+                Execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -433,7 +435,7 @@ public class Common {
                             Looper.loop();
                         }
                     }
-                }).start();
+                });
                 return false;
             }
 
@@ -464,7 +466,7 @@ public class Common {
             public boolean onSuccess(JSONObject jsonObject, String url) {
                 Log.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
-                new Thread(new Runnable() {
+                Execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -485,7 +487,7 @@ public class Common {
                             Looper.loop();
                         }
                     }
-                }).start();
+                });
                 return false;
             }
 
@@ -514,7 +516,7 @@ public class Common {
             public boolean onSuccess(JSONObject jsonObject, String url) {
                 Log.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
-                new Thread(new Runnable() {
+                Execute(new Runnable() {
                     @Override
                     public void run() {
                         WalletFile missingWallet = BipaWalletFile.findMissingWallet(safePK, pwd, saltIVSeed);
@@ -551,9 +553,10 @@ public class Common {
                             Looper.loop();
                         }
                     }
-                }).start();
+                });
                 return false;
             }
+
             @Override
             public void onFailure(String szValue, String url) {
                 Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
@@ -583,7 +586,7 @@ public class Common {
             public boolean onSuccess(JSONObject jsonObject, String url) {
                 Log.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
-                new Thread(new Runnable() {
+                Execute(new Runnable() {
                     @Override
                     public void run() {
                         String safePK = BipaCredential.getSafePK(bipaWalletFile, pwd);
@@ -614,9 +617,10 @@ public class Common {
                             Looper.loop();
                         }
                     }
-                }).start();
+                });
                 return false;
             }
+
             @Override
             public void onFailure(String szValue, String url) {
                 Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
@@ -641,7 +645,7 @@ public class Common {
             @Override
             public boolean onSuccess(JSONObject jsonObject, String url) {
                 final String saltIVSeed = jsonObject.optString("msg");
-                new Thread(new Runnable() {
+                Execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -660,9 +664,10 @@ public class Common {
                             Looper.loop();
                         }
                     }
-                }).start();
+                });
                 return false;
             }
+
             @Override
             public void onFailure(String szValue, String url) {
                 Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();

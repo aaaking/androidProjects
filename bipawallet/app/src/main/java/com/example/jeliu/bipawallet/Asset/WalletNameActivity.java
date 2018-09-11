@@ -1,11 +1,8 @@
 package com.example.jeliu.bipawallet.Asset;
 
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
@@ -13,9 +10,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,20 +37,18 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 /**
  * Created by liuming on 06/05/2018.
@@ -145,7 +137,7 @@ public class WalletNameActivity extends BaseActivity {
     private void exportPrivateKey(final String password) {
         showWaiting();
         final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
-        new Thread(new Runnable() {
+        Execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -173,7 +165,7 @@ public class WalletNameActivity extends BaseActivity {
                 }
                 hideWaiting();
             }
-        }).start();
+        });
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
 //        param.put("address", walletAddress);
@@ -184,7 +176,7 @@ public class WalletNameActivity extends BaseActivity {
     private void exportKeystore(final String password) {
         showWaiting();
         final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
-        new Thread(new Runnable() {
+        Execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -221,7 +213,7 @@ public class WalletNameActivity extends BaseActivity {
                 }
                 hideWaiting();
             }
-        }).start();
+        });
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
 //        param.put("password", password);
@@ -232,7 +224,7 @@ public class WalletNameActivity extends BaseActivity {
     private void deleteWallet(final String password) {
         showWaiting();
         final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
-        new Thread(new Runnable() {
+        Execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -256,7 +248,7 @@ public class WalletNameActivity extends BaseActivity {
                 }
                 hideWaiting();
             }
-        }).start();
+        });
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
 //        param.put("address", walletAddress);

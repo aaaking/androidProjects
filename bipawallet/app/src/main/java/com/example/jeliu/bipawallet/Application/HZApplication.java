@@ -5,7 +5,6 @@ import android.app.Application;
 
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Network.RequestManager;
-import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +36,6 @@ public class HZApplication extends Application {
         s_inst = this;
         RequestManager.init(this);
         Common.setWalletPath(this);
+        com.example.jeliu.bipawallet.util.CacheConstantKt.initConstant(this);
     }
 }
