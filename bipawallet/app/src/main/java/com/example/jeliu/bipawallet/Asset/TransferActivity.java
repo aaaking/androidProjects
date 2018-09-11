@@ -2,14 +2,12 @@ package com.example.jeliu.bipawallet.Asset;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.RecordAdapter;
@@ -19,21 +17,16 @@ import com.example.jeliu.bipawallet.Common.PriceManager;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,15 +34,11 @@ import butterknife.OnClick;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.LineChartView;
 
 /**
@@ -182,7 +171,6 @@ public class TransferActivity extends BaseActivity {
             showWaiting();
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.BALANCE_CHART + "?address="+address, null, this);
-            //request.requestGet(Constant.BALANCE_CHART, null, this);
         }
     }
 
