@@ -15,6 +15,7 @@
  */
 
 package com.example.jeliu.zxingsimplify.zxing.camera;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -24,7 +25,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.zxingsimplify.zxing.camera.open.OpenCameraInterface;
 
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class CameraManager {
 		} catch (RuntimeException re) {
 			// Driver failed
 			Log.w(TAG, "Camera rejected parameters. Setting only minimal safe-mode parameters");
-			Log.i(TAG, "Resetting to saved camera params: " + parametersFlattened);
+			LogUtil.INSTANCE.i(TAG, "Resetting to saved camera params: " + parametersFlattened);
 			// Reset:
 			if (parametersFlattened != null) {
 				parameters = theCamera.getParameters();

@@ -19,6 +19,8 @@ package com.example.jeliu.zxingsimplify.zxing.camera.open;
 import android.hardware.Camera;
 import android.util.Log;
 
+import com.example.jeliu.bipawallet.util.LogUtil;
+
 public class OpenCameraInterface {
 
 	private static final String TAG = OpenCameraInterface.class.getName();
@@ -58,14 +60,14 @@ public class OpenCameraInterface {
 
 		Camera camera;
 		if (cameraId < numCameras) {
-			Log.i(TAG, "Opening camera #" + cameraId);
+			LogUtil.INSTANCE.i(TAG, "Opening camera #" + cameraId);
 			camera = Camera.open(cameraId);
 		} else {
 			if (explicitRequest) {
 				Log.w(TAG, "Requested camera does not exist: " + cameraId);
 				camera = null;
 			} else {
-				Log.i(TAG, "No camera facing back; returning camera #0");
+				LogUtil.INSTANCE.i(TAG, "No camera facing back; returning camera #0");
 				camera = Camera.open(0);
 			}
 		}

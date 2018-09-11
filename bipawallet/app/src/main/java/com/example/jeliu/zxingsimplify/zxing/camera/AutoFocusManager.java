@@ -23,6 +23,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.jeliu.bipawallet.util.LogUtil;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.RejectedExecutionException;
@@ -50,7 +52,7 @@ public class AutoFocusManager implements Camera.AutoFocusCallback {
 		this.camera = camera;
 		String currentFocusMode = camera.getParameters().getFocusMode();
 		useAutoFocus = FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
-		Log.i(TAG, "Current focus mode '" + currentFocusMode + "'; use auto focus? " + useAutoFocus);
+		LogUtil.INSTANCE.i(TAG, "Current focus mode '" + currentFocusMode + "'; use auto focus? " + useAutoFocus);
 		start();
 	}
 

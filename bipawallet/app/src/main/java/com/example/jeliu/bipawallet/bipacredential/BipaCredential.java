@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,7 +54,7 @@ public class BipaCredential {
         try {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = keyFactory.generateSecret(spec).getEncoded();
-            Log.i("zzh-getSaltIV", Numeric.toHexStringNoPrefix(hash));
+            LogUtil.INSTANCE.i("zzh-getSaltIV", Numeric.toHexStringNoPrefix(hash));
             result = Numeric.toHexStringNoPrefix(hash);
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,7 +63,7 @@ public class BipaCredential {
     }
 
     public static WalletFile encryptToSafePK(String pwd, String pk, String saltIVSeed) {
-        Log.i("zzh-pk", pk);
+        LogUtil.INSTANCE.i("zzh-pk", pk);
 //        SafePK safePK = new SafePK();
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(pk, 16));
 //        String seed = getSaltIV(pwd);
@@ -80,7 +81,7 @@ public class BipaCredential {
     public static void encryptPK(String pwd, Credentials credentials, String saltIVSeed) {
         try {
             WalletFile missingWallet = encryptToSafePK(pwd, credentials.getEcKeyPair().getPrivateKey().toString(16), saltIVSeed);
-            Log.i("zzh-safePK-to-encrypt", missingWallet.getCrypto().getCiphertext());
+            LogUtil.INSTANCE.i("zzh-safePK-to-encrypt", missingWallet.getCrypto().getCiphertext());
             ECKeyPair keyPair = ECKeyPair.create(new BigInteger(missingWallet.getCrypto().getCiphertext(), 16));
             WalletFile walletFile = Wallet.createLight(pwd, keyPair);//its address is wrong
             walletFile.setAddress(credentials.getAddress().substring(2).toLowerCase());
@@ -94,7 +95,7 @@ public class BipaCredential {
             localEditor.putString(credentials.getAddress().substring(2).toLowerCase(), jsonStr);
             localEditor.apply();
         } catch (Exception e) {
-            Log.i("zzh-encryptPK-err", e.toString());
+            LogUtil.INSTANCE.i("zzh-encryptPK-err", e.toString());
         }
     }
 
@@ -110,16 +111,16 @@ public class BipaCredential {
             BipaWalletFile.duplicateToEth(walletFile, bipaWalletFile);
             ECKeyPair keyPair = Wallet.decrypt(pwd, walletFile);
             String safePK = keyPair.getPrivateKey().toString(16);
-            Log.i("zzh-safePK-decrypted", safePK);
+            LogUtil.INSTANCE.i("zzh-safePK-decrypted", safePK);
             ///////
             String seed = getSaltIV(pwd);
             byte[] iv = seed.substring(0, 16).getBytes();
             byte[] salt = seed.substring(0, 32).getBytes();
             byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
             ECKeyPair pair = ECKeyPair.create(datas);
-            Log.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
+            LogUtil.INSTANCE.i("zzh-PK-decrypted", pair.getPrivateKey().toString(16));
         } catch (Exception e) {
-            Log.i("zzh-decryptPK-err", e.toString());
+            LogUtil.INSTANCE.i("zzh-decryptPK-err", e.toString());
         }
     }
 
@@ -134,10 +135,10 @@ public class BipaCredential {
             pk =  pair.getPrivateKey().toString(16);
         } catch (CipherException e) {
             e.printStackTrace();
-            Log.i("zzh-getPK-err", e.toString());
+            LogUtil.INSTANCE.i("zzh-getPK-err", e.toString());
         }
 //        byte[] datas = retrieveData(pwd, Numeric.hexStringToByteArray(safePK), iv, salt);
-        Log.i("zzh-PK-decrypted", pk);
+        LogUtil.INSTANCE.i("zzh-PK-decrypted", pk);
         return pk;
     }
 
@@ -148,9 +149,9 @@ public class BipaCredential {
             BipaWalletFile.duplicateToEth(walletFile, bipaWalletFile);
             ECKeyPair keyPair = Wallet.decrypt(pwd, walletFile);
             safePK = keyPair.getPrivateKey().toString(16) + bipaWalletFile.miss_mac;
-            Log.i("zzh-getSafePK-decrypted", safePK);
+            LogUtil.INSTANCE.i("zzh-getSafePK-decrypted", safePK);
         } catch (Exception e) {
-            Log.i("zzh-getSafePK-err", e.toString());
+            LogUtil.INSTANCE.i("zzh-getSafePK-err", e.toString());
         }
         return safePK;
     }

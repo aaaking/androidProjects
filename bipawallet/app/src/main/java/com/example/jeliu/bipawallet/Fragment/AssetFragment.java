@@ -39,6 +39,7 @@ import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
 
 import org.json.JSONArray;
@@ -260,7 +261,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     public void gotoPay(String scanCode) {
-        Log.i("zzh-scanCode", scanCode);
+        LogUtil.INSTANCE.i("zzh-scanCode", scanCode);
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
@@ -345,7 +346,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 request.requestPost("game.bipa.io/api/charge/platform", param, this);
             }
             request.requestPost("http://192.168.1.212:1111/orders", param, this);
-            Log.i("zzh", param.toString());
+            LogUtil.INSTANCE.i("zzh", param.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -504,7 +505,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
                         String hexValue = Numeric.toHexString(signedMessage);
                         EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
-                        Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.getTransactionHash());
+                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.getTransactionHash());
                         final JSONObject js = new JSONObject();
                         js.put("tx", ethSendTransaction.getTransactionHash());
                         getActivity().runOnUiThread(new Runnable() {
@@ -534,7 +535,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         BigInteger decimal = contractWxc.decimals().send();
                         BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
                         TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
-                        Log.i("zzh", "https://rinkeby.etherscan.io/tx/" + transferReceipt.getTransactionHash());
+                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + transferReceipt.getTransactionHash());
                         final JSONObject js = new JSONObject();
                         js.put("tx", transferReceipt.getTransactionHash());
                         getActivity().runOnUiThread(new Runnable() {

@@ -27,6 +27,8 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.jeliu.bipawallet.util.LogUtil;
+
 /**
  * Finishes an activity after a period of inactivity if the device is on battery
  * power.
@@ -112,7 +114,7 @@ public class InactivityTimer {
 		protected Object doInBackground(Object... objects) {
 			try {
 				Thread.sleep(INACTIVITY_DELAY_MS);
-				Log.i(TAG, "Finishing activity due to inactivity");
+				LogUtil.INSTANCE.i(TAG, "Finishing activity due to inactivity");
 				activity.finish();
 			} catch (InterruptedException e) {
 				// continue without killing

@@ -32,6 +32,7 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -413,7 +414,7 @@ public class Common {
         request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
             public boolean onSuccess(JSONObject jsonObject, String url) {
-                Log.i("zzh-getsaltjson", jsonObject.toString());
+                LogUtil.INSTANCE.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
                 Execute(new Runnable() {
                     @Override
@@ -464,7 +465,7 @@ public class Common {
         request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
             public boolean onSuccess(JSONObject jsonObject, String url) {
-                Log.i("zzh-getsaltjson", jsonObject.toString());
+                LogUtil.INSTANCE.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
                 Execute(new Runnable() {
                     @Override
@@ -514,7 +515,7 @@ public class Common {
         request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
             public boolean onSuccess(JSONObject jsonObject, String url) {
-                Log.i("zzh-getsaltjson", jsonObject.toString());
+                LogUtil.INSTANCE.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
                 Execute(new Runnable() {
                     @Override
@@ -584,7 +585,7 @@ public class Common {
         request.requestGet(Constant.GET_SALT_IV + "?password=" + pwd, null, new RequestResult() {
             @Override
             public boolean onSuccess(JSONObject jsonObject, String url) {
-                Log.i("zzh-getsaltjson", jsonObject.toString());
+                LogUtil.INSTANCE.i("zzh-getsaltjson", jsonObject.toString());
                 final String saltIVSeed = jsonObject.optString("msg");
                 Execute(new Runnable() {
                     @Override
