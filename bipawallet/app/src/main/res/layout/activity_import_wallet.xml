@@ -126,7 +126,7 @@
                             android:id="@+id/ck_cryto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="是否经过比派加密"
+                            android:text="@string/whether_bipa_encrypted"
                             android:layout_marginLeft="20dp" />
 
                     </LinearLayout>
@@ -268,7 +268,7 @@
                             android:id="@+id/ck_cryto_pk"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="是否经过比派加密"
+                            android:text="@string/whether_bipa_encrypted"
                             android:layout_marginLeft="20dp" />
 
                     </LinearLayout>
