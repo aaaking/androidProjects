@@ -104,7 +104,12 @@ public class TransferActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setupView();
-        setupData();
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        if (address != null && address.trim().length() > 0) {
+            showWaiting();
+            setupData(address);
+            loadChartsData(address);
+        }
 
         chart = (LineChartView)findViewById(R.id.chart);
         chart.setInteractive(true);
@@ -130,13 +135,9 @@ public class TransferActivity extends BaseActivity {
         listView.setAdapter(adapter);
     }
 
-    private void setupData() {
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
-            showWaiting();
-            HZHttpRequest request = new HZHttpRequest();
-            request.requestGet(Constant.TRANSCTION_URL + "?address="+address, null, this);
-        }
+    private void setupData(String address) {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.TRANSCTION_URL + "?address="+address, null, this);
     }
 
     @Override
@@ -147,8 +148,7 @@ public class TransferActivity extends BaseActivity {
         if (url.contains(Constant.TRANSCTION_URL)) {
             try {
                 transactions = jsonObject.getJSONArray("txhashs");
-                //refresh();
-                loadChartsData();
+                refresh();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -159,19 +159,14 @@ public class TransferActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            refresh();
         }
 
         return false;
     }
 
-    private void loadChartsData() {
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
-            showWaiting();
-            HZHttpRequest request = new HZHttpRequest();
-            request.requestGet(Constant.BALANCE_CHART + "?address="+address, null, this);
-        }
+    private void loadChartsData(String address) {
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.BALANCE_CHART + "?address="+address, null, this);
     }
 
     private void refresh() {
