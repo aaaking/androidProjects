@@ -505,9 +505,13 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
                         String hexValue = Numeric.toHexString(signedMessage);
                         EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + ethSendTransaction.getTransactionHash());
+                        String tx = ethSendTransaction.getTransactionHash();
+                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                        if (tx == null) {
+                            throw new Exception("transfer fail");
+                        }
                         final JSONObject js = new JSONObject();
-                        js.put("tx", ethSendTransaction.getTransactionHash());
+                        js.put("tx", tx);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -516,7 +520,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         });
                     } catch (Exception e) {
                         Looper.prepare();
-                        Toast.makeText(getActivity(), "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                         hideWaiting();
                         Looper.loop();
@@ -535,9 +539,13 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         BigInteger decimal = contractWxc.decimals().send();
                         BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
                         TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + transferReceipt.getTransactionHash());
+                        String tx = transferReceipt.getTransactionHash();
+                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                        if (tx == null) {
+                            throw new Exception("transfer fail");
+                        }
                         final JSONObject js = new JSONObject();
-                        js.put("tx", transferReceipt.getTransactionHash());
+                        js.put("tx", tx);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -546,7 +554,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         });
                     } catch (Exception e) {
                         Looper.prepare();
-                        Toast.makeText(getActivity(), "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                         hideWaiting();
                         Looper.loop();
