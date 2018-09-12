@@ -5,7 +5,7 @@ package com.example.jeliu.bipawallet.Common;
  */
 
 public class Constant {
-    public static String BASE_URL = "https://wallet.bipa.io";//"http://192.168.1.131:3000";////http://47.52.224.7:16679";
+    public static String BASE_URL = "https://wallet.bipa.io";//"http://192.168.1.131:16679";////http://47.52.224.7:16679";
 
     public static String CREATE_ACCOUNT_URL = BASE_URL + "/createAccount";
     //announcement
@@ -29,6 +29,8 @@ public class Constant {
 
     //sendERC20Token
     public static String SEND_ERC_URL = BASE_URL + "/sendERC20Token";
+
+    public static String SEND_BY_WEB3J = BASE_URL + "/sendTokenByWeb3j";
 
     //queryTransction
     public static String QUERY_TRANSCTION_URL = BASE_URL + "/queryTransaction";

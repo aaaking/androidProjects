@@ -344,10 +344,12 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             param.put("time",  time);
             md5.update((time + "bipa321" + tx).getBytes());
             param.put("sign", Util.bytesToHex(md5.digest()));
+            // wallet node server
+            request.requestPost(Constant.SEND_BY_WEB3J, param, this);
             if (uid != null && uid.trim().length() > 0) {
                 request.requestPost("game.bipa.io/api/charge/platform", param, this);
             }
-            request.requestPost("http://192.168.1.212:1111/orders", param, this);
+//            request.requestPost("http://192.168.1.212:1111/orders", param, this);
             LogUtil.INSTANCE.i("zzh", param.toString());
         } catch (Exception e) {
             e.printStackTrace();
