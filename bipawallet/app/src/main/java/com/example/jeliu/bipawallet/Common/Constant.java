@@ -64,4 +64,6 @@ public class Constant {
     public static int create_wallet_request_code = 101;
     public static int import_wallet_request_code = 102;
     public static int manage_wallet_request_code = 103;
+
+    public static String ADDRESS_WXC = "0x99c3a52653fa192606bfd8b9c276028022feb40e";
 }

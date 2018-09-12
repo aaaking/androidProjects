@@ -538,7 +538,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 public void run() {
                     try {
                         Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                        Wxc contractWxc = Wxc.load("0x99c3a52653fa192606bfd8b9c276028022feb40e", Common.getWeb3j(), credentials, ManagedTransaction.GAS_PRICE, new BigDecimal(gasLimit).toBigInteger());
+                        Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(gasLimit).toBigInteger());
                         BigInteger decimal = contractWxc.decimals().send();
                         BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
                         TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
