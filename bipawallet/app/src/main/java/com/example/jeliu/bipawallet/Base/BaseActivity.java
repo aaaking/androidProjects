@@ -43,6 +43,7 @@ import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.zxingsimplify.zxing.Activity.CaptureActivity;
 
 //import org.bouncycastle.util.encoders.Hex;
@@ -266,6 +267,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     @Override
     public void onFailure(String szValue, String url) {
+        LogUtil.INSTANCE.i("request error: " + szValue + " and url " + url);
         hideWaiting();
         showToastMessage(szValue);
     }

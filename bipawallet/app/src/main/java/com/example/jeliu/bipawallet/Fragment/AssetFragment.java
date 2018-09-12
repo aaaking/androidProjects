@@ -503,7 +503,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
                         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
                         RawTransaction rawTransaction =
-                                RawTransaction.createEtherTransaction(nonce, ManagedTransaction.GAS_PRICE,
+                                RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(),
                                         new BigDecimal(gasLimit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
                         // sign & send our transaction
                         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);

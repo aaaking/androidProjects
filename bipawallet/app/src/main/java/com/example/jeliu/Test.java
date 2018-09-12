@@ -28,6 +28,9 @@ public class Test {
         fs.add(a);
         fs.add(b);
         System.out.println(fs.toString());
+        //
+        System.out.println(String.valueOf(2.222));
+        System.out.println(String.valueOf(2.00));
 
         //
         Date date = new Date();
