@@ -63,13 +63,13 @@ public class StepFragment extends BaseFragment {
 
     public void refreshData() {
         HZWallet wallet = HZWalletManager.getInst().getWallet(address);
-        if (wallet != null) {
+        if (wallet != null && tvMoney != null) {
             double total = 0;
             for (HZToken token : wallet.tokenList) {
                 double value = token.value;
                 total += value;
             }
-            tvMoney.setText(""+total);
+            tvMoney.setText(""+ total);
         }
     }
 
