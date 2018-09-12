@@ -73,6 +73,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
+
 /**
  * Created by liuming on 05/05/2018.
  */
@@ -491,7 +493,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         if (payToken.equalsIgnoreCase("eth")) {
 //            request.requestPost(Constant.SEND_ETH_URL, param, this);
-            Thread thread = new Thread(new Runnable() {
+            Execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -508,7 +510,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         String tx = ethSendTransaction.getTransactionHash();
                         LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
                         if (tx == null) {
-                            throw new Exception("transfer fail");
+                            throw new Exception("transfer fail because txhash null");
                         }
                         final JSONObject js = new JSONObject();
                         js.put("tx", tx);
@@ -528,9 +530,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                     hideWaiting();
                 }
             });
-            thread.start();
         } else if (payToken.equalsIgnoreCase("wxc")) {
-            new Thread(new Runnable() {
+            Execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -542,7 +543,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                         String tx = transferReceipt.getTransactionHash();
                         LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
                         if (tx == null) {
-                            throw new Exception("transfer fail");
+                            throw new Exception("transfer fail because txhash null");
                         }
                         final JSONObject js = new JSONObject();
                         js.put("tx", tx);
@@ -561,7 +562,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                     }
                     hideWaiting();
                 }
-            }).start();
+            });
         } else {
             request.requestPost(Constant.SEND_ERC_URL, param, this);
         }
