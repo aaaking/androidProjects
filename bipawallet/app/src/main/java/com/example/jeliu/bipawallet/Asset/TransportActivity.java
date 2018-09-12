@@ -2,7 +2,6 @@ package com.example.jeliu.bipawallet.Asset;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -22,11 +21,9 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Record.RecordDetailsActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,15 +78,18 @@ public class TransportActivity extends BaseActivity {
     private String token;
     private boolean isSimple;
 
-    @OnClick({R.id.iv_que, R.id.textView_que}) void onQues() {
-        gotoWebView(Common.getCenterUrl() +"#question18");
+    @OnClick({R.id.iv_que, R.id.textView_que})
+    void onQues() {
+        gotoWebView(Common.getCenterUrl() + "#question18");
     }
 
-    @OnClick(R.id.imageView_question) void onQuesFee() {
-        gotoWebView(Common.getCenterUrl() +"#question14");
+    @OnClick(R.id.imageView_question)
+    void onQuesFee() {
+        gotoWebView(Common.getCenterUrl() + "#question14");
     }
 
-    @OnClick(R.id.imageView_eye) void onEye() {
+    @OnClick(R.id.imageView_eye)
+    void onEye() {
         passwordShown = !passwordShown;
         if (passwordShown) {
             etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -100,11 +100,13 @@ public class TransportActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.imageView_scan) void onScan() {
+    @OnClick(R.id.imageView_scan)
+    void onScan() {
         scanCode();
     }
 
-    @OnClick(R.id.button_done) void onTrade() {
+    @OnClick(R.id.button_done)
+    void onTrade() {
         HZHttpRequest request = new HZHttpRequest();
         Map<String, String> param = new HashMap<>();
         if (!checkInputs(tvValue, etGas, etPrice, etAddress, etPassword)) {
@@ -122,8 +124,8 @@ public class TransportActivity extends BaseActivity {
             param.put("gasprice", etPrice.getText().toString());
             param.put("gaslimit", etGas.getText().toString());
         } else {
-            param.put("gasprice", currentGasPrice+"");
-            param.put("gaslimit", gasLimit+"");
+            param.put("gasprice", currentGasPrice + "");
+            param.put("gaslimit", gasLimit + "");
         }
 
         if (token.equalsIgnoreCase("eth")) {
@@ -172,17 +174,17 @@ public class TransportActivity extends BaseActivity {
             try {
                 gasLimit = jsonObject.getDouble("gasLimit");
                 UserInfoManager.getInst().gasLimited = gasLimit;
-                etGas.setText(gasLimit+"");
+                etGas.setText(gasLimit + "");
 
                 gasPrice = jsonObject.getDouble("gasPrice");
                 UserInfoManager.getInst().gasPrice = gasPrice;
-                etPrice.setText(gasPrice+"");
+                etPrice.setText(gasPrice + "");
                 currentGasPrice = gasPrice;
 
-                Double d = new Double(gasPrice/ Common.s_ether*gasLimit);
+                Double d = new Double(gasPrice / Common.s_ether * gasLimit);
                 String format = String.format("%f", d);
 
-                tvSeek.setText(format+" ether");
+                tvSeek.setText(format + " ether");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -212,7 +214,7 @@ public class TransportActivity extends BaseActivity {
         Map<String, String> param = new HashMap<>();
         param.put("txhash", tx);
         HZHttpRequest request = new HZHttpRequest();
-        request.requestGet(Constant.QUERY_TRANSCTION_URL+ "?txhash="+tx, null, this);
+        request.requestGet(Constant.QUERY_TRANSCTION_URL + "?txhash=" + tx, null, this);
     }
 
     private void gotoDetails(JSONObject jsonObject) {
@@ -253,10 +255,10 @@ public class TransportActivity extends BaseActivity {
                     progress = 1;
                 }
                 double fee = gasPrice * progress;
-               // etSimpleFee.setText(fee+"");
-                Double d = new Double(fee/Common.s_ether*gasLimit);
+                // etSimpleFee.setText(fee+"");
+                Double d = new Double(fee / Common.s_ether * gasLimit);
                 String format = String.format("%f", d);
-                tvSeek.setText(format+" ether");
+                tvSeek.setText(format + " ether");
                 currentGasPrice = fee;
             }
 
