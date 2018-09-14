@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion compileSdk
@@ -43,6 +44,10 @@ android {
 //        targetCompatibility 1.8
 //        sourceCompatibility 1.8
 //    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 //    packagingOptions {
 //
 //        exclude 'META-INF/DEPENDENCIES.txt'
@@ -60,9 +65,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     api 'com.squareup.picasso:picasso:2.5.2'
@@ -71,10 +76,30 @@ dependencies {
     api supportDependencies.design
     api supportDependencies.vector
 
+    // Dagger dependencies
+    implementation "com.google.dagger:dagger:$dagger2Ver"
+    implementation "com.google.dagger:dagger-android-support:$dagger2Ver"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger2Ver"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger2Ver"
+
+    // ReactiveX 설정
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVer"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVer"
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVer"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVer"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVer"
+
+    implementation "com.google.code.gson:gson:$gsonVer"
+
+    // okHttp
+    implementation "com.squareup.okhttp3:okhttp:$okHttpVer"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVer"
+
     api 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    testCompile 'junit:junit:4.12'
-    api 'com.makeramen:roundedimageview:2.3.0'
+    testImplementation 'junit:junit:4.12'
     api 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     api "de.halfbit:pinned-section-listview:1.0.0"
     api 'com.github.lecho:hellocharts-android:v1.5.8'
@@ -82,14 +107,11 @@ dependencies {
     api 'com.makeramen:roundedimageview:2.3.0'
     api 'com.google.zxing:core:3.3.0'
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.1' //https://github.com/ReactiveX/RxJava/releases
-
     implementation 'com.android.support:multidex:1.0.3'
 //    api 'org.web3j:core:3.5.0'
     api 'org.web3j:core:3.3.1-android'
     api 'com.android.volley:volley:1.1.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 }
 repositories {
