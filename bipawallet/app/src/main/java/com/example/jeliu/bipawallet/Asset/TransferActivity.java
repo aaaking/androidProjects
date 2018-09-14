@@ -276,7 +276,7 @@ public class TransferActivity extends BaseActivity {
 
             List<PointValue> values = new ArrayList<PointValue>();
             List<AxisValue> axisValues = new ArrayList<AxisValue>();
-            for (int j = 0; j < Math.min(numberOfPoints, realChartData.size()); ++j) {
+            for (int j = Math.max(0, realChartData.size() - numberOfPoints); j < realChartData.size(); ++j) {
                 ChartDataNode node = realChartData.get(j);
                 values.add(new PointValue(j, (float) node.price));
                 axisValues.add(new AxisValue(j).setLabel(node.formattedTime));
