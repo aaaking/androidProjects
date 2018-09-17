@@ -21,9 +21,9 @@ ext {
 buildscript {
     ext.kotlin_version = '1.2.61'
     ext.rxJavaVer = '2.2.1'//https://github.com/ReactiveX/RxJava/releases
-    ext.rxAndroidVer='2.1.0'
+    ext.rxAndroidVer = '2.1.0'
     ext.retrofitVer = '2.3.0'
-    ext.okHttpVer   = '3.9.0'
+    ext.okHttpVer = '3.9.0'
     ext.gsonVer = '2.8.1'
     ext.dagger2Ver = '2.11'
     repositories {
@@ -46,7 +46,10 @@ allprojects {
         jcenter()
         google()
         maven { url "https://jitpack.io" }
-        maven { url "https://maven.google.com" }
+        maven {
+            url "https://maven.google.com/"
+            name 'Google'
+        }
     }
 }
 

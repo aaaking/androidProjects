@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,7 +21,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.Network.IWallet;
 import com.example.jeliu.bipawallet.Network.NetworkUtil;
@@ -32,6 +30,7 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -373,8 +372,8 @@ public class Common {
      */
     public static String getVersion() {
         try {
-            PackageManager manager = HZApplication.getInst().getPackageManager();
-            PackageInfo info = manager.getPackageInfo(HZApplication.getInst().getPackageName(), 0);
+            PackageManager manager = CacheConstantKt.getSAppContext().getPackageManager();
+            PackageInfo info = manager.getPackageInfo(CacheConstantKt.getSAppContext().getPackageName(), 0);
             String version = info.versionName;
             return version;
         } catch (Exception e) {
@@ -401,8 +400,8 @@ public class Common {
     }
 
     public static Credentials loadWalletByPrivateKey(final String pwd, final String pk, final IWallet cb) {
-        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
-            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetAvailable(CacheConstantKt.getSAppContext())) {
+            Toast.makeText(CacheConstantKt.getSAppContext(), CacheConstantKt.getSAppContext().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
             cb.onWalletResult(null, "");
             return null;
         }
@@ -432,7 +431,7 @@ public class Common {
                             Looper.prepare();
                             cb.onWalletResult(null, "");
                             e.printStackTrace();
-                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
                     }
@@ -442,7 +441,7 @@ public class Common {
 
             @Override
             public void onFailure(String szValue, String url) {
-                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
                 cb.onWalletResult(null, "");
             }
         });
@@ -450,8 +449,8 @@ public class Common {
     }
 
     public static Credentials loadWalletByKeyStore(final String pwd, final String ks, final IWallet cb) {
-        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
-            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetAvailable(CacheConstantKt.getSAppContext())) {
+            Toast.makeText(CacheConstantKt.getSAppContext(), CacheConstantKt.getSAppContext().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
             cb.onWalletResult(null, "");
             return null;
         }
@@ -475,7 +474,7 @@ public class Common {
                                 throw new Exception("get salt error");
                             }
                             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(destDir + File.separator + fileName)));
-//            new OutputStreamWriter(HZApplication.getInst().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
+//            new OutputStreamWriter(CacheConstantKt.getSAppContext().openFileOutput(destDir + File.separator + fileName, Context.MODE_PRIVATE));
                             outputStreamWriter.write(ks);
                             outputStreamWriter.close();
                             mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
@@ -484,7 +483,7 @@ public class Common {
                         } catch (Exception e) {
                             Looper.prepare();
                             cb.onWalletResult(null, null);
-                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
                     }
@@ -494,7 +493,7 @@ public class Common {
 
             @Override
             public void onFailure(String szValue, String url) {
-                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
                 cb.onWalletResult(null, "");
             }
         });
@@ -502,8 +501,8 @@ public class Common {
     }
 
     public static Credentials loadWalletByPKBipa(final String pwd, final String safePK, final IWallet cb) {
-        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
-            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetAvailable(CacheConstantKt.getSAppContext())) {
+            Toast.makeText(CacheConstantKt.getSAppContext(), CacheConstantKt.getSAppContext().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
             cb.onWalletResult(null, "");
             return null;
         }
@@ -525,7 +524,7 @@ public class Common {
                         if (saltIVSeed == null || saltIVSeed.trim().length() < 32 || TextUtils.isEmpty(safePK) || safePK.length() <= 64 || TextUtils.isEmpty(pk)) {
                             Looper.prepare();
                             cb.onWalletResult(null, null);
-                            Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常", Toast.LENGTH_SHORT).show();
                             Looper.loop();
                             return;
                         }
@@ -540,7 +539,7 @@ public class Common {
                             BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
                             bipaWalletFile.miss_mac = safePK.substring(64);//missingWallet.getCrypto().getMac();
 
-                            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                            SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                             SharedPreferences.Editor localEditor = sp.edit();
                             Gson gson = new Gson();
                             String jsonStr = gson.toJson(bipaWalletFile);
@@ -550,7 +549,7 @@ public class Common {
                         } catch (Exception e) {
                             Looper.prepare();
                             cb.onWalletResult(null, null);
-                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
                     }
@@ -560,7 +559,7 @@ public class Common {
 
             @Override
             public void onFailure(String szValue, String url) {
-                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
                 cb.onWalletResult(null, "");
             }
         });
@@ -568,8 +567,8 @@ public class Common {
     }
 
     public static Credentials loadWalletByKSBipa(final String pwd, final String ks, final IWallet cb) {
-        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
-            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetAvailable(CacheConstantKt.getSAppContext())) {
+            Toast.makeText(CacheConstantKt.getSAppContext(), CacheConstantKt.getSAppContext().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
             cb.onWalletResult(null, "");
             return null;
         }
@@ -596,7 +595,7 @@ public class Common {
                         if (saltIVSeed == null || saltIVSeed.trim().length() < 32 || TextUtils.isEmpty(safePK) || TextUtils.isEmpty(pk) || TextUtils.isEmpty(bipaWalletFile.miss_mac) || bipaWalletFile.miss_mac.length() <= 0) {
                             Looper.prepare();
                             cb.onWalletResult(null, null);
-                            Toast.makeText(HZApplication.getInst(), "导入异常", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常", Toast.LENGTH_SHORT).show();
                             Looper.loop();
                             return;
                         }
@@ -606,7 +605,7 @@ public class Common {
                             String fileName = WalletUtils.generateWalletFile(pwd, keyPair, destDir, false);
                             mCredentials = WalletUtils.loadCredentials(pwd, destDir + File.separator + fileName);
                             //
-                            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                            SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                             SharedPreferences.Editor localEditor = sp.edit();
                             localEditor.putString(mCredentials.getAddress().substring(2).toLowerCase(), ks.replace("&quot;", "\""));
                             localEditor.apply();
@@ -614,7 +613,7 @@ public class Common {
                         } catch (Exception e) {
                             Looper.prepare();
                             cb.onWalletResult(null, null);
-                            Toast.makeText(HZApplication.getInst(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
                     }
@@ -624,7 +623,7 @@ public class Common {
 
             @Override
             public void onFailure(String szValue, String url) {
-                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
                 cb.onWalletResult(null, "");
             }
         });
@@ -632,8 +631,8 @@ public class Common {
     }
 
     public static Credentials createLocalWallet(final String pwd, final IWallet cb) {
-        if (!NetworkUtil.isNetAvailable(HZApplication.getInst())) {
-            Toast.makeText(HZApplication.getInst(), HZApplication.getInst().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetAvailable(CacheConstantKt.getSAppContext())) {
+            Toast.makeText(CacheConstantKt.getSAppContext(), CacheConstantKt.getSAppContext().getString(R.string.network_exception), Toast.LENGTH_SHORT).show();
             cb.onWalletResult(null, "");
             return null;
         }
@@ -660,7 +659,7 @@ public class Common {
                         } catch (Exception e) {
                             Looper.prepare();
                             cb.onWalletResult(null, "");
-                            Toast.makeText(HZApplication.getInst(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CacheConstantKt.getSAppContext(), "创建异常：" + e.toString(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                             Looper.loop();
                         }
@@ -671,7 +670,7 @@ public class Common {
 
             @Override
             public void onFailure(String szValue, String url) {
-                Toast.makeText(HZApplication.getInst(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CacheConstantKt.getSAppContext(), "导入异常：" + szValue, Toast.LENGTH_SHORT).show();
                 cb.onWalletResult(null, "");
             }
         });

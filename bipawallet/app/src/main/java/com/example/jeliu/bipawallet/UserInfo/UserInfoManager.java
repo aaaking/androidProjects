@@ -10,6 +10,7 @@ import com.example.jeliu.bipawallet.Model.HZContact;
 import com.example.jeliu.bipawallet.Model.HZPrivateKey;
 import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -57,7 +58,7 @@ public class UserInfoManager {
     }
 
     private UserInfoManager() {
-        SharedPreferences settings = HZApplication.getInst().getSharedPreferences("UserInfo", 0);
+        SharedPreferences settings = CacheConstantKt.getSAppContext().getSharedPreferences("UserInfo", 0);
 
         language = settings.getInt("language", 0);
         usd = settings.getInt("usd", 0);
@@ -89,7 +90,7 @@ public class UserInfoManager {
             }
         }
 
-        String[] tmp = loadArray("contacts", HZApplication.getInst());
+        String[] tmp = loadArray("contacts", CacheConstantKt.getSAppContext());
         if (tmp != null) {
             for (String s : tmp) {
                 HZContact hz = gson.fromJson(s, HZContact.class);
@@ -132,7 +133,7 @@ public class UserInfoManager {
     public void setUsd(int u) {
         usd = u;
 
-        SharedPreferences settings = HZApplication.getInst().getSharedPreferences("UserInfo", 0);
+        SharedPreferences settings = CacheConstantKt.getSAppContext().getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor localEditor = settings.edit();
 
         localEditor.putInt("usd", usd);
@@ -147,7 +148,7 @@ public class UserInfoManager {
     public void setLanguage(int language) {
         this.language = language;
 
-        SharedPreferences settings = HZApplication.getInst().getSharedPreferences("UserInfo", 0);
+        SharedPreferences settings = CacheConstantKt.getSAppContext().getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor localEditor = settings.edit();
 
         localEditor.putInt("language", language);
@@ -260,7 +261,7 @@ public class UserInfoManager {
     }
 
     private void updateFirstRun() {
-        SharedPreferences settings = HZApplication.getInst().getSharedPreferences("UserInfo", 0);
+        SharedPreferences settings = CacheConstantKt.getSAppContext().getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor localEditor = settings.edit();
 
         localEditor.putBoolean("firstRun", false);
@@ -292,7 +293,7 @@ public class UserInfoManager {
                 tmp[i] = s;
             }
         }
-        saveArray(tmp, "contacts", HZApplication.getInst());
+        saveArray(tmp, "contacts", CacheConstantKt.getSAppContext());
     }
 
     public void insertPrivateKey(HZPrivateKey privateKey) {
@@ -307,7 +308,7 @@ public class UserInfoManager {
                 tmp[i] = s;
             }
         }
-        saveArray(tmp, "privatekeys", HZApplication.getInst());
+        saveArray(tmp, "privatekeys", CacheConstantKt.getSAppContext());
     }
 
     public boolean saveArray(String[] array, String arrayName, Context mContext) {
@@ -329,7 +330,7 @@ public class UserInfoManager {
     }
 
     private void synchronize() {
-        SharedPreferences settings = HZApplication.getInst().getSharedPreferences("UserInfo", 0);
+        SharedPreferences settings = CacheConstantKt.getSAppContext().getSharedPreferences("UserInfo", 0);
         SharedPreferences.Editor localEditor = settings.edit();
 
         //convert to string using gson

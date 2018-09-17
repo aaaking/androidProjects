@@ -1,9 +1,6 @@
 package com.example.jeliu.bipawallet.Common;
 
-import android.content.Context;
-
-import com.example.jeliu.bipawallet.Application.HZApplication;
-import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 
 import java.io.File;
 
@@ -20,7 +17,7 @@ public class HZLocalPhotosManager {
     }
 
     private HZLocalPhotosManager() {
-        String path = HZApplication.getInst().getFilesDir().getAbsolutePath();
+        String path = CacheConstantKt.getSAppContext().getFilesDir().getAbsolutePath();
         String result = path + File.separator + s_directory_name;
         File album = new File(result);
         if (album.exists()) {
@@ -30,7 +27,7 @@ public class HZLocalPhotosManager {
     }
 
     public String getPhotoPath(String address) {
-        String path = HZApplication.getInst().getFilesDir().getAbsolutePath();
+        String path = CacheConstantKt.getSAppContext().getFilesDir().getAbsolutePath();
         String result = path + File.separator + s_directory_name + File.separator + address + ".jpg";
         return result;
     }

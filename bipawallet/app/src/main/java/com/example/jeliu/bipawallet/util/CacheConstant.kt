@@ -1,6 +1,7 @@
 package com.example.jeliu.bipawallet.util
 
 import android.content.Context
+import com.example.jeliu.bipawallet.Application.HZApplication
 import com.example.jeliu.bipawallet.BuildConfig
 
 /**
@@ -10,7 +11,6 @@ var debugBuildType = false//是否是debug编译
 var DEV_VERSION = 0//0 dev; 1 release
 var sMaxThread: Int = 0
 var sAppContext: Context? = null
-
 fun initConstant(context : Context) {
     sAppContext = context
     sMaxThread = Runtime.getRuntime().availableProcessors() * 2 + 1

@@ -1,0 +1,65 @@
+package com.example.jeliu.eos
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import com.example.jeliu.bipawallet.Base.BaseActivity
+import com.example.jeliu.bipawallet.R
+import com.example.jeliu.bipawallet.util.LogUtil
+import com.example.jeliu.eos.crypto.ec.EosPrivateKey
+import com.example.jeliu.eos.data.EoscDataManager
+import com.example.jeliu.eos.ui.base.RxCallbackWrapper
+import com.google.gson.JsonObject
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.ac_import_eoswallet.*
+import javax.inject.Inject
+
+/**
+ * Created by 周智慧 on 2018/9/17.
+ */
+fun startImportEosWalletAC(activity: Activity) {
+    activity.startActivity(Intent(activity, ImportEosWalletAC::class.java))
+}
+
+class ImportEosWalletAC : BaseActivity() {
+    @Inject
+    lateinit var mDataManager: EoscDataManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activityComponent.inject(this)
+        setTitle(resources.getString(R.string.import_eos_wallet))
+        setContentView(R.layout.ac_import_eoswallet)
+        text_privacy.setOnClickListener { gotoWebView("http://47.52.224.7:8081") }
+        button_import_key.setOnClickListener {
+            if (!checkInputs(editText_name_store, et_key, et_key_password)) {
+                return@setOnClickListener
+            }
+            if (!rb_key.isChecked) {
+                showToastMessage(getString(R.string.agree_service_privacy_policy))
+                return@setOnClickListener
+            }
+            getAccountByPk(et_key.text.toString())
+        }
+    }
+
+    fun getAccountByPk(pk: String) {
+        var eosPK = EosPrivateKey(pk)
+        var public_key = eosPK.publicKey.toString()
+        addDisposable(mDataManager
+                .getKeyAccounts(public_key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : RxCallbackWrapper<JsonObject>(this) {
+                    override fun onNext(result: JsonObject) {//{"account_names":["ghhrag"]}
+                        LogUtil.i("zzh----getKeyAccounts", result.toString())
+                    }
+                    override fun onError(e: Throwable) {
+                        super.onError(e)
+                        showToastMessage(e.toString())
+                    }
+                })
+        )
+    }
+}

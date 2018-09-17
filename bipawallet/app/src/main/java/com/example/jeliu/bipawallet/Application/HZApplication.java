@@ -1,41 +1,47 @@
 package com.example.jeliu.bipawallet.Application;
 
-import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Network.RequestManager;
+import com.example.jeliu.eos.data.EoscDataManager;
+import com.example.jeliu.eos.di.component.AppComponent;
+import com.example.jeliu.eos.di.component.DaggerAppComponent;
+import com.example.jeliu.eos.di.module.AppModule;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by liuming on 12/05/2018.
  */
 
 public class HZApplication extends Application {
-    private static HZApplication s_inst;
-    private List<Activity> activities = new ArrayList<Activity>();
+    private AppComponent mAppComponent;
 
-    public void addActivity(Activity act) {
-        activities.add(act);
-    }
+    @Inject
+    EoscDataManager mDataManager;
+//    public static HZApplication s_inst;
 
-    public void exit() {
-        for (Activity act : activities) {
-            act.finish();
-        }
-    }
-
-    public static HZApplication getInst() {
-        return s_inst;
-    }
+//    public static HZApplication getInst() {
+//        return s_inst;
+//    }
 
     public void onCreate() {
         super.onCreate();
-        s_inst = this;
         RequestManager.init(this);
         Common.setWalletPath(this);
         com.example.jeliu.bipawallet.util.CacheConstantKt.initConstant(this);
+        mAppComponent = DaggerAppComponent.builder()
+                .appModule( new AppModule(this))
+                .build();
+
+        mAppComponent.inject( this );
     }
+
+    public static HZApplication get(Context context) {
+        return (HZApplication) context.getApplicationContext();
+    }
+
+    public AppComponent getAppComponent() { return mAppComponent; }
 }

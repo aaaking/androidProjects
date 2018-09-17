@@ -33,6 +33,9 @@ import com.example.jeliu.bipawallet.Fragment.AssetFragment;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
+import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
+import com.example.jeliu.eos.CreateEosWalletAC;
+import com.example.jeliu.eos.ImportEosWalletAC;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +43,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 
 /**
  * Created by liuming on 06/05/2018.
@@ -347,14 +352,22 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         return true;
     }
 
-    private void importWallet() {
-        Intent i = new Intent(NavActivity.this, ImportWalletActivity.class);
-        startActivityForResult(i, Constant.import_wallet_request_code);
+    private void createWallet() {
+        WalletTypeDialog dialog = new WalletTypeDialog();
+        dialog.setCallback(walletType -> {
+            Intent i = new Intent(NavActivity.this, walletType == WALLET_ETH ? CreateWalletActivity.class : CreateEosWalletAC.class);
+            startActivityForResult(i, Constant.create_wallet_request_code);
+        });
+        dialog.show(getSupportFragmentManager(), "WalletTypeDialog-create");
     }
 
-    private void createWallet() {
-        Intent i = new Intent(NavActivity.this, CreateWalletActivity.class);
-        startActivityForResult(i, Constant.create_wallet_request_code);
+    private void importWallet() {
+        WalletTypeDialog dialog = new WalletTypeDialog();
+        dialog.setCallback(walletType -> {
+            Intent i = new Intent(NavActivity.this, walletType == WALLET_ETH ? ImportWalletActivity.class : ImportEosWalletAC.class);
+            startActivityForResult(i, Constant.import_wallet_request_code);
+        });
+        dialog.show(getSupportFragmentManager(), "WalletTypeDialog-import");
     }
 
     private void manageWallet() {

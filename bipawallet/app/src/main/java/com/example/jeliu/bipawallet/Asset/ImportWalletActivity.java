@@ -134,7 +134,7 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
                 return;
             }
             if (!rbKey.isChecked()) {
-                showToastMessage("请同意服务及隐私条款");
+                showToastMessage(getString(R.string.agree_service_privacy_policy));
                 return;
             }
             pwd = etKeyPassword.getText().toString();

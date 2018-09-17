@@ -31,6 +31,7 @@ import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -144,7 +145,7 @@ public class WalletNameActivity extends BaseActivity {
                     Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
                     if (credentials != null) {
                         //
-                        SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                        SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                         Gson gson = new Gson();
                         String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
                         java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
@@ -194,7 +195,7 @@ public class WalletNameActivity extends BaseActivity {
                     }
                     br.close();
                     //
-                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
 //                    Gson gson = new Gson();
                     String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
 //                    java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
@@ -233,7 +234,7 @@ public class WalletNameActivity extends BaseActivity {
                     if (credentials == null || !file.exists() || file.length() <= 0) {
                         return;
                     }
-                    SharedPreferences sp = HZApplication.getInst().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                     SharedPreferences.Editor localEditor = sp.edit();
                     localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
                     localEditor.apply();

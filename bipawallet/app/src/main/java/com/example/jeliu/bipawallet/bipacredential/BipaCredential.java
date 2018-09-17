@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -85,7 +86,7 @@ public class BipaCredential {
             ECKeyPair keyPair = ECKeyPair.create(new BigInteger(missingWallet.getCrypto().getCiphertext(), 16));
             WalletFile walletFile = Wallet.createLight(pwd, keyPair);//its address is wrong
             walletFile.setAddress(credentials.getAddress().substring(2).toLowerCase());
-            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(SP_SAFE_BIPA, 0);
+            SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(SP_SAFE_BIPA, 0);
             SharedPreferences.Editor localEditor = sp.edit();
             BipaWalletFile bipaWalletFile = new BipaWalletFile();
             BipaWalletFile.duplicateToBipa(bipaWalletFile, walletFile);
@@ -101,7 +102,7 @@ public class BipaCredential {
 
     public static void decryptPK(String address, String pwd) {
         try {
-            SharedPreferences sp = HZApplication.getInst().getSharedPreferences(SP_SAFE_BIPA, 0);
+            SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(SP_SAFE_BIPA, 0);
             Gson gson = new Gson();
             String storedHashMapString = sp.getString(address.toLowerCase(), "");
             java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {

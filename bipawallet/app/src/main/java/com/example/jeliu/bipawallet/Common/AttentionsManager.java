@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Model.HZContact;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,7 +30,7 @@ public class AttentionsManager {
     }
 
     private AttentionsManager() {
-        String[] tmp = loadArray("attentions", HZApplication.getInst());
+        String[] tmp = loadArray("attentions", CacheConstantKt.getSAppContext());
         if (tmp != null) {
             for (String s : tmp) {
                 attentions.add(s);
@@ -60,7 +61,7 @@ public class AttentionsManager {
             String c = attentions.get(i);
             tmp[i] = c;
         }
-        saveArray(tmp, "attentions", HZApplication.getInst());
+        saveArray(tmp, "attentions", CacheConstantKt.getSAppContext());
     }
 
     public void removeAttention(String attention) {

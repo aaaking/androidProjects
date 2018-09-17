@@ -15,7 +15,7 @@ public class Constant {
 
     //
     public static String IMPORT_KEYSTORE_URL = BASE_URL + "/importAccountByKS";
-    //importAccountByPK
+    //importAccountByP
     public static String IMPORT_PRIVATE_KEY_URL = BASE_URL + "/importAccountByPK";
 
     //balance
@@ -66,4 +66,24 @@ public class Constant {
     public static int manage_wallet_request_code = 103;
 
     public static String ADDRESS_WXC = "0x99c3a52653fa192606bfd8b9c276028022feb40e";
+
+    //eos
+    public static String EOS_URL = "http://193.93.219.219:8888";//"038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca” //"https://nodes.get-scatter.com";//aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906
+    public static final boolean DEFAULT_SKIP_SIGNING = true;
+
+    public static final String DEFAULT_SERVANT_ACCOUNT = "eosio";
+
+    public static final String  DEFAULT_WALLET_NAME = "default";
+    public static final boolean DEFAULT_SAVE_PASSWORD= true;
+
+    public static final String SAMPLE_PRIV_KEY_FOR_TEST = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3";
+
+    public static final String EOSIO_SYSTEM_ACCOUNT = "eosio";
+    public static final String EOSIO_TOKEN_CONTRACT = "eosio.token";
+    public static final int TX_EXPIRATION_IN_MILSEC = 30000;
+
+    public static final String DEFAULT_SYMBOL_STRING = "SYS";
+    public static final int DEFAULT_SYMBOL_PRECISION = 4;
+
+    public static final String EOS_SYMBOL_STRING = "EOS";
 }

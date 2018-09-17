@@ -1,21 +1,18 @@
 
 package com.example.jeliu.bipawallet.Network;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,7 +60,7 @@ public class HZHttpRequest {
     public boolean isNetworkOnline() {
         boolean status=false;
         try{
-            ConnectivityManager cm = (ConnectivityManager) HZApplication.getInst().getSystemService(HZApplication.getInst().CONNECTIVITY_SERVICE);
+            ConnectivityManager cm = (ConnectivityManager) CacheConstantKt.getSAppContext().getSystemService(CacheConstantKt.getSAppContext().CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getNetworkInfo(0);
             if (netInfo != null && netInfo.getState()==NetworkInfo.State.CONNECTED) {
                 status= true;
@@ -84,7 +81,7 @@ public class HZHttpRequest {
         if (error == null || error.networkResponse == null) {
             String message = error.getMessage();
             if (!isNetworkOnline()) {
-                onFailure(HZApplication.getInst().getString(R.string.no_internet));
+                onFailure(CacheConstantKt.getSAppContext().getString(R.string.no_internet));
             } else {
                 onFailure(null);
             }

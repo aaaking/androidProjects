@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Mine.LoginActivity;
@@ -44,6 +45,9 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
 import com.example.jeliu.bipawallet.util.LogUtil;
+import com.example.jeliu.eos.di.component.ActivityComponent;
+import com.example.jeliu.eos.di.component.DaggerActivityComponent;
+import com.example.jeliu.eos.di.module.ActivityModule;
 import com.example.jeliu.zxingsimplify.zxing.Activity.CaptureActivity;
 
 //import org.bouncycastle.util.encoders.Hex;
@@ -81,6 +85,8 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by liuming on 05/05/2018.
@@ -92,10 +98,11 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
     public static final int SCAN_REQUEST_CODE = 10;
-    private static final int MY_PERMISSIONS_REQUEST= 20;
+    private static final int MY_PERMISSIONS_REQUEST = 20;
 
-    private TextView tvTitle;;
-    private  ImageView ivBack;
+    private TextView tvTitle;
+    ;
+    private ImageView ivBack;
     private ImageView ivRight;
     private Button btnDone;
     private LinearLayout ll_Select;
@@ -122,7 +129,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
         Configuration config = resources.getConfiguration();//获得设置对象
 
-        DisplayMetrics dm = resources .getDisplayMetrics();//获得屏幕参数：主要是分辨率，像素等。
+        DisplayMetrics dm = resources.getDisplayMetrics();//获得屏幕参数：主要是分辨率，像素等。
 
         // //简体中文
         if (UserInfoManager.getInst().getLanguage() == 1) {
@@ -130,13 +137,13 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         } else {
             config.locale = Locale.SIMPLIFIED_CHINESE;
         }
-         //简体中文
+        //简体中文
 
         resources.updateConfiguration(config, dm);
     }
 
     protected void initView() {
-        View v = (View)getLayoutInflater().inflate(R.layout.cusom_toolbar, null);
+        View v = (View) getLayoutInflater().inflate(R.layout.cusom_toolbar, null);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         //getSupportActionBar().setCustomView(v);
@@ -170,14 +177,14 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
             }
         });
 
-        ActionBar.LayoutParams params=new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.FILL_VERTICAL|Gravity.FILL_HORIZONTAL );
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.FILL_VERTICAL | Gravity.FILL_HORIZONTAL);
 
         getSupportActionBar().setCustomView(v, params);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
 
-        Toolbar parent =(Toolbar) v.getParent();
-        parent.setPadding(0,0,0,0);//for tab otherwise give space in tab
-        parent.setContentInsetsAbsolute(0,0);
+        Toolbar parent = (Toolbar) v.getParent();
+        parent.setPadding(0, 0, 0, 0);//for tab otherwise give space in tab
+        parent.setContentInsetsAbsolute(0, 0);
         //getSupportActionBar().content
 
 //        val parent = supportActionBar?.customView?.parent as Toolbar
@@ -222,7 +229,8 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         btnDone.setVisibility(View.GONE);
     }
 
-    protected void onDone() {}
+    protected void onDone() {
+    }
 
     protected void showSearch() {
         ivSearch.setVisibility(View.VISIBLE);
@@ -241,8 +249,8 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     }
 
     protected void showToastMessage(String message) {
-        if (message == null ||message.length() == 0) {
-           // message = getString(R.string.error_);
+        if (message == null || message.length() == 0) {
+            // message = getString(R.string.error_);
             message = "error";
         }
         Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -274,7 +282,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     protected boolean checkInputs(EditText... args) {
         boolean pass = true;
-        for (int i = 0; i < args.length; ++ i) {
+        for (int i = 0; i < args.length; ++i) {
             EditText et = args[i];
             if (et.getText().toString() == null || et.getText().toString().length() == 0) {
                 pass = false;
@@ -314,7 +322,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
                                 new ContentValues());
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-                        startActivityForResult(intent,PHOTO_REQUEST_TAKEPHOTO);
+                        startActivityForResult(intent, PHOTO_REQUEST_TAKEPHOTO);
                     }
                 })
                 .setNegativeButton("相册", new DialogInterface.OnClickListener() {
@@ -328,7 +336,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 //                            return;
 //                        }
                         Intent intent = new Intent(Intent.ACTION_PICK, null);
-                        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+                        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                         startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
                     }
                 }).show();
@@ -336,7 +344,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     @TargetApi(Build.VERSION_CODES.M)
     public void requestPermission() {
-        if(Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= 23) {
             this.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST);
         }
     }
@@ -435,7 +443,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         try {
             JSONObject jsonObject = new JSONObject(barcode);
             int bitpa = jsonObject.getInt("BipaWallet");
-            return  bitpa == 1;
+            return bitpa == 1;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -464,6 +472,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         }
         return true;
     }
+
     public boolean checkPhone(String phone) {
         if (!Common.phoneValidation(phone)) {
             Toast.makeText(BaseActivity.this, getString(R.string.phone_error), Toast.LENGTH_SHORT).show();
@@ -475,7 +484,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     public String handlePhone(String phone) {
         String result = "";
         int length = phone.length();
-        for (int i = 0; i < length; ++ i) {
+        for (int i = 0; i < length; ++i) {
             char c = phone.charAt(i);
             if (c >= 48 && c <= 57) {
                 result += c;
@@ -487,9 +496,9 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // get selected images from selector
-       if (requestCode == SCAN_REQUEST_CODE) {
+        if (requestCode == SCAN_REQUEST_CODE) {
             if (data != null) {
-               // Toast.makeText(mContext,data.getStringExtra("barCode"),Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext,data.getStringExtra("barCode"),Toast.LENGTH_LONG).show();
                 String barcode = data.getStringExtra("barCode");
                 scanDone(barcode);
             }
@@ -501,6 +510,39 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         Intent i = new Intent(this, WebviewActivity.class);
         i.putExtra("url", url);
         startActivity(i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (null != mCompositeDisposable) {
+            mCompositeDisposable.clear();
+        }
+        super.onDestroy();
+    }
+
+    private ActivityComponent mActivityComponent;
+
+    public ActivityComponent getActivityComponent() {
+        if (null == mActivityComponent) {
+            mActivityComponent = DaggerActivityComponent.builder()
+                    .activityModule(new ActivityModule(this))
+                    .appComponent(HZApplication.get(this).getAppComponent())
+                    .build();
+        }
+
+        return mActivityComponent;
+    }
+
+    private CompositeDisposable mCompositeDisposable;
+
+    protected void addDisposable(Disposable d) {
+        if (null == mCompositeDisposable) {
+            mCompositeDisposable = new CompositeDisposable();
+        }
+
+        if (!mCompositeDisposable.isDisposed()) {
+            mCompositeDisposable.add(d);
+        }
     }
 
 }

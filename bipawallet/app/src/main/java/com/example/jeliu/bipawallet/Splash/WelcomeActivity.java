@@ -10,9 +10,14 @@ import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Main.NavActivity;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
+import com.example.jeliu.eos.CreateEosWalletAC;
+import com.example.jeliu.eos.ImportEosWalletAC;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 
 /**
  * Created by liuming on 06/07/2018.
@@ -22,17 +27,20 @@ public class WelcomeActivity extends BaseActivity {
     @OnClick({R.id.btn_create, R.id.btn_import}) void onClick(View view) {
         //Intent i = new Intent(WelcomeActivity.this, NavActivity.class);
         if (view.getId() == R.id.btn_import) {
-            Intent i = new Intent(WelcomeActivity.this, ImportWalletActivity.class);
-            //i.putExtra("FromSplash", true);
-            //startActivity(i);
-            startActivityForResult(i, Constant.import_wallet_request_code);
+            WalletTypeDialog dialog = new WalletTypeDialog();
+            dialog.setCallback(walletType -> {
+                Intent i = new Intent(WelcomeActivity.this, walletType == WALLET_ETH ? ImportWalletActivity.class : ImportEosWalletAC.class);
+                startActivityForResult(i, Constant.import_wallet_request_code);
+            });
+            dialog.show(getSupportFragmentManager(), "WalletTypeDialog-import");
         } else {
-            Intent i = new Intent(WelcomeActivity.this, CreateWalletActivity.class);
-            //i.putExtra("FromSplash", true);
-            startActivityForResult(i, Constant.create_wallet_request_code);
-            //startActivity(i);
+            WalletTypeDialog dialog = new WalletTypeDialog();
+            dialog.setCallback(walletType -> {
+                Intent i = new Intent(WelcomeActivity.this, walletType == WALLET_ETH ? CreateWalletActivity.class : CreateEosWalletAC.class);
+                startActivityForResult(i, Constant.create_wallet_request_code);
+            });
+            dialog.show(getSupportFragmentManager(), "WalletTypeDialog-create");
         }
-        //finish();
     }
 
     public void onBackPressed() {

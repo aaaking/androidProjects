@@ -124,6 +124,9 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity android:name="com.example.jeliu.eos.CreateEosWalletAC"/>
+        <activity android:name="com.example.jeliu.eos.ImportEosWalletAC"/>
+
     </application>
 
 </manifest>
