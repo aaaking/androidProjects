@@ -194,7 +194,6 @@
     <string name="create_eos_wallet">Create eos wallet</string>
     <string name="import_eos_wallet">Import eos wallet</string>
     <string name="agree_service_privacy_policy">Please agree to the Service and Privacy Policy</string>
-    <string name="no_main_eos_wallet">Since there is currently no active EOS account, you cannot create an EOS account. You can invite friends to help create an EOS account.</string>
     <string name="invite">Invite</string>
     <string name="hint_input_eos_accountname">a-z,1-5 are allowed only. Length 12</string>
     <string name="account_name">Account Name</string>
