@@ -87,8 +87,8 @@ public class EosWalletManager {
         return EOS_WALLET_PASSWD_PREFIX + key.toWif();
     }
 
-    public String createTestingDefaultWallet() throws IOException {
-        String pw = create(Constant.DEFAULT_WALLET_NAME);
+    public String createTestingDefaultWallet(String pwd) throws IOException {
+        String pw = create(Constant.DEFAULT_WALLET_NAME, pwd);
 
         importKey(Constant.DEFAULT_WALLET_NAME, Constant.SAMPLE_PRIV_KEY_FOR_TEST);
 
@@ -106,8 +106,8 @@ public class EosWalletManager {
      * @return Plaintext password that is needed to unlock wallet. Caller is responsible for saving password otherwise
      * they will not be able to unlock their wallet. Note user supplied passwords are not supported.
      */
-    public String create(String name) throws IOException {
-        String password = genPassword();
+    public String create(String name, String pwd) throws IOException {
+        String password = pwd != null && pwd.trim().length() > 0 ? pwd : genPassword();
         File walletFile = new File(mDir, name + EOS_WALLET_FILE_EXT);
 
         if (walletFile.exists()) {

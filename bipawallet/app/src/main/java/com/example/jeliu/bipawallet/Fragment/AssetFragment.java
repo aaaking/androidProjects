@@ -73,6 +73,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
 import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 /**
@@ -139,7 +140,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
         ButterKnife.bind(this, view);
         setupView();
-        loadData();
+        refresh();
         PriceManager.getInst().addListener(this);
         return view;
     }
@@ -155,15 +156,19 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             return;
         }
         String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
+        if (address != null && address.trim().length() > 0) {
             tvAddress.setText(address);
             String name = UserInfoManager.getInst().getCurrentWalletName();
             tvName.setText(name);
             HZWallet wallet = HZWalletManager.getInst().getWallet(address);
             if (wallet != null) {
                 ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
+                if (WalletUtils.isValidAddress(address)) {
+                    loadEthData(address);
+                } else if (wallet.type == WALLET_EOS) {
+
+                }
             }
-            loadData();
         } else {
             tvAddress.setText("");
             tvName.setText("");
@@ -173,17 +178,6 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     private void setupView() {
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
-            tvAddress.setText(address);
-            String name = UserInfoManager.getInst().getCurrentWalletName();
-            tvName.setText(name);
-            HZWallet wallet = HZWalletManager.getInst().getWallet(address);
-            if (wallet != null) {
-                ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
-            }
-        }
-
         adapter = new AmountAdapter(getActivity());
         listView.setAdapter(adapter);
         adapter.setContents(AttentionsManager.getInst().getAttentions());
@@ -220,10 +214,9 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         super.onCreate(savedInstance);
     }
 
-    public void loadData() {
+    public void loadEthData(String address) {
 //        loadBalance();
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
+        if (WalletUtils.isValidAddress(address)) {
             showWaiting();
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.BALANCE_URL + "?address=" + address, null, this);

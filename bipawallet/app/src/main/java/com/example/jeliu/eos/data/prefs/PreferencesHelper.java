@@ -43,7 +43,7 @@ public class PreferencesHelper {
 
     public static final String PREF_FILE_NAME = "eosc_pref";
 
-    private static final String PREF_WALLET_DIR_NAME= "wallets";
+    private static final String PREF_WALLET_DIR_NAME= "eos_wallets";
 
     private static final String PREF_NODEOS_HOST = "eosd.host";
     private static final String PREF_NODEOS_PORT = "eosd.port";

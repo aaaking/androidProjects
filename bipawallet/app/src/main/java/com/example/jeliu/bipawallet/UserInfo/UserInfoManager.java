@@ -244,10 +244,11 @@ public class UserInfoManager {
         currentWalletAddress = address;
     }
 
-    public void insertWallet(String name, String address, int profile, String fileName) {
+    public void insertWallet(String name, String address, int profile, String fileName, int walletType) {
         wallets.put(address, String.format("%s%s%d%s%s", name, s_split, profile, s_split, fileName));
         HZWallet wallet = new HZWallet();
         wallet.name = name;
+        wallet.type = walletType;
         wallet.fileName = fileName;
         wallet.address = address;
         wallet.profileIndex = profile;

@@ -4,12 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.example.jeliu.bipawallet.Base.BaseActivity
+import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.R
+import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
+import com.example.jeliu.bipawallet.ui.WALLET_EOS
 import com.example.jeliu.bipawallet.util.LogUtil
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey
 import com.example.jeliu.eos.data.EoscDataManager
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper
 import com.google.gson.JsonObject
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.ac_import_eoswallet.*
@@ -23,6 +27,8 @@ fun startImportEosWalletAC(activity: Activity) {
 }
 
 class ImportEosWalletAC : BaseActivity() {
+    var walletName: String = ""
+    var accountName: String = ""
     @Inject
     lateinit var mDataManager: EoscDataManager
 
@@ -40,8 +46,28 @@ class ImportEosWalletAC : BaseActivity() {
                 showToastMessage(getString(R.string.agree_service_privacy_policy))
                 return@setOnClickListener
             }
+            showWaiting()
             getAccountByPk(et_key.text.toString())
         }
+    }
+
+    fun createWallet() {
+        var walletPwd = et_key_password.text.toString()
+        walletName = editText_name_store.text.toString()
+        addDisposable(
+                Observable.fromCallable { mDataManager.walletManager.create(walletName, walletPwd) }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(object : RxCallbackWrapper<String>(this) {
+                            override fun onNext(pw: String) {
+                                importKey()
+                            }
+                            override fun onError(e: Throwable) {
+                                super.onError(e)
+                                showToastMessage(e.toString())
+                            }
+                        })
+        )
     }
 
     fun getAccountByPk(pk: String) {
@@ -53,7 +79,13 @@ class ImportEosWalletAC : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : RxCallbackWrapper<JsonObject>(this) {
                     override fun onNext(result: JsonObject) {//{"account_names":["ghhrag"]}
-                        LogUtil.i("zzh----getKeyAccounts", result.toString())
+                        if (result != null) {
+                            var array = result.getAsJsonArray("account_names")
+                            if (array != null && array.size() > 0) {
+                                accountName = array[0].toString()
+                                createWallet()
+                            }
+                        }
                     }
                     override fun onError(e: Throwable) {
                         super.onError(e)
@@ -61,5 +93,15 @@ class ImportEosWalletAC : BaseActivity() {
                     }
                 })
         )
+    }
+
+    fun importKey() {
+        mDataManager.walletManager.importKey(walletName, et_key.text.toString())
+        mDataManager.walletManager.saveFile(walletName)
+        hideWaiting()
+        UserInfoManager.getInst().insertWallet(walletName, accountName, 0, Constant.TAG_EOS_WALLET, WALLET_EOS)
+        UserInfoManager.getInst().currentWalletAddress = accountName
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 }

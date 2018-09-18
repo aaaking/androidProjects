@@ -35,6 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
+
 /**
  * Created by liuming on 09/05/2018.
  */
@@ -266,7 +268,7 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
             if (address != null) {
                 hideWaiting();
                 String name = th.getCurrentTab() == 0 ? etStoreName.getText().toString() : etKeyName.getText().toString();
-                UserInfoManager.getInst().insertWallet(name, address, 0, fileName);
+                UserInfoManager.getInst().insertWallet(name, address, 0, fileName, WALLET_ETH);
                 UserInfoManager.getInst().setCurrentWalletAddress(address);
                 setResult(RESULT_OK);
                 finish();
