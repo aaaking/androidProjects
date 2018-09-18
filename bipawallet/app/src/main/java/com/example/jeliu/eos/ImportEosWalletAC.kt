@@ -8,7 +8,6 @@ import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
 import com.example.jeliu.bipawallet.ui.WALLET_EOS
-import com.example.jeliu.bipawallet.util.LogUtil
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey
 import com.example.jeliu.eos.data.EoscDataManager
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper
