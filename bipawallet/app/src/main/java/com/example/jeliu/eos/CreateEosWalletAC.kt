@@ -3,12 +3,14 @@ package com.example.jeliu.eos
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
 import com.example.jeliu.bipawallet.ui.WALLET_EOS
 import com.example.jeliu.eos.data.EoscDataManager
+import kotlinx.android.synthetic.main.ac_create_eoswallet.*
 import kotlinx.android.synthetic.main.ac_import_eoswallet.*
 import javax.inject.Inject
 
@@ -29,11 +31,14 @@ class CreateEosWalletAC : BaseActivity() {
         activityComponent.inject(this)
         setTitle(resources.getString(R.string.create_eos_wallet))
         setContentView(R.layout.ac_create_eoswallet)
+        btn_invite.setOnClickListener {
+            startInviteCreateEosAC(this)
+        }
     }
 
     fun importKey() {
-        mDataManager.walletManager.importKey(walletName, et_key.text.toString())
-        mDataManager.walletManager.saveFile(walletName)
+//        mDataManager.walletManager.importKey(walletName, et_key.text.toString())
+//        mDataManager.walletManager.saveFile(walletName)
         hideWaiting()
         UserInfoManager.getInst().insertWallet(walletName, accountName, 0, Constant.TAG_EOS_WALLET, WALLET_EOS)
         UserInfoManager.getInst().currentWalletAddress = accountName

@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -543,6 +545,12 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         if (!mCompositeDisposable.isDisposed()) {
             mCompositeDisposable.add(d);
         }
+    }
+
+    protected void copyText(String content) {
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setText(content);
+        Toast.makeText(this, getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
     }
 
 }

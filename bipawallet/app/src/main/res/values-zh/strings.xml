@@ -185,6 +185,7 @@
 
     <string name="network_exception">请检查网络设置</string>
     <string name="text_after_encrypt">加密后的数据</string>
+    <string name="qr_code_after_encrypt">加密后的二维码</string>
     <string name="whether_bipa_encrypted">是否经过比派加密</string>
 
     <string name="show_raw_data">显示原始未加密数据</string>
@@ -193,4 +194,15 @@
     <string name="create_eos_wallet">创建EOS钱包</string>
     <string name="import_eos_wallet">导入EOS钱包</string>
     <string name="agree_service_privacy_policy">请同意服务及隐私条款</string>
+    <string name="no_main_eos_wallet">由于当前暂无主EOS账户，因此无法创建EOS账户，您可以邀请朋友帮忙创建EOS账户</string>
+    <string name="invite">邀请</string>
+    <string name="hint_input_eos_accountname">只允许字符a-z,1-5，长度12</string>
+    <string name="account_name">账户名</string>
+    <string name="copy_pk">备份私钥</string>
+    <string name="show_pk">显示私钥</string>
+    <string name="hide_pk">隐藏私钥</string>
+    <string name="copy_name_keys">复制账号名和公钥</string>
+    <string name="create_eos_desc">新的EOS账号需要通过已存在的账号才可以创建，复制账号名和公钥或分享二维码，请已有账号的朋友协助创建</string>
+    <string name="generate_qr_code">生成二维码</string>
+    <string name="account_name_exist">账户名已经被注册，请换一个</string>
 </resources>

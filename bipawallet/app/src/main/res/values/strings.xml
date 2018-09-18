@@ -185,6 +185,7 @@
 
     <string name="network_exception">please check the network setting</string>
     <string name="text_after_encrypt">data that has been encrypted</string>
+    <string name="qr_code_after_encrypt">qr code that has been encrypted</string>
     <string name="whether_bipa_encrypted">whether encrypted by bipa</string>
 
     <string name="show_raw_data">show raw data that has not been encrypted</string>
@@ -193,4 +194,15 @@
     <string name="create_eos_wallet">Create eos wallet</string>
     <string name="import_eos_wallet">Import eos wallet</string>
     <string name="agree_service_privacy_policy">Please agree to the Service and Privacy Policy</string>
+    <string name="no_main_eos_wallet">Since there is currently no active EOS account, you cannot create an EOS account. You can invite friends to help create an EOS account.</string>
+    <string name="invite">Invite</string>
+    <string name="hint_input_eos_accountname">a-z,1-5 are allowed only. Length 12</string>
+    <string name="account_name">Account Name</string>
+    <string name="copy_pk">Copy Private Key</string>
+    <string name="show_pk">Show Private Key</string>
+    <string name="hide_pk">Hide Private Key</string>
+    <string name="copy_name_keys">Copy account name and public keys</string>
+    <string name="create_eos_desc">The new EOS account needs to be created by an existing account, copy the account name and public key or share the QR code.</string>
+    <string name="generate_qr_code">Generate QR code</string>
+    <string name="account_name_exist">账户名已经被注册，请换一个</string>
 </resources>

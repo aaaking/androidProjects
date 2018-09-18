@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Test {
     public static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
@@ -33,20 +34,15 @@ public class Test {
         System.out.println(String.valueOf(2.00));
 
         //
-        Date date = new Date();
-
-        String s = DateFormat.getDateInstance(DateFormat.LONG).format(date);
-        System.out.println("ssssssss: " + s);
-
-        String FULL = DateFormat.getDateInstance(DateFormat.FULL).format(date);
-        System.out.println("FULL: " + FULL);
-
-        String MEDIUM = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date);
-        System.out.println("MEDIUM: " + MEDIUM);
-
-        String SHORT = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
-        System.out.println("SHORT: " + SHORT);
-
+        String reg = "[1-5a-z]{12}";
+        System.out.println(Pattern.matches(reg, ""));
+        System.out.println(Pattern.matches(reg, "123"));
+        System.out.println(Pattern.matches(reg, "   123456789012  "));
+        System.out.println(Pattern.matches(reg, "aaaki ng3 551 1"));
+        System.out.println(Pattern.matches(reg, "aaa ing3 511"));
+        System.out.println(Pattern.matches(reg, "aaaking3551111111"));
+        System.out.println(Pattern.matches(reg, "aaaking35511"));
+        System.out.println(Pattern.matches(reg, "aaaking35512"));
     }
 
     public static byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};

@@ -3,6 +3,7 @@ package com.example.jeliu.eos.di.component;
 import com.example.jeliu.bipawallet.Splash.SplashActivity;
 import com.example.jeliu.eos.CreateEosWalletAC;
 import com.example.jeliu.eos.ImportEosWalletAC;
+import com.example.jeliu.eos.InviteCreateEosAC;
 import com.example.jeliu.eos.di.PerActivity;
 import com.example.jeliu.eos.di.module.ActivityModule;
 
@@ -18,6 +19,7 @@ public interface ActivityComponent {
     void inject(SplashActivity activity);
     void inject(ImportEosWalletAC activity);
     void inject(CreateEosWalletAC activity);
+    void inject(InviteCreateEosAC activity);
 //
 //    void inject(AccountMainFragment fragment);
 //    void inject(CreateEosAccountDialog dialog);

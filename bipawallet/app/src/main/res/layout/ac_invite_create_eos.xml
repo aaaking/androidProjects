@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="20dp">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/account_name"/>
+
+        <EditText
+            android:id="@+id/et_account_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:maxLength="12"
+            android:ems="10"
+            android:hint="@string/hint_input_eos_accountname"
+            android:inputType="textPersonName"/>
+
+        <!-- =============================owner key============================= -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            android:text="Owner public Key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_line"
+            android:id="@+id/tv_owner_public_key"
+            android:text="Owner public key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Owner private key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_line"
+            android:id="@+id/tv_owner_private_key"
+            android:text="***"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingTop="5dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_copy_owner_pk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:text="@string/copy_pk"
+                android:layout_weight="1"
+                android:textColor="@color/title_name_color" />
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="0dp"/>
+            <Button
+                android:id="@+id/btn_show_owner_pk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_gravity="end"
+                android:background="@drawable/button_background"
+                android:text="@string/show_pk"
+                android:textColor="@color/title_name_color" />
+        </LinearLayout>
+
+        <!-- =============================public key============================= -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            android:text="Active public key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_line"
+            android:id="@+id/tv_active_public_key"
+            android:text="Active public key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Active private key"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_line"
+            android:id="@+id/tv_active_private_key"
+            android:text="***"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingTop="5dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_copy_active_pk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:text="@string/copy_pk"
+                android:layout_weight="1"
+                android:textColor="@color/title_name_color" />
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="0dp"/>
+            <Button
+                android:id="@+id/btn_show_active_pk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_gravity="end"
+                android:background="@drawable/button_background"
+                android:text="@string/show_pk"
+                android:textColor="@color/title_name_color" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/copy_account_name_keys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/button_background"
+            android:text="@string/copy_name_keys"
+            android:textColor="@color/title_name_color" />
+
+        <TextView
+            android:paddingTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_eos_desc"/>
+
+        <Button
+            android:id="@+id/generate_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/button_background"
+            android:text="@string/generate_qr_code"
+            android:textColor="@color/title_name_color" />
+        <ImageView
+            android:id="@+id/imageView_qr"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/header_line"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+</ScrollView>

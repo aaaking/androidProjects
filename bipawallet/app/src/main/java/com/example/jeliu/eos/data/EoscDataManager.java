@@ -209,7 +209,12 @@ public class EoscDataManager {
 
         return mNodeosApi.getRequiredKeys(new GetRequiredKeys(txnBeforeSign, mWalletMgr.listPubKeys()))
                 .map(keys -> {
-                    final SignedTransaction stxn = mWalletMgr.signTransaction(txnBeforeSign, keys.getKeys(), new TypeChainId(currentBlockInfo.chain_id));
+                    final SignedTransaction stxn;
+                    if (mPrefHelper.shouldSkipSigning()) {
+                        stxn = txnBeforeSign;
+                    } else {
+                        stxn = mWalletMgr.signTransaction(txnBeforeSign, keys.getKeys(), new TypeChainId(currentBlockInfo.chain_id));
+                    }
                     return new PackedTransaction(stxn);
                 });
     }

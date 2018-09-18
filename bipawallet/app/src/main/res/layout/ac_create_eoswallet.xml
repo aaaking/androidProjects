@@ -3,5 +3,28 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/eos_wallet_nil_container"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:text="@string/no_main_eos_wallet"/>
+        <Button
+            android:id="@+id/btn_invite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/title_name_color"
+            android:background="@drawable/button_background"
+            android:text="@string/invite"/>
+    </LinearLayout>
 
 </LinearLayout>

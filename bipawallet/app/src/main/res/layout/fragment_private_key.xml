@@ -197,7 +197,7 @@
                             android:layout_marginLeft="@dimen/export_margin"
                             android:layout_marginRight="@dimen/export_margin"
                             android:layout_marginTop="10dp"
-                            android:text="加密后的二维码"
+                            android:text="@string/qr_code_after_encrypt"
                             android:textStyle="bold" />
 
                         <ImageView
