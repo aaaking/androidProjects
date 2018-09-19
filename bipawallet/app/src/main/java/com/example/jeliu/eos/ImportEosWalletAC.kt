@@ -66,8 +66,10 @@ class ImportEosWalletAC : BaseActivity() {
                             override fun onNext(pw: String) {
                                 importKey()
                             }
+
                             override fun onError(e: Throwable) {
                                 super.onError(e)
+                                hideWaiting()
                                 showToastMessage(e.toString())
                             }
                         })
@@ -75,34 +77,44 @@ class ImportEosWalletAC : BaseActivity() {
     }
 
     fun getAccountByPk(pk: String) {
-        var eosPK = EosPrivateKey(pk)
-        var public_key = eosPK.publicKey.toString()
-        addDisposable(mDataManager
-                .getKeyAccounts(public_key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : RxCallbackWrapper<JsonObject>(this) {
-                    override fun onNext(result: JsonObject) {//{"account_names":["ghhrag"]}
-                        if (result != null) {
-                            var array = result.getAsJsonArray("account_names")
-                            if (array != null && array.size() > 0) {
-                                accountName = array[0].toString()
-                                createWallet()
+        var eosPK: EosPrivateKey? = null
+        try {
+            eosPK = EosPrivateKey(pk)
+        } catch (e: Exception) {
+            hideWaiting()
+            showToastMessage(e.toString())
+        }
+        if (eosPK != null) {
+            var public_key = eosPK.publicKey.toString()
+            addDisposable(mDataManager
+                    .getKeyAccounts(public_key)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(object : RxCallbackWrapper<JsonObject>(this) {
+                        override fun onNext(result: JsonObject) {//{"account_names":["ghhrag"]}
+                            if (result != null) {
+                                var array = result.getAsJsonArray("account_names")
+                                if (array != null && array.size() > 0) {
+                                    accountName = array[0].toString().replace("\"", "")
+                                    createWallet()
+                                }
                             }
                         }
-                    }
-                    override fun onError(e: Throwable) {
-                        super.onError(e)
-                        showToastMessage(e.toString())
-                    }
-                })
-        )
+
+                        override fun onError(e: Throwable) {
+                            super.onError(e)
+                            hideWaiting()
+                            showToastMessage(e.toString())
+                        }
+                    })
+            )
+        }
     }
 
     fun importKey() {
+        hideWaiting()
         mDataManager.walletManager.importKey(walletName, et_key.text.toString())
         mDataManager.walletManager.saveFile(walletName)
-        hideWaiting()
         UserInfoManager.getInst().insertWallet(walletName, accountName, 0, Constant.TAG_EOS_WALLET, WALLET_EOS)
         UserInfoManager.getInst().currentWalletAddress = accountName
         setResult(Activity.RESULT_OK)
