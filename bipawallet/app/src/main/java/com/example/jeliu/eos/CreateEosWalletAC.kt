@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
+import com.example.jeliu.bipawallet.Common.HZWalletManager
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
 import com.example.jeliu.bipawallet.ui.WALLET_EOS
@@ -82,6 +83,10 @@ class CreateEosWalletAC : BaseActivity() {
             }
             if (Integer.parseInt(et_stake_net.text.toString()) <= 0 || Integer.parseInt(et_stake_cpu.text.toString()) <= 0 || Integer.parseInt(et_buy_ram_eos.text.toString()) <= 0) {
                 showToastMessage("number of eos should be greater than 0")
+                return@setOnClickListener
+            }
+            if (HZWalletManager.getInst().walletNameExist(et_account_name.text.toString())) {
+                showToastMessage("wallet name already exists, please change another one")
                 return@setOnClickListener
             }
             checkAccountName(0)
