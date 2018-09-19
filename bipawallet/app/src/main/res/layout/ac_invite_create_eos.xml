@@ -15,15 +15,19 @@
             android:layout_height="wrap_content"
             android:text="@string/account_name"/>
 
-        <EditText
-            android:id="@+id/et_account_name"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:maxLength="12"
-            android:ems="10"
-            android:hint="@string/hint_input_eos_accountname"
-            android:inputType="textPersonName"/>
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/et_account_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:inputType="text"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:hint="@string/hint_input_eos_accountname"/>
+        </android.support.design.widget.TextInputLayout>
 
         <!-- =============================owner key============================= -->
         <TextView

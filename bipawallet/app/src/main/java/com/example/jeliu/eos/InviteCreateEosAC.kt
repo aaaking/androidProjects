@@ -8,7 +8,6 @@ import android.view.View
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Common
 import com.example.jeliu.bipawallet.R
-import com.example.jeliu.bipawallet.util.LogUtil
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey
 import com.example.jeliu.eos.data.EoscDataManager
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper
@@ -52,13 +51,6 @@ class InviteCreateEosAC : BaseActivity() {
                                 var copyPKListener = View.OnClickListener {
                                     copyText(if (it == btn_copy_owner_pk) mOwnerKey.toString() else mActiveKey.toString())
                                 }
-                                LogUtil.i("---------------")
-                                LogUtil.i("zzh-own-1", mOwnerKey.toString())
-                                LogUtil.i("zzh-own-2", mOwnerKey.getAsBigInteger().toString())
-                                LogUtil.i("zzh-own-3", mOwnerKey.getPublicKey().toString())
-                                LogUtil.i("zzh-active-1", mActiveKey.toString())
-                                LogUtil.i("zzh-active-2", mActiveKey.getAsBigInteger().toString())
-                                LogUtil.i("zzh-active-3", mActiveKey.getPublicKey().toString())
                                 //owner
                                 tv_owner_public_key.text = mOwnerKey.publicKey.toString()
                                 btn_copy_owner_pk.setOnClickListener(copyPKListener)

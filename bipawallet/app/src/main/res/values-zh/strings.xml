@@ -204,4 +204,8 @@
     <string name="create_eos_desc">新的EOS账号需要通过已存在的账号才可以创建，复制账号名和公钥或分享二维码，请已有账号的朋友协助创建</string>
     <string name="generate_qr_code">生成二维码</string>
     <string name="account_name_exist">账户名已经被注册，请换一个</string>
+    <string name="stake_net">代理NET的EOS</string>
+    <string name="stake_cpu">代理CPU的EOS</string>
+    <string name="buy_ram_eos">购买RAM的EOS</string>
+    <string name="select_wallet_to_save_keys">选择一个EOS钱包</string>
 </resources>

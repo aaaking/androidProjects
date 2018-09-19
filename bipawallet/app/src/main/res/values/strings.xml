@@ -204,4 +204,8 @@
     <string name="create_eos_desc">The new EOS account needs to be created by an existing account, copy the account name and public key or share the QR code.</string>
     <string name="generate_qr_code">Generate QR code</string>
     <string name="account_name_exist">账户名已经被注册，请换一个</string>
+    <string name="stake_net">EOS delegated for net</string>
+    <string name="stake_cpu">EOS delegated for CPU</string>
+    <string name="buy_ram_eos">amount of EOS to buy ram for new account</string>
+    <string name="select_wallet_to_save_keys">Select an EOS wallet</string>
 </resources>
