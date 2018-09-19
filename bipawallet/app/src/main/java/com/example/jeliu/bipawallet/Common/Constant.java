@@ -84,7 +84,8 @@ public class Constant {
     public static final int TX_EXPIRATION_IN_MILSEC = 30000;
 
     public static final String DEFAULT_SYMBOL_STRING = "SYS";
-    public static final int DEFAULT_SYMBOL_PRECISION = 4;
+    public static final int DEFAULT_SYMBOL_PRECISION = 0;//4;
+    public static final int SYMBOL_PRECISION = 4;
 
     public static final String EOS_SYMBOL_STRING = "EOS";
 }

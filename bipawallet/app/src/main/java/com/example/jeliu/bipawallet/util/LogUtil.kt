@@ -7,7 +7,7 @@ import android.util.Log
  */
 object LogUtil {
     private val TAG = "zzh"
-    
+
     fun v(tag: String, msg: String) {
         if (!debugBuildType) {
             return

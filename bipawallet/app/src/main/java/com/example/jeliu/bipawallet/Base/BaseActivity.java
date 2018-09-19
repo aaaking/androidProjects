@@ -267,7 +267,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         boolean pass = true;
         for (int i = 0; i < args.length; ++i) {
             EditText et = args[i];
-            if (et.getText().toString() == null || et.getText().toString().length() == 0) {
+            if (et.getText().toString() == null || et.getText().toString().trim().length() <= 0) {
                 pass = false;
                 break;
             }

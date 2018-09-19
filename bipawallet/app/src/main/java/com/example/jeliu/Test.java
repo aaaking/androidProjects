@@ -1,11 +1,13 @@
 //import com.example.jeliu.bipawallet.Model.HZToken;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
@@ -34,15 +36,29 @@ public class Test {
         System.out.println(String.valueOf(2.00));
 
         //
-        String reg = "[1-5a-z]{12}";
-        System.out.println(Pattern.matches(reg, ""));
-        System.out.println(Pattern.matches(reg, "123"));
-        System.out.println(Pattern.matches(reg, "   123456789012  "));
-        System.out.println(Pattern.matches(reg, "aaaki ng3 551 1"));
-        System.out.println(Pattern.matches(reg, "aaa ing3 511"));
-        System.out.println(Pattern.matches(reg, "aaaking3551111111"));
-        System.out.println(Pattern.matches(reg, "aaaking35511"));
-        System.out.println(Pattern.matches(reg, "aaaking35512"));
+        StringBuilder stringBuilder = new StringBuilder("0.");
+        for (int i = 0; i < 4; i++) {
+            stringBuilder.append("0");
+        }
+        DecimalFormat df = new DecimalFormat(stringBuilder.toString());
+        String result = df.format(4);
+        System.out.println(result);
+    }
+
+    public static void testSys(String value) {
+        value = value.trim();
+
+        Pattern pattern = Pattern.compile("^([0-9]+)\\.?([0-9]*)([ ][a-zA-Z0-9]{1,7})?$");//\\s(\\w)$");
+        Matcher matcher = pattern.matcher(value);
+
+        if (matcher.find()) {
+            String beforeDotVal = matcher.group(1), afterDotVal = matcher.group(2);
+            System.out.println("---------------");
+            System.out.println(beforeDotVal);
+            System.out.println(afterDotVal);
+            System.out.println(Double.valueOf(beforeDotVal + "." + afterDotVal));
+        } else {
+        }
     }
 
     public static byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};

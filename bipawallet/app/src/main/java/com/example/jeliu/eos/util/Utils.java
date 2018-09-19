@@ -37,6 +37,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import okhttp3.ResponseBody;
+
 /**
  * Created by swapnibble on 2017-10-18.
  */
@@ -146,5 +148,13 @@ public class Utils {
                 .registerTypeAdapterFactory(new GsonEosTypeAdapterFactory())
                 .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting().create().toJson(object);
+    }
+
+    public static String getErrorMessage(ResponseBody responseBody) {
+        try {
+            return responseBody.string();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

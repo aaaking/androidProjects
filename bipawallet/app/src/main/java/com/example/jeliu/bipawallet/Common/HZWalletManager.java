@@ -39,6 +39,15 @@ public class HZWalletManager {
         return null;
     }
 
+    public HZWallet getWalletByName(String name) {
+        for (HZWallet hzWallet : walletList) {
+            if (hzWallet.name.equalsIgnoreCase(name)) {
+                return hzWallet;
+            }
+        }
+        return null;
+    }
+
     public void removeWallet(String address) {
         for (HZWallet hzWallet : walletList) {
             if (hzWallet.address.equalsIgnoreCase(address)) {

@@ -25,6 +25,9 @@ package com.example.jeliu.eos.data.remote.model.types;
 
 import android.text.TextUtils;
 
+import com.example.jeliu.bipawallet.Common.Constant;
+
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +40,7 @@ public class TypeAsset implements EosType.Packer {
     public static final long MAX_AMOUNT = (1 << 62) - 1;
 
     private long mAmount;
+    private double mEosAmount;
     private TypeSymbol mSymbol;
 
     public TypeAsset(String value) {
@@ -51,10 +55,11 @@ public class TypeAsset implements EosType.Packer {
 
             String symbolStr = TextUtils.isEmpty(matcher.group(3)) ? null : matcher.group(3).trim();
 
-            mAmount = Long.valueOf(beforeDotVal + afterDotVal);
+            mEosAmount = Double.valueOf(beforeDotVal + "." + afterDotVal);
+            mAmount = (long) (mEosAmount * Math.pow(10, Constant.SYMBOL_PRECISION));
             mSymbol = new TypeSymbol(afterDotVal.length(), symbolStr);
         } else {
-            this.mAmount = 0;
+            mEosAmount = this.mAmount = 0;
             this.mSymbol = new TypeSymbol();
         }
     }
@@ -102,12 +107,17 @@ public class TypeAsset implements EosType.Packer {
     @Override
     public String toString() {
         long precisionVal = precision();
-        String result = String.valueOf(mAmount / precisionVal);
-
-        if (decimals() > 0) {
-            long fract = mAmount % precisionVal;
-            result += "." + String.valueOf(precisionVal + fract).substring(1);
+        StringBuilder stringBuilder = new StringBuilder("0.");
+        for (int i = 0; i < Constant.SYMBOL_PRECISION; i++) {
+            stringBuilder.append("0");
         }
+        DecimalFormat df = new DecimalFormat(stringBuilder.toString());
+        String result = df.format(mEosAmount / precisionVal);
+
+//        if (decimals() > 0) {
+//            long fract = mAmount % precisionVal;
+//            result += "." + String.valueOf(precisionVal + fract).substring(1);
+//        }
 
         return result + " " + symbolName();
     }

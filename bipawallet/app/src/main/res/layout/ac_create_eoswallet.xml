@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:fillViewport="true"
@@ -23,8 +24,7 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_creator_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_height="wrap_content">
 
             <com.example.jeliu.bipawallet.ui.TextInputAutoCompleteTextView
                 android:id="@+id/et_account_name"
@@ -37,6 +37,37 @@
                 android:padding="10dp"
                 android:singleLine="true"/>
         </android.support.design.widget.TextInputLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_gravity="start|center_vertical"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_pwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/input_password"
+                    android:inputType="textPassword"
+                    android:nextFocusDown="@+id/et_code"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="50dp"
+                    android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
+            <ImageView
+                android:id="@+id/imageView_eye_store"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="10dp"
+                app:srcCompat="@drawable/close" />
+        </FrameLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_stake_net"

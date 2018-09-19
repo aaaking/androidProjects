@@ -35,7 +35,7 @@ import com.example.jeliu.eos.util.Utils;
 public class TypeSymbol implements EosType.Packer {
     private static final int MAX_PRECISION = 18;
 
-    public static String sCoreSymbolString = Constant.DEFAULT_SYMBOL_STRING;
+    public static String sCoreSymbolString = Constant.EOS_SYMBOL_STRING;
     public static int sCoreSymbolPrecision = Constant.DEFAULT_SYMBOL_PRECISION;
 
     private long mValue;

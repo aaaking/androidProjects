@@ -84,7 +84,7 @@ public class PreferencesHelper {
     }
 
     public String getCoreSymbolString(){
-        return mPrefs.getString( PREF_CORE_SYMBOL_STRING, Constant.DEFAULT_SYMBOL_STRING);
+        return mPrefs.getString( PREF_CORE_SYMBOL_STRING, Constant.EOS_SYMBOL_STRING);
     }
 
     public int getCoreSymbolPrecision(){
