@@ -13,15 +13,14 @@ import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.HZBaseAdapter;
 import com.example.jeliu.bipawallet.Common.AttentionsManager;
 import com.example.jeliu.bipawallet.Common.Constant;
-import com.example.jeliu.bipawallet.Main.HeaderAdapter;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Iterator;
+import org.web3j.crypto.WalletUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +47,10 @@ public class AddNewAttentionActivity extends BaseActivity {
         showSearch();
 
         setupView();
-        loadData();
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        if (WalletUtils.isValidAddress(address)) {// only load data for ETH wallet
+            loadData();
+        }
     }
 
     private void setupView() {
@@ -135,8 +137,7 @@ public class AddNewAttentionActivity extends BaseActivity {
                     }
                 });
 
-            }
-            catch (JSONException ex) {
+            } catch (JSONException ex) {
                 return null;
             }
 
