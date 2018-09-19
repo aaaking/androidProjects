@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
+import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.Network.IWallet;
 import com.example.jeliu.bipawallet.R;
@@ -139,6 +140,10 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
                 showToastMessage(getString(R.string.agree_service_privacy_policy));
                 return;
             }
+            if (HZWalletManager.getInst().walletNameExist(etKeyName.getText().toString())) {
+                showToastMessage("wallet name already exists, please change another one");
+                return;
+            }
             pwd = etKeyPassword.getText().toString();
 //            HZHttpRequest request = new HZHttpRequest();
 //            Map<String, String> param = new HashMap<>();
@@ -154,6 +159,10 @@ public class ImportWalletActivity extends BaseActivity implements IWallet {
             }
             if (!rbKeyStore.isChecked()) {
                 showToastMessage("请同意服务及隐私条款");
+                return;
+            }
+            if (HZWalletManager.getInst().walletNameExist(etStoreName.getText().toString())) {
+                showToastMessage("wallet name already exists, please change another one");
                 return;
             }
             pwd = etKeyStorePassword.getText().toString();

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
+import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.Network.IWallet;
 import com.example.jeliu.bipawallet.R;
@@ -93,6 +94,10 @@ public class CreateWalletActivity extends BaseActivity implements IWallet {
         }
         if (!checkBox.isChecked()) {
             showToastMessage(getString(R.string.radiobutton_failed));
+            return;
+        }
+        if (HZWalletManager.getInst().walletNameExist(etName.getText().toString())) {
+            showToastMessage("wallet name already exists, please change another one");
             return;
         }
         String pass = etPassword.getText().toString();

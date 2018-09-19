@@ -79,4 +79,16 @@ public class HZWalletManager {
             updateWalletInfo(address, jsonArray);
         }
     }
+
+    public boolean walletNameExist(String name) {
+        if (name == null || name.trim().length() <= 0) {
+            return true;
+        }
+        for (HZWallet hzWallet : walletList) {
+            if (hzWallet.name.equals(name.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

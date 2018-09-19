@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
+import com.example.jeliu.bipawallet.Common.HZWalletManager
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
 import com.example.jeliu.bipawallet.ui.WALLET_EOS
@@ -43,6 +44,10 @@ class ImportEosWalletAC : BaseActivity() {
             }
             if (!rb_key.isChecked) {
                 showToastMessage(getString(R.string.agree_service_privacy_policy))
+                return@setOnClickListener
+            }
+            if (HZWalletManager.getInst().walletNameExist(editText_name_store.text.toString())) {
+                showToastMessage("wallet name already exists, please change another one")
                 return@setOnClickListener
             }
             showWaiting()
