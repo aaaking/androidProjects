@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
+import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Model.HZContact;
 import com.example.jeliu.bipawallet.Model.HZPrivateKey;
@@ -25,6 +26,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 
 /**
  * Created by liuming on 12/05/2018.
@@ -82,6 +86,7 @@ public class UserInfoManager {
                     wallet.profileIndex = Integer.valueOf(splits[1]);
                     if (splits.length >= 3) {
                         wallet.fileName = splits[2];
+                        wallet.type = wallet.fileName.equals(Constant.TAG_EOS_WALLET) ? WALLET_EOS : WALLET_ETH;
                     }
                 } else {
                     continue;

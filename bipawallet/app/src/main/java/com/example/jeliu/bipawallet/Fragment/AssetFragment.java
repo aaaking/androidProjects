@@ -166,7 +166,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 if (WalletUtils.isValidAddress(address)) {
                     loadEthData(address);
                 } else if (wallet.type == WALLET_EOS) {
-
+                    adapter.notifyDataSetChanged();
+                    updateUI(address);
                 }
             }
         } else {
@@ -614,10 +615,10 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             } else {
                 holder = (UnitListHolder) view.getTag();
             }
-            String attentionName = contents.get(i);
-            boolean find = false;
             String address = UserInfoManager.getInst().getCurrentWalletAddress();
             HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+            String attentionName = wallet != null && wallet.type == WALLET_EOS ? "eos" : contents.get(i);
+            boolean find = false;
             if (wallet != null) {
                 List<HZToken> tokens = wallet.tokenList;
                 for (HZToken token : tokens) {
@@ -630,8 +631,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                     }
                 }
             }
-            if (find) {
-            } else {
+            if (!find) {
                 holder.tvName.setText(attentionName);
                 holder.tvMoney.setText("0");
                 holder.tvAbout.setText("0");
