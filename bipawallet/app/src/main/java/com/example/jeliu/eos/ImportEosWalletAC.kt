@@ -3,6 +3,8 @@ package com.example.jeliu.eos
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.Common.HZWalletManager
@@ -53,7 +55,18 @@ class ImportEosWalletAC : BaseActivity() {
             showWaiting()
             getAccountByPk(et_key.text.toString())
         }
+        imageView_eye_store.setOnClickListener {
+            passwordShown = !passwordShown
+            if (passwordShown) {
+                et_key_password.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                imageView_eye_store.setImageDrawable(resources.getDrawable(R.drawable.open))
+            } else {
+                et_key_password.transformationMethod = PasswordTransformationMethod.getInstance()
+                imageView_eye_store.setImageDrawable(resources.getDrawable(R.drawable.close))
+            }
+        }
     }
+    private var passwordShown: Boolean = false
 
     fun createWallet() {
         var walletPwd = et_key_password.text.toString()
