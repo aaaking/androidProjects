@@ -13,14 +13,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -28,9 +25,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,8 +37,6 @@ import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Application.HZApplication;
 import com.example.jeliu.bipawallet.Common.Common;
-import com.example.jeliu.bipawallet.Common.Constant;
-import com.example.jeliu.bipawallet.Mine.LoginActivity;
 import com.example.jeliu.bipawallet.Network.RequestResult;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
@@ -52,9 +47,16 @@ import com.example.jeliu.eos.di.component.DaggerActivityComponent;
 import com.example.jeliu.eos.di.module.ActivityModule;
 import com.example.jeliu.zxingsimplify.zxing.Activity.CaptureActivity;
 
-//import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.Locale;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
+//import org.bouncycastle.util.encoders.Hex;
 //import org.web3j.abi.datatypes.generated.Int64;
 //import org.web3j.crypto.CipherException;
 //import org.web3j.crypto.Credentials;
@@ -68,27 +70,6 @@ import org.json.JSONObject;
 //import org.web3j.tx.Transfer;
 //import org.web3j.utils.Convert;
 //import org.web3j.utils.Numeric;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 /**
  * Created by liuming on 05/05/2018.
@@ -551,6 +532,21 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setText(content);
         Toast.makeText(this, getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
+    }
+
+    public void showKeyboard(boolean isShow, View input) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (isShow) {
+            if (getCurrentFocus() == null) {
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            } else {
+                imm.showSoftInput(getCurrentFocus(), 0);
+            }
+        } else {
+            if (getCurrentFocus() != null || input != null) {
+                imm.hideSoftInputFromWindow(input != null ? input.getWindowToken() : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 
 }

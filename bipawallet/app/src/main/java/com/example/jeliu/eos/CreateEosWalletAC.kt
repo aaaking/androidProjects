@@ -4,7 +4,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.Common.HZWalletManager
@@ -53,6 +57,13 @@ class CreateEosWalletAC : BaseActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sp_wallets_unlocked.setAdapter(adapter)
         sp_wallets_unlocked.setSelection(0)
+        sp_wallets_unlocked.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, id: Long) {
+                walletName = sp_wallets_unlocked.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {}
+        }
         showWaiting()
         addDisposable(
                 mDataManager
@@ -81,12 +92,16 @@ class CreateEosWalletAC : BaseActivity() {
                 showToastMessage("please fill all fields")
                 return@setOnClickListener
             }
-            if (Integer.parseInt(et_stake_net.text.toString()) <= 0 || Integer.parseInt(et_stake_cpu.text.toString()) <= 0 || Integer.parseInt(et_buy_ram_eos.text.toString()) <= 0) {
+            if (java.lang.Float.parseFloat(et_stake_net.text.toString()) <= 0 || java.lang.Float.parseFloat(et_stake_cpu.text.toString()) <= 0 || java.lang.Float.parseFloat(et_buy_ram_eos.text.toString()) <= 0) {
                 showToastMessage("number of eos should be greater than 0")
                 return@setOnClickListener
             }
             if (HZWalletManager.getInst().walletNameExist(et_account_name.text.toString())) {
                 showToastMessage("wallet name already exists, please change another one")
+                return@setOnClickListener
+            }
+            if (sp_wallets_unlocked.selectedItemPosition == 0 || walletName.trim().isEmpty()) {
+                showToastMessage("please select at lease one eos wallet")
                 return@setOnClickListener
             }
             checkAccountName(0)
@@ -110,12 +125,44 @@ class CreateEosWalletAC : BaseActivity() {
                         override fun onError(e: Throwable) {
                             super.onError(e)
                             hideWaiting()
+                            showInputPassword()
                         }
                     })
             )
         } else {
             showToastMessage("account name invalid")
         }
+    }
+
+    private fun showInputPassword() {
+        val inflater = LayoutInflater.from(this)
+        val textEntryView = inflater.inflate(R.layout.layout_input_password, null)
+        val etPassword = textEntryView.findViewById<View>(R.id.editText_password) as EditText
+        etPassword.requestFocus()
+        val dialogPwd = AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("")
+                .setView(textEntryView)
+                .setPositiveButton(R.string.ok, null)
+                .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> showKeyboard(false, etPassword) }
+                .create()
+        dialogPwd.setOnShowListener {
+            val b = dialogPwd.getButton(AlertDialog.BUTTON_POSITIVE)
+            b.setOnClickListener {
+                mDataManager.walletManager.lock(walletName)
+                if (etPassword.text.toString().isEmpty()) {
+                    return@setOnClickListener
+                }
+                mDataManager.walletManager.unlock(walletName, etPassword.text.toString())
+                if (mDataManager.walletManager.isLocked(walletName)) {
+                    showToastMessage("invalid password")
+                    return@setOnClickListener
+                }
+                showKeyboard(false, etPassword)
+                dialogPwd.dismiss()
+            }
+        }
+        dialogPwd.show()
     }
 
     fun importKey() {
