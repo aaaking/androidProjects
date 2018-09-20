@@ -1,19 +1,15 @@
 package com.example.jeliu.bipawallet.Asset;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,7 +73,6 @@ public class WalletNameActivity extends BaseActivity {
     ImageView ivProfile;
 
     private String walletAddress;
-    private AlertDialog alertDialog;
 
     @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete})
     void onClick(View view) {
@@ -149,8 +144,8 @@ public class WalletNameActivity extends BaseActivity {
                     String safePK = BipaCredential.getSafePK(bipaWalletFile, password);
 
                     ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-                    fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16), false);
-                    fragment.setSafePrivateKey(safePK, false);
+                    fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16), ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK);
+                    fragment.setSafePrivateKey(safePK, ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK);
                     fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
                 }
             } catch (Exception e) {
@@ -197,8 +192,8 @@ public class WalletNameActivity extends BaseActivity {
 //                    BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
 
                     ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-                    fragment.setPrivateKey(text.toString(), true);
-                    fragment.setSafePrivateKey(storedHashMapString, true);
+                    fragment.setPrivateKey(text.toString(), ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS);
+                    fragment.setSafePrivateKey(storedHashMapString, ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS);
                     fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
                 } catch (Exception e) {
                     hideWaiting();

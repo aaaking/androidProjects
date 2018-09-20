@@ -37,9 +37,12 @@ import butterknife.OnClick;
  */
 
 public class ExportPrivateKeyFragment extends DialogFragment {
+    public static int TYPE_SHOW_ETH_PK = 0;
+    public static int TYPE_SHOW_ETH_KS = 1;
+    public static int TYPE_SHOW_EOS_PK = 2;
     private String privateKey;
     private String safePrivateKey;
-    private boolean forKeyStore;
+    private int showType = TYPE_SHOW_ETH_PK;
 
     @BindView(R.id.textView_key)
     TextView tvKey;
@@ -177,9 +180,9 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         tabHost.setup();            //初始化TabHost容器
 
         //在TabHost创建标签，然后设置：标题／图标／标签页布局
-        if (forKeyStore) {
+        if (showType == TYPE_SHOW_ETH_KS) {
             tabHost.addTab(tabHost.newTabSpec("key").setIndicator("keystore", null).setContent(R.id.tab1));
-        } else {
+        } else if (showType == TYPE_SHOW_ETH_PK) {
             tabHost.addTab(tabHost.newTabSpec("key").setIndicator(getResources().getString(R.string.privacy_key), null).setContent(R.id.tab1));
 
         }
@@ -214,22 +217,22 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     }
 
     private void handleDiffer() {
-        if (forKeyStore) {
+        if (showType == TYPE_SHOW_ETH_KS) {
             tvTransfer.setText(getString(R.string.password_case));
             tvTransferTip.setText(getString(R.string.password_case_tip));
-        } else {
+        } else if (showType == TYPE_SHOW_ETH_PK) {
             tvTransfer.setText(getString(R.string.no_network_transfer));
             tvTransferTip.setText(getString(R.string.no_network_transfer_tip));
         }
     }
 
-    public void setPrivateKey(String key, boolean forKeyStore) {
+    public void setPrivateKey(String key, int type) {
         privateKey = key;
-        this.forKeyStore = forKeyStore;
+        this.showType = type;
     }
 
-    public void setSafePrivateKey(String key, boolean forKeyStore) {
+    public void setSafePrivateKey(String key, int type) {
         safePrivateKey = key;
-        this.forKeyStore = forKeyStore;
+        this.showType = type;
     }
 }
