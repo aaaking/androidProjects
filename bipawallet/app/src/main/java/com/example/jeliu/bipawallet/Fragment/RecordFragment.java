@@ -1,20 +1,14 @@
 package com.example.jeliu.bipawallet.Fragment;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -25,22 +19,18 @@ import com.example.jeliu.bipawallet.Base.RecordAdapter;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Common.ListWithSectionAdapter;
-import com.example.jeliu.bipawallet.Fragment.StepFragment;
-import com.example.jeliu.bipawallet.Fragment.StepPagerAdapter;
 import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
-import com.example.jeliu.bipawallet.Record.RecordDetailsActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.WalletUtils;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,7 +45,6 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.halfbit.pinnedsection.PinnedSectionListView;
 
 /**
  * Created by liuming on 05/05/2018.
@@ -101,11 +90,13 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
 
     private HashMap<String, ArrayList<JSONObject>> filteredData = new HashMap<>();
 
-    @OnClick(R.id.ll_select) void doSelect() {
+    @OnClick(R.id.ll_select)
+    void doSelect() {
         onSelect(llSelect);
     }
 
-    @OnClick(R.id.imageView_date) void onFiterDate() {
+    @OnClick(R.id.imageView_date)
+    void onFiterDate() {
         final Calendar calendar = Calendar.getInstance();
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
@@ -271,15 +262,15 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             Object key = entry.getKey();
-            if (address.equalsIgnoreCase((String)key)) {
+            if (address.equalsIgnoreCase((String) key)) {
                 continue;
             }
             Object val = entry.getValue();
             fragment = new StepFragment();
 
-            String splits[] = ((String)val).split(UserInfoManager.s_split);
+            String splits[] = ((String) val).split(UserInfoManager.s_split);
             if (splits.length >= 2) {
-                fragment.init((String)key, splits[0]);
+                fragment.init((String) key, splits[0]);
             }
             fragmentList.add(fragment);
         }
@@ -289,13 +280,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         //pager.setCurrentItem(0);
         final int pos = 0;
 
-        pager.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                pager.setCurrentItem(pos);
-            }
-        }, 100);
+        pager.postDelayed(() -> pager.setCurrentItem(pos), 100);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -353,7 +338,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         String address = fragment.getAddress();
         UserInfoManager.getInst().setCurrentWalletAddress(address);
         refreshStepFragment();
-        if (address != null) {
+        if (WalletUtils.isValidAddress(address)) {
             showWaiting();
             loadData(address);
             loadBalance(address);
@@ -367,7 +352,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
             return;
         }
 
-        for (int i = transactions.length() - 1; i >= 0 ; -- i) {
+        for (int i = transactions.length() - 1; i >= 0; --i) {
             try {
                 JSONObject jsonObject = transactions.getJSONObject(i);
                 double value = jsonObject.getDouble("value");
@@ -382,17 +367,18 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
     private void loadBalance(String address) {
         if (address != null) {
             HZHttpRequest request = new HZHttpRequest();
-            request.requestGet(Constant.BALANCE_URL + "?address="+address, null, this);
+            request.requestGet(Constant.BALANCE_URL + "?address=" + address, null, this);
         }
     }
 
     private void loadData(String address) {
         if (address != null) {
             HZHttpRequest request = new HZHttpRequest();
-            request.requestGet(Constant.TRANSCTION_URL + "?address="+address, null, this);
+            request.requestGet(Constant.TRANSCTION_URL + "?address=" + address, null, this);
         }
     }
-//    String address = UserInfoManager.getInst().getCurrentWalletAddress();
+
+    //    String address = UserInfoManager.getInst().getCurrentWalletAddress();
 //        if (address != null) {
 //        showWaiting();
 //        HZHttpRequest request = new HZHttpRequest();
@@ -424,8 +410,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         return false;
     }
 
-    public class JsObjectComparator implements Comparator<String>
-    {
+    public class JsObjectComparator implements Comparator<String> {
         public int compare(String left, String right) {
             DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
             try {
@@ -438,7 +423,8 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
             return 0;
         }
     }
-//
+
+    //
     private void refresh() {
         if (transactions == null || transactions.length() == 0) {
             filteredData.clear();
@@ -448,7 +434,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
             return;
         }
         filteredData.clear();
-        for (int i = transactions.length() - 1; i >= 0 ; -- i) {
+        for (int i = transactions.length() - 1; i >= 0; --i) {
             try {
                 JSONObject jsonObject = transactions.getJSONObject(i);
                 long time = jsonObject.getLong("time");
@@ -484,7 +470,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
     private ArrayList<JSONObject> sortArray(ArrayList<JSONObject> array) {
         ArrayList<Long> times = new ArrayList<>();
         int length = array.size();
-        for (int i = 0; i < length; ++ i) {
+        for (int i = 0; i < length; ++i) {
             JSONObject obj = array.get(i);
             try {
                 long time = obj.getLong("time");
@@ -497,9 +483,9 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         Collections.sort(times);
         Collections.reverse(times);
         ArrayList<JSONObject> result = new ArrayList<>();
-        for (int i = 0; i < length; ++ i) {
+        for (int i = 0; i < length; ++i) {
             long time = times.get(i);
-            for (int j = 0; j < length; ++ j) {
+            for (int j = 0; j < length; ++j) {
                 JSONObject obj = array.get(j);
                 try {
                     long tr = obj.getLong("time");
