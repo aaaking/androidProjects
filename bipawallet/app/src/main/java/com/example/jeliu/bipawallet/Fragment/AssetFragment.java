@@ -77,6 +77,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 /**
@@ -186,32 +187,29 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         adapter = new AmountAdapter(getActivity());
         listView.setAdapter(adapter);
         adapter.setContents(AttentionsManager.getInst().getAttentions());
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), TransferActivity.class);
-//                try {
-                String attentionName = AttentionsManager.getInst().getAttentions().get(i);
-                boolean find = false;
-                String address = UserInfoManager.getInst().getCurrentWalletAddress();
-                HZWallet wallet = HZWalletManager.getInst().getWallet(address);
-                if (wallet != null) {
-                    List<HZToken> tokens = wallet.tokenList;
-                    for (HZToken token : tokens) {
-                        if (token.token.equalsIgnoreCase(attentionName)) {
-                            find = true;
-                            intent.putExtra("token", token.token);
-                            intent.putExtra("value", token.value);
-                            break;
-                        }
-                    }
-                }
-                if (!find) {
-                    intent.putExtra("token", attentionName);
-                    intent.putExtra("value", "0");
-                }
-                startActivity(intent);
+        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+            String address = UserInfoManager.getInst().getCurrentWalletAddress();
+            HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+            if (wallet == null) {
+                return;
             }
+            Intent intent = new Intent(getActivity(), TransferActivity.class);
+            String attentionName = wallet.type == WALLET_ETH ? AttentionsManager.getInst().getAttentions().get(i) : wallet.type == WALLET_EOS ? "eos" : "";
+            boolean find = false;
+            List<HZToken> tokens = wallet.tokenList;
+            for (HZToken token : tokens) {
+                if (token.token.equalsIgnoreCase(attentionName)) {
+                    find = true;
+                    intent.putExtra("token", token.token);
+                    intent.putExtra("value", token.value);
+                    break;
+                }
+            }
+            if (!find) {
+                intent.putExtra("token", attentionName);
+                intent.putExtra("value", "0");
+            }
+            startActivity(intent);
         });
     }
 

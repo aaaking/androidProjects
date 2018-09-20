@@ -21,6 +21,7 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.WalletUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -105,7 +106,7 @@ public class TransferActivity extends BaseActivity {
 
         setupView();
         String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null && address.trim().length() > 0) {
+        if (WalletUtils.isValidAddress(address)) {
             showWaiting();
             setupData(address);
             loadChartsData(address);
