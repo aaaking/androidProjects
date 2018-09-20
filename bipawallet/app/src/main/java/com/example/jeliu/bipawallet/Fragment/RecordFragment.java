@@ -130,9 +130,6 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         initAdapter();
         notifyIndicator();
         setupView();
-
-        //String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        //loadData(address);
         return view;
     }
 
@@ -340,7 +337,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         refreshStepFragment();
         if (WalletUtils.isValidAddress(address)) {
             showWaiting();
-            loadData(address);
+            loadEthTransactions(address);
             loadBalance(address);
         }
     }
@@ -371,7 +368,7 @@ public class RecordFragment extends BaseFragment implements PopupMenu.OnMenuItem
         }
     }
 
-    private void loadData(String address) {
+    private void loadEthTransactions(String address) {
         if (address != null) {
             HZHttpRequest request = new HZHttpRequest();
             request.requestGet(Constant.TRANSCTION_URL + "?address=" + address, null, this);
