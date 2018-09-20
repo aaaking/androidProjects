@@ -112,6 +112,7 @@
     <string name="password_case_tip">如需在线保存，则建议使用安全等级更高的1Password 等密码保管软件保存Keystore。</string>
 //
     <string name="inpay_id">收款ID:</string>
+    <string name="frompay_id">付款ID:</string>
     <string name="pay_method">支付方式:</string>
     <string name="pay_now">立即支付</string>
     <string name="pay_confirm">支付确认</string>

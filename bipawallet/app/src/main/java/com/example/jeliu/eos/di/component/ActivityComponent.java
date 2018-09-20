@@ -1,6 +1,7 @@
 package com.example.jeliu.eos.di.component;
 
 import com.example.jeliu.bipawallet.Splash.SplashActivity;
+import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.eos.CreateEosWalletAC;
 import com.example.jeliu.eos.ImportEosWalletAC;
 import com.example.jeliu.eos.InviteCreateEosAC;
@@ -20,21 +21,6 @@ public interface ActivityComponent {
     void inject(ImportEosWalletAC activity);
     void inject(CreateEosWalletAC activity);
     void inject(InviteCreateEosAC activity);
-//
+    void inject(PayEosWindow dialog);
 //    void inject(AccountMainFragment fragment);
-//    void inject(CreateEosAccountDialog dialog);
-//
-//    void inject(WalletFragment fragment);
-//    void inject(PushFragment fragment);
-//    void inject(GetTableFragment fragment);
-//
-//    void inject(CurrencyFragment fragment);
-//    void inject(TransferFragment fragment);
-//
-//    void inject(InputDataDialog dialog);
-//    void inject(CreateWalletDialog dialog);
-//
-//    void inject(InputAccountDialog dialog);
-//
-//    void inject(MsgInputActivity activity);
 }

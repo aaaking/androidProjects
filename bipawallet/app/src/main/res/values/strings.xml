@@ -112,6 +112,7 @@
     <string name="password_case_tip">If you want to save online, it is recommended to use password storage software such as 1Password, which has a higher security level, to save the Keystore.</string>
     //
     <string name="inpay_id">Collection ID:</string>
+    <string name="frompay_id">From ID:</string>
     <string name="pay_method">Payment ID:</string>
     <string name="pay_now">Immediate payment</string>
     <string name="pay_confirm">Payment confirmation</string>

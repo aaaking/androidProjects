@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Asset.TransferActivity;
 import com.example.jeliu.bipawallet.Asset.WithdrawActivity;
+import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.BaseFragment;
 import com.example.jeliu.bipawallet.Common.AttentionsManager;
 import com.example.jeliu.bipawallet.Common.Common;
@@ -39,6 +39,7 @@ import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
 
@@ -54,7 +55,6 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.ManagedTransaction;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
@@ -81,6 +81,7 @@ import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
  */
 
 public class AssetFragment extends BaseFragment implements PriceChangedListener {
+    PayEosWindow mPayEosWindow;
     @BindView(R.id.listview)
     ListView listView;
 
@@ -265,8 +266,12 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             serialNum = jsonObject.optString("serialNum");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
-            loadGas();
-
+            if (WalletUtils.isValidAddress(payAddress)) {
+                loadGas();
+            } else if (payToken.toLowerCase().equals("eos") && getActivity() instanceof BaseActivity) {
+                mPayEosWindow = new PayEosWindow(jsonObject, (BaseActivity) getActivity());
+                mPayEosWindow.showAtLocation(llRoot, Gravity.BOTTOM, 0, 0);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             showToastMessage(getResources().getString(R.string.scan_error));
@@ -335,7 +340,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             //these for another api call
             param.put("hash", tx);
             param.put("serialNum", serialNum);
-            param.put("time",  time);
+            param.put("time", time);
             md5.update((time + "bipa321" + tx).getBytes());
             param.put("sign", Util.bytesToHex(md5.digest()));
             // wallet node server
@@ -373,8 +378,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
         int gravity = Gravity.BOTTOM;
 
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.layout_popup_pay, null);
+//        LayoutInflater inflater = getActivity().getLayoutInflater();//getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+        View popupView = getActivity().getLayoutInflater().inflate(R.layout.layout_popup_pay, null);
         TextView tvMoney = popupView.findViewById(R.id.textView_money);
         tvMoney.setText(payValue + "");
 
@@ -421,7 +426,6 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override

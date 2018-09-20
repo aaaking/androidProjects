@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_popup"
-    android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_popup"
+                android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -24,7 +24,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:scaleType="center"
-                android:src="@drawable/back" />
+                android:src="@drawable/back"/>
 
             <TextView
                 android:id="@+id/textView_title"
@@ -34,7 +34,7 @@
                 android:layout_centerVertical="true"
                 android:text="@string/pay_confirm"
                 android:textColor="@android:color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"/>
 
 
             <ImageView
@@ -44,13 +44,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
-                app:srcCompat="@drawable/help" />
+                app:srcCompat="@drawable/help"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/imageView_back"
-                android:background="@color/header_line" />
+                android:background="@color/header_line"/>
 
         </RelativeLayout>
 
@@ -64,19 +64,67 @@
             android:gravity="center"
             android:text="1000ETH"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:background="@drawable/round_box_input"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/sp_wallets_unlocked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="35dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:padding="8dp"
+                android:spinnerMode="dialog"/> <!-- android:background="@drawable/arrow_gray" unlock 된 지갑을 선택하는 스피너 -->
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="@string/frompay_id"/>
+
+            <TextView
+                android:id="@+id/tv_from_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text=""/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/header_line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/inpay_id" />
+                android:text="@string/inpay_id"/>
 
             <TextView
                 android:id="@+id/tv_address"
@@ -86,7 +134,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="0xffsefe" />
+                android:text=""/>
         </LinearLayout>
 
         <TextView
@@ -95,7 +143,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
-            android:background="@color/header_line" />
+            android:background="@color/header_line"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/pay_method" />
+                android:text="@string/pay_method"/>
 
             <TextView
                 android:id="@+id/tv_pay"
@@ -117,7 +165,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="0xffsefe" />
+                android:text=""/>
         </LinearLayout>
 
         <TextView
@@ -126,93 +174,25 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
-            android:background="@color/header_line" />
+            android:background="@color/header_line"/>
 
-
-        <RelativeLayout
-            android:id="@+id/rl_simple"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_creator_name"
+            android:paddingTop="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <com.example.jeliu.bipawallet.ui.TextInputAutoCompleteTextView
+                android:id="@+id/et_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:id="@+id/textView21"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:text="@string/worker_fee" />
-
-                    <ImageView
-                        android:id="@+id/imageView11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        app:srcCompat="@drawable/help" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/seekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="10dp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView26"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1"
-                        android:text="@string/s_slow" />
-
-                    <TextView
-                        android:id="@+id/textView_seek"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/textView27"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="20dp"
-                        android:layout_weight="1"
-                        android:text="@string/s_fast" />
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
+                android:hint="memo"
+                android:inputType="text"
+                android:nextFocusDown="@+id/et_code"
+                android:singleLine="true"/>
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/button_pay"
@@ -224,8 +204,8 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/button_background"
             android:text="@string/pay_now"
-            android:textColor="@color/title_name_color" />
+            android:textColor="@color/title_name_color"/>
 
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>
