@@ -53,7 +53,8 @@ import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
  */
 
 public class WalletNameActivity extends BaseActivity {
-
+    HZWallet wallet;
+    int showType = ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK;
     @BindView(R.id.ll_root)
     LinearLayout llRoot;
 
@@ -76,9 +77,23 @@ public class WalletNameActivity extends BaseActivity {
 
     @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete})
     void onClick(View view) {
+//        if (true) {
+//            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+//            fragment.setShowType(showType);
+//            if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
+//                fragment.setEosKeys(null);
+//            } else {
+//                fragment.setPrivateKey("挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp");
+//                fragment.setSafePrivateKey("挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp挨耳光hi爱国好哇诶过后瓦尔好狗好娃儿规划范围安排好更怕我会kgeawghpawehrgp");
+//            }
+//            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+//            return;
+//        }
         if (view.getId() == R.id.rl_private_key) {
+            showType = showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK ? showType : ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK;
             showInputPassword(0);
         } else if (view.getId() == R.id.rl_keystore) {
+            showType = ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS;
             showInputPassword(1);
         } else {
             showInputPassword(2);
@@ -129,25 +144,76 @@ public class WalletNameActivity extends BaseActivity {
 
     private void exportPrivateKey(final String password) {
         showWaiting();
-        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+        fragment.setShowType(showType);
+        if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
+            hideWaiting();
+            fragment.setEosKeys(null);
+            fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+        } else {
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    if (credentials != null) {
+                        //
+                        SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                        Gson gson = new Gson();
+                        String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
+                        java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
+                        }.getType();
+                        BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
+                        String safePK = BipaCredential.getSafePK(bipaWalletFile, password);
+
+                        fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16));
+                        fragment.setSafePrivateKey(safePK);
+                        fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+                    }
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+                hideWaiting();
+            });
+        }
+//        HZHttpRequest request = new HZHttpRequest();
+//        Map<String, String> param = new HashMap<>();
+//        param.put("address", walletAddress);
+//        param.put("password", password);
+//        request.requestPost(Constant.GET_PRIVATEKEY, param, this);
+    }
+
+    private void exportKeystore(final String password) {
+        showWaiting();
         Execute(() -> {
             try {
                 Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                if (credentials != null) {
-                    //
-                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-                    Gson gson = new Gson();
-                    String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
-                    java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
-                    }.getType();
-                    BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
-                    String safePK = BipaCredential.getSafePK(bipaWalletFile, password);
-
-                    ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-                    fragment.setPrivateKey(credentials.getEcKeyPair().getPrivateKey().toString(16), ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK);
-                    fragment.setSafePrivateKey(safePK, ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK);
-                    fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
+                File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
+                if (credentials == null || !file.exists() || file.length() <= 0) {
+                    return;
                 }
+                StringBuilder text = new StringBuilder();
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+                //
+                SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+//                    Gson gson = new Gson();
+                String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
+//                    java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
+//                    }.getType();
+//                    BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
+
+                ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
+                fragment.setShowType(showType);
+                fragment.setPrivateKey(text.toString());
+                fragment.setSafePrivateKey(storedHashMapString);
+                fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
             } catch (Exception e) {
                 hideWaiting();
                 Looper.prepare();
@@ -158,54 +224,6 @@ public class WalletNameActivity extends BaseActivity {
         });
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
-//        param.put("address", walletAddress);
-//        param.put("password", password);
-//        request.requestPost(Constant.GET_PRIVATEKEY, param, this);
-    }
-
-    private void exportKeystore(final String password) {
-        showWaiting();
-        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
-        Execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                    File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
-                    if (credentials == null || !file.exists() || file.length() <= 0) {
-                        return;
-                    }
-                    StringBuilder text = new StringBuilder();
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        text.append(line);
-                        text.append('\n');
-                    }
-                    br.close();
-                    //
-                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-//                    Gson gson = new Gson();
-                    String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
-//                    java.lang.reflect.Type type = new TypeToken<BipaWalletFile>() {
-//                    }.getType();
-//                    BipaWalletFile bipaWalletFile = gson.fromJson(storedHashMapString, type);
-
-                    ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
-                    fragment.setPrivateKey(text.toString(), ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS);
-                    fragment.setSafePrivateKey(storedHashMapString, ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS);
-                    fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
-                } catch (Exception e) {
-                    hideWaiting();
-                    Looper.prepare();
-                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
-                hideWaiting();
-            }
-        });
-//        HZHttpRequest request = new HZHttpRequest();
-//        Map<String, String> param = new HashMap<>();
 //        param.put("password", password);
 //        param.put("address", walletAddress);
 //        request.requestPost(Constant.GET_KEYSTORE, param, this);
@@ -213,31 +231,27 @@ public class WalletNameActivity extends BaseActivity {
 
     private void deleteWallet(final String password) {
         showWaiting();
-        final HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
-        Execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                    File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
-                    if (credentials == null || !file.exists() || file.length() <= 0) {
-                        return;
-                    }
-                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-                    SharedPreferences.Editor localEditor = sp.edit();
-                    localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
-                    localEditor.apply();
-
-                    file.delete();
-                    deleteWalletImp();
-                } catch (Exception e) {
-                    hideWaiting();
-                    Looper.prepare();
-                    Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+        Execute(() -> {
+            try {
+                Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
+                if (credentials == null || !file.exists() || file.length() <= 0) {
+                    return;
                 }
+                SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                SharedPreferences.Editor localEditor = sp.edit();
+                localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
+                localEditor.apply();
+
+                file.delete();
+                deleteWalletImp();
+            } catch (Exception e) {
                 hideWaiting();
+                Looper.prepare();
+                Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
+            hideWaiting();
         });
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
@@ -294,7 +308,6 @@ public class WalletNameActivity extends BaseActivity {
     }
 
     private void updateUI(String address, boolean shouldRefresh) {
-        HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         if (wallet != null && wallet.type == WALLET_ETH) {
             if (wallet.tokenList.size() == 0 && shouldRefresh) {
                 showWaiting();
@@ -312,19 +325,19 @@ public class WalletNameActivity extends BaseActivity {
     }
 
     void setupView() {
-        showBackButton();
-        Intent i = getIntent();
-        String name = i.getStringExtra("name");
+        String name = getIntent().getStringExtra("name");
         setTitle(name);
-        walletAddress = i.getStringExtra("address");
-        HZWallet wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        walletAddress = getIntent().getStringExtra("address");
+        wallet = HZWalletManager.getInst().getWallet(walletAddress);
+        if (wallet != null && wallet.type == WALLET_EOS) {
+            showType = ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK;
+        }
+        showBackButton();
         rl_keystore.setVisibility(wallet == null || wallet.type == WALLET_ETH ? View.VISIBLE : wallet.type == WALLET_EOS ? View.INVISIBLE : View.VISIBLE);
         if (wallet != null) {
             ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
         }
-
         updateUI(walletAddress, true);
-
         tvName.setText(name);
         tvAddress.setText(walletAddress);
     }

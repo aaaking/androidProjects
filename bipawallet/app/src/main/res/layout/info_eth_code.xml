@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/eth_tab2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="450dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/export_margin"
+            android:layout_marginRight="@dimen/export_margin"
+            android:layout_marginTop="10dp"
+            android:text="@string/qr_code_after_encrypt"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/imageView_safe_qr"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitCenter"/>
+
+        <Switch
+            android:id="@+id/switch_raw_qr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/export_margin"
+            android:text="@string/show_raw_qr"/>
+
+        <LinearLayout
+            android:id="@+id/raw_qrcode_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/waring_export_key"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/store_recommend_qr"/>
+
+            <ImageView
+                android:id="@+id/imageView_qr"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

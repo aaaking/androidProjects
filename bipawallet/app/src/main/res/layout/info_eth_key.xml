@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/eth_tab1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/export_margin"
+            android:layout_marginRight="@dimen/export_margin"
+            android:layout_marginTop="10dp"
+            android:text="@string/text_after_encrypt"
+            android:textIsSelectable="true"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/textView_safe_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/export_margin"
+            android:layout_marginRight="@dimen/export_margin"
+            android:layout_marginTop="20dp"
+            android:background="@color/header_line"
+            android:clickable="true"
+            android:enabled="true"
+            android:focusable="true"
+            android:longClickable="true"
+            android:maxLines="6"
+            android:overScrollMode="always"
+            android:padding="5dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:text=""
+            android:textIsSelectable="true"/>
+
+        <Button
+            android:id="@+id/button_copy_safe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button_background"
+            android:text="@string/copy"
+            android:textColor="@color/title_name_color"/>
+
+        <Switch
+            android:id="@+id/switch_raw_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/export_margin"
+            android:text="@string/show_raw_data"/>
+
+        <LinearLayout
+            android:id="@+id/raw_credential_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:visibility="visible"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/waring_export_key"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/tip_export_key"/>
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/store_recommend"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/store_recommend_tip"/>
+
+            <TextView
+                android:id="@+id/tv_transfer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/no_network_transfer"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_transfer_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="10dp"
+                android:text="@string/no_network_transfer_tip"/>
+
+            <TextView
+                android:id="@+id/textView_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/export_margin"
+                android:layout_marginRight="@dimen/export_margin"
+                android:layout_marginTop="20dp"
+                android:background="@color/header_line"
+                android:clickable="true"
+                android:enabled="true"
+                android:focusable="true"
+                android:longClickable="true"
+                android:maxLines="6"
+                android:overScrollMode="always"
+                android:padding="5dp"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:text=""
+                android:textIsSelectable="true"/>
+
+            <Button
+                android:id="@+id/button_copy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/button_background"
+                android:text="@string/copy"
+                android:textColor="@color/title_name_color"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
