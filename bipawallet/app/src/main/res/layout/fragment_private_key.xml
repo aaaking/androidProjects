@@ -26,9 +26,8 @@
 
                 <ScrollView
                     android:id="@+id/tab1"
-                    android:layout_width="320dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minWidth="320dp"
                     android:fillViewport="true">
 
                     <LinearLayout
@@ -183,11 +182,12 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
+                    android:fillViewport="true"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:id="@+id/tab2"
-                        android:layout_width="320dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="450dp"
                         android:orientation="vertical">

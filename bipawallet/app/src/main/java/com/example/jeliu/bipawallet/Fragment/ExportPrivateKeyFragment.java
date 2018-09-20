@@ -1,17 +1,18 @@
 package com.example.jeliu.bipawallet.Fragment;
 
+import android.app.Dialog;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.method.ScrollingMovementMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -21,17 +22,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.R;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +43,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
 
     @BindView(R.id.textView_key)
     TextView tvKey;
+
     @BindView(R.id.textView_safe_key)
     TextView tvSafeKey;
 
@@ -68,10 +64,17 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     @BindView(R.id.tv_transfer_tip)
     TextView tvTransferTip;
 
-    @BindView(R.id.raw_credential_container) View raw_credential_container;
-    @BindView(R.id.raw_qrcode_container) View raw_qrcode_container;
-    @BindView(R.id.switch_raw_data) Switch switch_raw_data;
-    @BindView(R.id.switch_raw_qr) Switch switch_raw_qr;
+    @BindView(R.id.raw_credential_container)
+    View raw_credential_container;
+
+    @BindView(R.id.raw_qrcode_container)
+    View raw_qrcode_container;
+
+    @BindView(R.id.switch_raw_data)
+    Switch switch_raw_data;
+
+    @BindView(R.id.switch_raw_qr)
+    Switch switch_raw_qr;
 
 
     @OnClick(R.id.button_copy)
@@ -80,6 +83,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         cm.setText(privateKey);
         Toast.makeText(getActivity(), getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();
     }
+
     @OnClick(R.id.button_copy_safe)
     void onCopySafe() {
         ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -88,9 +92,22 @@ public class ExportPrivateKeyFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LogUtil.INSTANCE.i("onCreate");
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        LogUtil.INSTANCE.i("onCreateDialog");
+        return super.onCreateDialog(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LogUtil.INSTANCE.i("onCreateView");
         View view = inflater.inflate(R.layout.fragment_private_key, container);
         ButterKnife.bind(this, view);
         if (privateKey != null) {
@@ -132,6 +149,13 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         });
         setSwitchAction();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LogUtil.INSTANCE.i("onStart");
+        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
     }
 
     private void setSwitchAction() {

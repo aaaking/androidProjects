@@ -2,12 +2,11 @@ package com.example.jeliu.bipawallet.ui
 
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.jeliu.bipawallet.R
-import android.util.DisplayMetrics
-import com.example.jeliu.bipawallet.util.LogUtil
 
 
 /**
@@ -21,7 +20,6 @@ class WalletTypeDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        LogUtil.i("dialogfragment onStart")
         if (dialog != null) {
             val dm = DisplayMetrics()
             activity!!.windowManager.defaultDisplay.getMetrics(dm)
@@ -30,7 +28,6 @@ class WalletTypeDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        LogUtil.i("dialogfragment onCreateView")
         val view = inflater.inflate(R.layout.dialog_type_wallet, container)
         view.findViewById<View>(R.id.tv_wallet_eth).setOnClickListener {
             callback?.callback(WALLET_ETH)
