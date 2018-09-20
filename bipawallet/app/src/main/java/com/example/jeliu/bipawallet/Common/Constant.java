@@ -88,4 +88,5 @@ public class Constant {
     public static final int SYMBOL_PRECISION = 4;
 
     public static final String EOS_SYMBOL_STRING = "EOS";
+    public static final String EOS_NAME_REGEX = "^[1-5a-z]{12}$";
 }

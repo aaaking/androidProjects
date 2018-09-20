@@ -1,5 +1,6 @@
 package com.example.jeliu.eos.di.component;
 
+import com.example.jeliu.bipawallet.Asset.TransportEosAC;
 import com.example.jeliu.bipawallet.Splash.SplashActivity;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.eos.CreateEosWalletAC;
@@ -22,5 +23,5 @@ public interface ActivityComponent {
     void inject(CreateEosWalletAC activity);
     void inject(InviteCreateEosAC activity);
     void inject(PayEosWindow dialog);
-//    void inject(AccountMainFragment fragment);
+    void inject(TransportEosAC activity);
 }

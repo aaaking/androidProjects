@@ -168,12 +168,7 @@ public class TransportActivity extends BaseActivity {
                     }
                     final JSONObject js = new JSONObject();
                     js.put("tx", tx);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            transferSucceed(tx);
-                        }
-                    });
+                    runOnUiThread(() -> transferSucceed(tx));
                 } catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
@@ -198,12 +193,7 @@ public class TransportActivity extends BaseActivity {
                     }
                     final JSONObject js = new JSONObject();
                     js.put("tx", tx);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            transferSucceed(tx);
-                        }
-                    });
+                    runOnUiThread(() -> transferSucceed(tx));
                 } catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();

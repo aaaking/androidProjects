@@ -105,7 +105,7 @@ public class TransferActivity extends BaseActivity {
                 intent.putExtra("token", token);
                 startActivity(intent);
             } else if (wallet.type == WALLET_EOS) {
-                startTransportEosAC(this);
+                startTransportEosAC(this, token);
             }
         } else if (view.getId() == R.id.rl_redraw) {
             Intent intent = new Intent(TransferActivity.this, WithdrawActivity.class);

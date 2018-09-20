@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import com.example.jeliu.bipawallet.Base.BaseActivity
+import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.Common.HZWalletManager
 import com.example.jeliu.bipawallet.Model.HZWallet
 import com.example.jeliu.bipawallet.R
@@ -18,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import retrofit2.HttpException
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -86,7 +88,7 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
                 activity.showToastMessage("invalid token")
                 return@setOnClickListener
             }
-            if (TextUtils.isEmpty(payAddress)) {
+            if (TextUtils.isEmpty(payAddress) || !Pattern.matches(Constant.EOS_NAME_REGEX, payAddress)) {
                 activity.showToastMessage("invalid to address")
                 return@setOnClickListener
             }

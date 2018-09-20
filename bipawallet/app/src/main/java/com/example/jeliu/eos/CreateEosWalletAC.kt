@@ -131,7 +131,7 @@ class CreateEosWalletAC : BaseActivity() {
     private var passwordShown: Boolean = false
 
     fun checkAccountName(type: Int) {//https://blog.csdn.net/zlp_zky/article/details/70214672
-        var nameMatch = Pattern.matches("^[1-5a-z]{12}$", et_account_name.text.toString())
+        var nameMatch = Pattern.matches(Constant.EOS_NAME_REGEX, et_account_name.text.toString())
         if (!NetworkUtil.isNetAvailable(this)) {
             showToastMessage("net work unavailable")
         } else if (nameMatch) {
