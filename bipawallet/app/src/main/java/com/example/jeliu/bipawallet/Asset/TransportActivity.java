@@ -149,73 +149,67 @@ public class TransportActivity extends BaseActivity {
         final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         if (token.equalsIgnoreCase("eth")) {
 //            request.requestPost(Constant.SEND_ETH_URL, param, this);
-            Execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                        EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
-                        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-                        RawTransaction rawTransaction =
-                                RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(price), Convert.Unit.GWEI).toBigInteger(),
-                                        new BigDecimal(limit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
-                        // sign & send our transaction
-                        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-                        String hexValue = Numeric.toHexString(signedMessage);
-                        EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
-                        final String tx = ethSendTransaction.getTransactionHash();
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
-                        if (tx == null) {
-                            throw new Exception("transfer fail because txhash null");
-                        }
-                        final JSONObject js = new JSONObject();
-                        js.put("tx", tx);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transferSucceed(tx);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Looper.prepare();
-                        Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                        hideWaiting();
-                        Looper.loop();
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
+                    BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+                    RawTransaction rawTransaction =
+                            RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(price), Convert.Unit.GWEI).toBigInteger(),
+                                    new BigDecimal(limit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
+                    // sign & send our transaction
+                    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                    String hexValue = Numeric.toHexString(signedMessage);
+                    EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                    final String tx = ethSendTransaction.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
                     }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            transferSucceed(tx);
+                        }
+                    });
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    hideWaiting();
+                    Looper.loop();
                 }
             });
         } else if (token.equalsIgnoreCase("wxc")) {
 //            request.requestPost(Constant.SEND_ERC_URL, param, this);
-            Execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                        Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(price), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(limit).toBigInteger());
-                        BigInteger decimal = contractWxc.decimals().send();
-                        BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
-                        TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
-                        final String tx = transferReceipt.getTransactionHash();
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
-                        if (tx == null) {
-                            throw new Exception("transfer fail because txhash null");
-                        }
-                        final JSONObject js = new JSONObject();
-                        js.put("tx", tx);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                transferSucceed(tx);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Looper.prepare();
-                        Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                        hideWaiting();
-                        Looper.loop();
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(price), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(limit).toBigInteger());
+                    BigInteger decimal = contractWxc.decimals().send();
+                    BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
+                    TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
+                    final String tx = transferReceipt.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
                     }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            transferSucceed(tx);
+                        }
+                    });
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(TransportActivity.this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    hideWaiting();
+                    Looper.loop();
                 }
             });
         }
