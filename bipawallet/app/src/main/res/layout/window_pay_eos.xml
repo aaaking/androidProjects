@@ -188,7 +188,7 @@
                 android:id="@+id/et_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="memo"
+                android:hint="@string/ps"
                 android:inputType="text"
                 android:nextFocusDown="@+id/et_code"
                 android:singleLine="true"/>

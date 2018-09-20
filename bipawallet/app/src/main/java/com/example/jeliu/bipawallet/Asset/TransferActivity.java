@@ -13,7 +13,9 @@ import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.RecordAdapter;
 import com.example.jeliu.bipawallet.Common.ChartDataNode;
 import com.example.jeliu.bipawallet.Common.Constant;
+import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Common.PriceManager;
+import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
@@ -41,6 +43,10 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
+
+import static com.example.jeliu.bipawallet.Asset.TransportEosACKt.startTransportEosAC;
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 
 /**
  * Created by liuming on 09/05/2018.
@@ -88,10 +94,19 @@ public class TransferActivity extends BaseActivity {
 
     @OnClick({R.id.rl_transfer, R.id.rl_redraw})
     void onClick(View view) {
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+        if (wallet == null) {
+            return;
+        }
         if (view.getId() == R.id.rl_transfer) {
-            Intent intent = new Intent(TransferActivity.this, TransportActivity.class);
-            intent.putExtra("token", token);
-            startActivity(intent);
+            if (wallet.type == WALLET_ETH) {
+                Intent intent = new Intent(TransferActivity.this, TransportActivity.class);
+                intent.putExtra("token", token);
+                startActivity(intent);
+            } else if (wallet.type == WALLET_EOS) {
+                startTransportEosAC(this);
+            }
         } else if (view.getId() == R.id.rl_redraw) {
             Intent intent = new Intent(TransferActivity.this, WithdrawActivity.class);
             intent.putExtra("token", token);
@@ -112,7 +127,7 @@ public class TransferActivity extends BaseActivity {
             loadChartsData(address);
         }
 
-        chart = (LineChartView)findViewById(R.id.chart);
+        chart = (LineChartView) findViewById(R.id.chart);
         chart.setInteractive(true);
         chart.setOnValueTouchListener(new ValueTouchListener());
         chart.setValueSelectionEnabled(hasLabelForSelected);
@@ -127,8 +142,8 @@ public class TransferActivity extends BaseActivity {
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
         double value = intent.getDoubleExtra("value", 0);
-      //  tvMoney.setText(value+"");
-       // tvAbout.setText(PriceManager.getInst().tokenPrice(token, value)+"");
+        //  tvMoney.setText(value+"");
+        // tvAbout.setText(PriceManager.getInst().tokenPrice(token, value)+"");
         setTitle(token);
         showBackButton();
 
@@ -138,7 +153,7 @@ public class TransferActivity extends BaseActivity {
 
     private void setupData(String address) {
         HZHttpRequest request = new HZHttpRequest();
-        request.requestGet(Constant.TRANSCTION_URL + "?address="+address, null, this);
+        request.requestGet(Constant.TRANSCTION_URL + "?address=" + address, null, this);
     }
 
     @Override
@@ -167,7 +182,7 @@ public class TransferActivity extends BaseActivity {
 
     private void loadChartsData(String address) {
         HZHttpRequest request = new HZHttpRequest();
-        request.requestGet(Constant.BALANCE_CHART + "?address="+address, null, this);
+        request.requestGet(Constant.BALANCE_CHART + "?address=" + address, null, this);
     }
 
     private void refresh() {
@@ -175,7 +190,7 @@ public class TransferActivity extends BaseActivity {
             return;
         }
         ArrayList<JSONObject> data = new ArrayList<>();
-        for (int i = 0; i < transactions.length(); ++ i) {
+        for (int i = 0; i < transactions.length(); ++i) {
             try {
                 JSONObject jsonObject = transactions.getJSONObject(i);
                 if (jsonObject != null) {
@@ -198,9 +213,9 @@ public class TransferActivity extends BaseActivity {
         String[] months = new String[5];
 
         calendar.add(Calendar.DAY_OF_MONTH, -5);
-        for (int i = 0; i < 5; ++ i) {
+        for (int i = 0; i < 5; ++i) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
-            int mm = calendar.get(Calendar.MONTH)+1;
+            int mm = calendar.get(Calendar.MONTH) + 1;
             int dd = calendar.get(Calendar.DAY_OF_MONTH);
             String date = mm + "." + dd;
             months[i] = date;
@@ -223,7 +238,7 @@ public class TransferActivity extends BaseActivity {
         }
         realChartData.clear();
         int length = chartsData.length();
-        for (int i = 0; i < length; ++ i) {
+        for (int i = 0; i < length; ++i) {
             try {
                 JSONObject jsonObject = chartsData.getJSONObject(i);
                 long time = jsonObject.getLong("time");
@@ -234,13 +249,13 @@ public class TransferActivity extends BaseActivity {
                 int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_YEAR;
                 String s = DateUtils.formatDateTime(this, time, flags);
 
-               // String s = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
+                // String s = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
                 ChartDataNode node = new ChartDataNode();
                 JSONArray balance = jsonObject.getJSONArray("balance");
                 if (balance != null) {
 
                     int blength = balance.length();
-                    for (int j = 0; j < blength; ++ j) {
+                    for (int j = 0; j < blength; ++j) {
                         JSONObject jbnode = balance.getJSONObject(j);
                         String t = jbnode.getString("token");
                         if (t.equalsIgnoreCase(this.token)) {
@@ -332,7 +347,7 @@ public class TransferActivity extends BaseActivity {
             tvAbout.setText(PriceManager.getInst().formatPrice(node.value, node.price));
             if (index > 0) {
                 ChartDataNode pre = realChartData.get(index - 1);
-                double rate = (node.price - pre.price) * 100 /pre.price;
+                double rate = (node.price - pre.price) * 100 / pre.price;
 
                 imageviewUp.setVisibility(View.VISIBLE);
                 if (rate > 0) {

@@ -34,9 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -71,7 +68,8 @@ public class WithdrawActivity extends BaseActivity {
     private JSONArray tokenList;
     private String token;
 
-    @OnClick(R.id.button_copy) void onCopy() {
+    @OnClick(R.id.button_copy)
+    void onCopy() {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         String address = UserInfoManager.getInst().getCurrentWalletAddress();
         if (address != null) {
@@ -134,7 +132,7 @@ public class WithdrawActivity extends BaseActivity {
         if (tokenList != null && tokenList.length() > 0) {
             int length = tokenList.length();
             boolean hasEth = false;
-            for (int i = 0; i < tokenList.length(); ++ i) {
+            for (int i = 0; i < tokenList.length(); ++i) {
                 try {
                     String token = tokenList.getString(i);
                     if (token.equalsIgnoreCase("eth")) {
@@ -146,19 +144,19 @@ public class WithdrawActivity extends BaseActivity {
                 }
             }
             if (hasEth) {
-                items = new String[length ];
+                items = new String[length];
             } else {
                 items = new String[length + 1];
                 items[0] = "eth";
             }
-            for (int i = 0; i < tokenList.length(); ++ i) {
+            for (int i = 0; i < tokenList.length(); ++i) {
                 try {
                     String token = tokenList.getString(i);
                     if (hasEth) {
                         items[i] = token;
 
                     } else {
-                        items[i+1] = token;
+                        items[i + 1] = token;
 
                     }
 
@@ -168,11 +166,11 @@ public class WithdrawActivity extends BaseActivity {
             }
         }
 
-        for (int i = 0; i < items.length; ++ i) {
+        for (int i = 0; i < items.length; ++i) {
             String token = items[i];
             if (this.token != null) {
                 if (this.token.equalsIgnoreCase(token)) {
-                    currentIndex = i ;
+                    currentIndex = i;
                 }
             }
 
@@ -260,7 +258,7 @@ public class WithdrawActivity extends BaseActivity {
             content = String.format("{\"id\":\"%s\", \"value\":%.06f, \"token\":\"%s\", \"BipaWallet\":1}", address, iv, token);
             Bitmap bm = Common.encodeAsBitmap(content, BarcodeFormat.QR_CODE, 190, 190);
 
-            if(bm != null) {
+            if (bm != null) {
                 ivQr.setImageBitmap(bm);
             }
         } catch (WriterException e) { //eek
