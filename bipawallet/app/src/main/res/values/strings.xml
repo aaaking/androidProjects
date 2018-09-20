@@ -212,4 +212,5 @@
     <string name="create_success">create success</string>
     <string name="eos_wallet_no_keys">EOS wallet does not contain a private key and cannot be used for this operation</string>
     <string name="from">from</string>
+    <string name="data_empty">data empty</string>
 </resources>

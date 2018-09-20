@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_transfer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/export_margin"
+        android:layout_marginRight="@dimen/export_margin"
+        android:layout_marginTop="10dp"
+        android:text="@string/no_network_transfer"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/export_margin"
+        android:layout_marginRight="@dimen/export_margin"
+        android:layout_marginTop="20dp"
+        android:background="@color/header_line"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="true"
+        android:longClickable="true"
+        android:maxLines="6"
+        android:overScrollMode="always"
+        android:padding="5dp"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:text=""
+        android:textIsSelectable="true"/>
+</LinearLayout>

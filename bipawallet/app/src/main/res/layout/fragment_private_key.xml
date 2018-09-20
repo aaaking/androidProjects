@@ -8,7 +8,7 @@
     <TabHost
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,13 +28,13 @@
                 <ViewStub
                     android:id="@+id/vs_eth_tab1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     tools:layout="@layout/info_eth_key"/>
 
                 <ViewStub
                     android:id="@+id/vs_eth_tab2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     tools:layout="@layout/info_eth_code"/>
 
             </FrameLayout>

@@ -212,4 +212,5 @@
     <string name="create_success">创建成功</string>
     <string name="eos_wallet_no_keys">EOS钱包不包含私钥，无法进行此操作</string>
     <string name="from">发送方</string>
+    <string name="data_empty">暂无数据</string>
 </resources>

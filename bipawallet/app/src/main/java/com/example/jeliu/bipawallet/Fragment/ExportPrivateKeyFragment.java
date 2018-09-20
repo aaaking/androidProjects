@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.example.jeliu.eos.crypto.ec.EosPublicKey;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -119,6 +121,12 @@ public class ExportPrivateKeyFragment extends DialogFragment {
             codeVS.setLayoutResource(R.layout.info_eos_code);
             codeVS.inflate();
             initEosTabhost();
+            View tv_data_empty1 = view.findViewById(R.id.tv_data_empty1);
+            tv_data_empty1.setVisibility(mKeys.size() <= 0 ? View.VISIBLE : View.GONE);
+            View tv_data_empty2 = view.findViewById(R.id.tv_data_empty2);
+            tv_data_empty2.setVisibility(mKeys.size() <= 0 ? View.VISIBLE : View.GONE);
+            RecyclerView recyclerView1 = view.findViewById(R.id.eos_list1);
+            RecyclerView recyclerView2 = view.findViewById(R.id.eos_list2);
         }
         return view;
     }
@@ -216,7 +224,46 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         this.showType = type;
     }
 
+    private Map<EosPublicKey, String> mKeys = new HashMap<EosPublicKey, String>();
     public void setEosKeys(Map<EosPublicKey, String> data) {
+        mKeys = data == null ? mKeys : data;
+    }
 
+    class EosKeysAdap extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mKeys.size();
+        }
+    }
+
+    class EosKeysQrAdap extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mKeys.size();
+        }
     }
 }
