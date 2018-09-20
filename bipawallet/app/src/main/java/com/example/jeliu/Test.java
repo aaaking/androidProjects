@@ -3,6 +3,7 @@
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,18 +32,6 @@ public class Test {
         fs.add(a);
         fs.add(b);
         System.out.println(fs.toString());
-        //
-        System.out.println(String.valueOf(2.222));
-        System.out.println(String.valueOf(2.00));
-
-        //
-        StringBuilder stringBuilder = new StringBuilder("0.");
-        for (int i = 0; i < 4; i++) {
-            stringBuilder.append("0");
-        }
-        DecimalFormat df = new DecimalFormat(stringBuilder.toString());
-        String result = df.format(4);
-        System.out.println(result);
     }
 
     public static void testSys(String value) {

@@ -33,10 +33,16 @@ import com.google.zxing.WriterException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.WalletUtils;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 
 /**
  * Created by liuming on 20/05/2018.
@@ -94,10 +100,14 @@ public class WithdrawActivity extends BaseActivity {
 
         initQRCode();
         setupView();
-        loadData();
+        if (WalletUtils.isValidAddress(UserInfoManager.getInst().getCurrentWalletAddress())) {
+            loadEthData();
+        } else {
+            updateToken();
+        }
     }
 
-    private void loadData() {
+    private void loadEthData() {
         showWaiting();
         HZHttpRequest request = new HZHttpRequest();
         request.requestGet(Constant.TOKENLIST_URL, null, this);
@@ -127,56 +137,25 @@ public class WithdrawActivity extends BaseActivity {
     }
 
     private void updateToken() {
-        String[] items = null;
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         int currentIndex = 0;
-        if (tokenList != null && tokenList.length() > 0) {
-            int length = tokenList.length();
-            boolean hasEth = false;
+        ArrayList<String> temp = new ArrayList<String>();
+        if (wallet == null || wallet.type == WALLET_ETH) {
             for (int i = 0; i < tokenList.length(); ++i) {
-                try {
-                    String token = tokenList.getString(i);
-                    if (token.equalsIgnoreCase("eth")) {
-                        hasEth = true;
-                        break;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (hasEth) {
-                items = new String[length];
-            } else {
-                items = new String[length + 1];
-                items[0] = "eth";
-            }
-            for (int i = 0; i < tokenList.length(); ++i) {
-                try {
-                    String token = tokenList.getString(i);
-                    if (hasEth) {
-                        items[i] = token;
-
-                    } else {
-                        items[i + 1] = token;
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        for (int i = 0; i < items.length; ++i) {
-            String token = items[i];
-            if (this.token != null) {
-                if (this.token.equalsIgnoreCase(token)) {
+                String token = tokenList.optString(i);
+                temp.add(token);
+                if (token.equalsIgnoreCase(this.token)) {
                     currentIndex = i;
                 }
             }
-
+            if (!temp.contains("eth")) {
+                temp.add(0, "eth");
+            }
+        } else if (wallet.type == WALLET_EOS) {
+            temp.add("eos");
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, temp);
         adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
 
         spinnerToken.setAdapter(adapter);
