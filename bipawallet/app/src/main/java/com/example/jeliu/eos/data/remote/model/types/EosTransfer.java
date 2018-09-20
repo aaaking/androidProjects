@@ -44,11 +44,11 @@ public class EosTransfer implements EosType.Packer {
     @Expose
     private String memo;
 
-    public EosTransfer(String from, String to, long quantity, String memo) {
+    public EosTransfer(String from, String to, double quantity, String memo) {
         this(new TypeAccountName(from), new TypeAccountName(to), quantity, memo);
     }
 
-    public EosTransfer(TypeAccountName from, TypeAccountName to, long quantity, String memo) {
+    public EosTransfer(TypeAccountName from, TypeAccountName to, double quantity, String memo) {
         this.from = from;
         this.to = to;
         this.quantity = new TypeAsset(quantity);

@@ -311,7 +311,7 @@ public class EoscDataManager {
         return getActionAfterBindArgs(EOSIO_SYSTEM_ACCOUNT, from, "delegatebw", new Gson().toJson(object));
     }
 
-    public Observable<JsonObject> transfer(String from, String to, long amount, String memo) {
+    public Observable<JsonObject> transfer(String from, String to, double amount, String memo) {
 
         EosTransfer transfer = new EosTransfer(from, to, amount, memo);
 

@@ -39,10 +39,13 @@ import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.IPayEosSuccess;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
+import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -269,7 +272,16 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             if (WalletUtils.isValidAddress(payAddress)) {
                 loadGas();
             } else if (payToken.toLowerCase().equals("eos") && getActivity() instanceof BaseActivity) {
-                mPayEosWindow = new PayEosWindow(jsonObject, (BaseActivity) getActivity());
+                mPayEosWindow = new PayEosWindow(jsonObject, (BaseActivity) getActivity(), data -> {
+                    final JSONObject js = new JSONObject();
+                    try {
+                        js.put("tx", data);
+                        sendToPlatformAfterPay(js, null);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        showToastMessage(e.toString());
+                    }
+                });
                 mPayEosWindow.showAtLocation(llRoot, Gravity.BOTTOM, 0, 0);
             }
         } catch (JSONException e) {
@@ -454,8 +466,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     private void showInputPassword() {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View textEntryView = inflater.inflate(
-                R.layout.layout_input_password, null);
+        final View textEntryView = inflater.inflate(R.layout.layout_input_password, null);
         final EditText etPassword = (EditText) textEntryView.findViewById(R.id.editText_password);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -493,75 +504,59 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
         if (payToken.equalsIgnoreCase("eth")) {
 //            request.requestPost(Constant.SEND_ETH_URL, param, this);
-            Execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                        EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
-                        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-                        RawTransaction rawTransaction =
-                                RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(),
-                                        new BigDecimal(gasLimit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
-                        // sign & send our transaction
-                        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-                        String hexValue = Numeric.toHexString(signedMessage);
-                        EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
-                        String tx = ethSendTransaction.getTransactionHash();
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
-                        if (tx == null) {
-                            throw new Exception("transfer fail because txhash null");
-                        }
-                        final JSONObject js = new JSONObject();
-                        js.put("tx", tx);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendToPlatformAfterPay(js, Constant.SEND_ETH_URL);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Looper.prepare();
-                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                        hideWaiting();
-                        Looper.loop();
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
+                    BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+                    RawTransaction rawTransaction =
+                            RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(),
+                                    new BigDecimal(gasLimit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
+                    // sign & send our transaction
+                    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                    String hexValue = Numeric.toHexString(signedMessage);
+                    EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                    String tx = ethSendTransaction.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
                     }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    getActivity().runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ETH_URL));
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                     hideWaiting();
+                    Looper.loop();
                 }
+                hideWaiting();
             });
         } else if (payToken.equalsIgnoreCase("wxc")) {
-            Execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                        Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(gasLimit).toBigInteger());
-                        BigInteger decimal = contractWxc.decimals().send();
-                        BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
-                        TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
-                        String tx = transferReceipt.getTransactionHash();
-                        LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
-                        if (tx == null) {
-                            throw new Exception("transfer fail because txhash null");
-                        }
-                        final JSONObject js = new JSONObject();
-                        js.put("tx", tx);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendToPlatformAfterPay(js, Constant.SEND_ERC_URL);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Looper.prepare();
-                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                        hideWaiting();
-                        Looper.loop();
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(gasLimit).toBigInteger());
+                    BigInteger decimal = contractWxc.decimals().send();
+                    BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
+                    TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
+                    String tx = transferReceipt.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
                     }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    getActivity().runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ERC_URL));
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                     hideWaiting();
+                    Looper.loop();
                 }
+                hideWaiting();
             });
         } else {
             request.requestPost(Constant.SEND_ERC_URL, param, this);

@@ -197,16 +197,22 @@ public class EosWalletManager {
         return result;
     }
 
+    public Map<EosPublicKey, String> listKeys(String name) {
+        HashMap<EosPublicKey, String> result = new HashMap<>();
+        if (!mWallets.containsKey(name) || mWallets.get(name).isLocked()) {
+            return result;
+        }
+        result.putAll(mWallets.get(name).listKeys());
+        return result;
+    }
+
     public Map<EosPublicKey, String> listKeys() {
         HashMap<EosPublicKey, String> result = new HashMap<>();
-
         for (Map.Entry<String, EosWallet> walletEntry : mWallets.entrySet()) {
-
             if (!walletEntry.getValue().isLocked()) {
                 result.putAll(walletEntry.getValue().listKeys());
             }
         }
-
         return result;
     }
 

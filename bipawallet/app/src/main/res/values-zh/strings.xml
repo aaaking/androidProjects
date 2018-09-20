@@ -210,4 +210,5 @@
     <string name="buy_ram_eos">购买RAM的EOS</string>
     <string name="select_wallet_to_save_keys">选择一个EOS钱包</string>
     <string name="create_success">创建成功</string>
+    <string name="eos_wallet_no_keys">EOS钱包不包含私钥，无法进行此操作</string>
 </resources>

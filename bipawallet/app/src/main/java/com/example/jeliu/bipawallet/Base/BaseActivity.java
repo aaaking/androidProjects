@@ -223,15 +223,15 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     }
 
-    protected void showWaiting() {
+    public void showWaiting() {
         mProgressDialog = ProgressDialog.show(BaseActivity.this, "", getResources().getString(R.string.waiting), true);
     }
 
-    protected void hideWaiting() {
+    public void hideWaiting() {
         mProgressDialog.dismiss();
     }
 
-    protected void showToastMessage(String message) {
+    public void showToastMessage(String message) {
         if (message == null || message.length() == 0) {
             // message = getString(R.string.error_);
             message = "error";
@@ -518,7 +518,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     private CompositeDisposable mCompositeDisposable;
 
-    protected void addDisposable(Disposable d) {
+    public void addDisposable(Disposable d) {
         if (null == mCompositeDisposable) {
             mCompositeDisposable = new CompositeDisposable();
         }

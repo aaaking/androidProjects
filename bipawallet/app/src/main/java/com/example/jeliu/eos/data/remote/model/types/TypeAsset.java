@@ -64,12 +64,13 @@ public class TypeAsset implements EosType.Packer {
         }
     }
 
-    public TypeAsset(long amount) {
+    public TypeAsset(double amount) {
         this(amount, new TypeSymbol());
     }
 
-    public TypeAsset(long amount, TypeSymbol symbol) {
-        this.mAmount = amount;
+    public TypeAsset(double amount, TypeSymbol symbol) {
+        mEosAmount = amount;
+        mAmount = (long) (mEosAmount * Math.pow(10, Constant.SYMBOL_PRECISION));
         this.mSymbol = symbol;
     }
 
