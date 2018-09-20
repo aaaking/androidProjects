@@ -127,6 +127,7 @@
         <activity android:name="com.example.jeliu.eos.CreateEosWalletAC"/>
         <activity android:name="com.example.jeliu.eos.ImportEosWalletAC"/>
         <activity android:name="com.example.jeliu.eos.InviteCreateEosAC"/>
+        <activity android:name=".Asset.TransportEosAC"/>
 
     </application>
 
