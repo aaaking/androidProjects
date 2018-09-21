@@ -20,10 +20,16 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PriceManager.getInst().setup();
+        int language = UserInfoManager.getInst().getLanguage();
+        if (language == 1) {
+            getWindow().setBackgroundDrawableResource(R.drawable.splash_en);
+        } else {
+            getWindow().setBackgroundDrawableResource(R.drawable.splash);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ImageView iv = findViewById(R.id.imageView_splash);
-        if (UserInfoManager.getInst().getLanguage() == 1) {
+        if (language == 1) {
             iv.setImageDrawable(getResources().getDrawable(R.drawable.splash_en));
         } else {
             iv.setImageDrawable(getResources().getDrawable(R.drawable.splash));
