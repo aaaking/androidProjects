@@ -12,8 +12,9 @@ import com.example.jeliu.bipawallet.R
 /**
  * Created by 周智慧 on 2018/9/17.
  */
-@JvmField val WALLET_ETH = 0
-@JvmField val WALLET_EOS = 1
+const val WALLET_ETH = 0
+//@JvmField val WALLET_EOS = 1
+const val WALLET_EOS = 1
 class WalletTypeDialog : DialogFragment() {
     var type = WALLET_ETH
     var callback: IWalletType? = null
