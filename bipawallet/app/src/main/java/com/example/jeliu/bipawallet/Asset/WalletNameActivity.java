@@ -27,6 +27,9 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
 import com.example.jeliu.bipawallet.util.CacheConstantKt;
+import com.example.jeliu.eos.crypto.ec.EosPrivateKey;
+import com.example.jeliu.eos.crypto.ec.EosPublicKey;
+import com.example.jeliu.eos.data.EoscDataManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,6 +42,10 @@ import org.web3j.crypto.WalletUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +60,8 @@ import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
  */
 
 public class WalletNameActivity extends BaseActivity {
+    @Inject
+    EoscDataManager mDataManager;
     HZWallet wallet;
     int showType = ExportPrivateKeyFragment.TYPE_SHOW_ETH_PK;
     @BindView(R.id.ll_root)
@@ -148,7 +157,18 @@ public class WalletNameActivity extends BaseActivity {
         fragment.setShowType(showType);
         if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
             hideWaiting();
-            fragment.setEosKeys(null);
+
+            mDataManager.getWalletManager().unlock(wallet.name, password);
+            if (mDataManager.getWalletManager().isLocked(wallet.name)) {
+                showToastMessage("invalid password");
+                return;
+            }
+            ArrayList fs = new ArrayList<EosPrivateKey>();
+            Map<EosPublicKey, String> keys = mDataManager.getWalletManager().listKeys(wallet.name);
+            for (Map.Entry<EosPublicKey, String> entry : keys.entrySet()) {
+                fs.add(new EosPrivateKey(entry.getValue()));
+            }
+            fragment.setEosKeys(fs);
             fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
         } else {
             Execute(() -> {
@@ -302,6 +322,7 @@ public class WalletNameActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivityComponent().inject(this);
         setContentView(R.layout.acivity_wallet_name);
         ButterKnife.bind(this);
         setupView();

@@ -528,7 +528,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         }
     }
 
-    protected void copyText(String content) {
+    public void copyText(String content) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setText(content);
         Toast.makeText(this, getString(R.string.copy_succeed), Toast.LENGTH_SHORT).show();

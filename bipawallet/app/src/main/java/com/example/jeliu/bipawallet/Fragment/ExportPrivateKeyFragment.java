@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -23,15 +24,15 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.util.LogUtil;
-import com.example.jeliu.eos.crypto.ec.EosPublicKey;
+import com.example.jeliu.eos.crypto.ec.EosPrivateKey;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * Created by liuming on 19/05/2018.
@@ -120,13 +121,19 @@ public class ExportPrivateKeyFragment extends DialogFragment {
             keyVS.inflate();
             codeVS.setLayoutResource(R.layout.info_eos_code);
             codeVS.inflate();
-            initEosTabhost();
             View tv_data_empty1 = view.findViewById(R.id.tv_data_empty1);
             tv_data_empty1.setVisibility(mKeys.size() <= 0 ? View.VISIBLE : View.GONE);
             View tv_data_empty2 = view.findViewById(R.id.tv_data_empty2);
             tv_data_empty2.setVisibility(mKeys.size() <= 0 ? View.VISIBLE : View.GONE);
             RecyclerView recyclerView1 = view.findViewById(R.id.eos_list1);
+            EosKeysAdap eosKeysAdap = new EosKeysAdap();
+            recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView1.setAdapter(eosKeysAdap);
             RecyclerView recyclerView2 = view.findViewById(R.id.eos_list2);
+            EosKeysQrAdap eosKeysQrAdap = new EosKeysQrAdap();
+            recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView2.setAdapter(eosKeysQrAdap);
+            initEosTabhost();
         }
         return view;
     }
@@ -224,46 +231,84 @@ public class ExportPrivateKeyFragment extends DialogFragment {
         this.showType = type;
     }
 
-    private Map<EosPublicKey, String> mKeys = new HashMap<EosPublicKey, String>();
-    public void setEosKeys(Map<EosPublicKey, String> data) {
-        mKeys = data == null ? mKeys : data;
+    private ArrayList<EosPrivateKey> mKeys = new ArrayList();
+    public void setEosKeys(ArrayList<EosPrivateKey> data) {
+        if (data != null) {
+            mKeys.addAll(data);
+        }
     }
 
-    class EosKeysAdap extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    class EosKeysAdap extends RecyclerView.Adapter<EosKeysAdap.VH> {
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+        public EosKeysAdap.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_eos_keys, parent, false);
+            return new VH(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        public void onBindViewHolder(@NonNull EosKeysAdap.VH holder, int position) {
+            EosPrivateKey data = mKeys.get(position);
+            String pkStr = getContext().getResources().getString(R.string.privacy_key);
+            holder.tv_transfer.setText(getItemCount() <= 1 ? pkStr : (pkStr + (position + 1)));
+            holder.textView_key.setText(data.toWif());
         }
 
         @Override
         public int getItemCount() {
             return mKeys.size();
         }
+        class VH extends RecyclerView.ViewHolder {
+            public TextView tv_transfer;
+            public TextView textView_key;
+            public View button_copy;
+            public VH(View itemView) {
+                super(itemView);
+                tv_transfer = itemView.findViewById(R.id.tv_transfer);
+                textView_key = itemView.findViewById(R.id.textView_key);
+                button_copy = itemView.findViewById(R.id.button_copy);
+                button_copy.setOnClickListener(v -> {
+                    if (getActivity() instanceof BaseActivity) {
+                        ((BaseActivity)getActivity()).copyText(textView_key.getText().toString());
+                    }
+                });
+            }
+        }
     }
 
-    class EosKeysQrAdap extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    class EosKeysQrAdap extends RecyclerView.Adapter<EosKeysQrAdap.VH> {
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+        public EosKeysQrAdap.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_eos_keys_qr, parent, false);
+            return new VH(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        public void onBindViewHolder(@NonNull EosKeysQrAdap.VH holder, int position) {
+            EosPrivateKey data = mKeys.get(position);
+            String pkStr = getContext().getResources().getString(R.string.qrcode);
+            holder.tv_qr_title.setText(getItemCount() <= 1 ? pkStr : (pkStr + (position + 1)));
+            try {
+                Bitmap bm = Common.encodeAsBitmap(data.toWif(), BarcodeFormat.QR_CODE, 200, 200);
+                holder.iv_qr.setImageBitmap(bm);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public int getItemCount() {
             return mKeys.size();
+        }
+        class VH extends RecyclerView.ViewHolder {
+            public TextView tv_qr_title;
+            public ImageView iv_qr;
+            public VH(View itemView) {
+                super(itemView);
+                tv_qr_title = itemView.findViewById(R.id.tv_qr_title);
+                iv_qr = itemView.findViewById(R.id.iv_qr);
+            }
         }
     }
 }
