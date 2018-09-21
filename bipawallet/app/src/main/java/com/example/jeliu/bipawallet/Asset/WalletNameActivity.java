@@ -364,7 +364,7 @@ public class WalletNameActivity extends BaseActivity {
                             if (jsonObject != null) {
                                 JsonElement jsonElement = jsonObject.get("core_liquid_balance");
                                 if (jsonElement != null) {
-                                    String moneyStr = jsonElement.getAsString();
+                                    String moneyStr = jsonElement.getAsString().replace(" ", "").replace("EOS", "");
                                     tvMoney.setText(moneyStr);
                                     wallet.balance = moneyStr;
                                 }
