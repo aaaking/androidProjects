@@ -43,6 +43,8 @@ import com.example.jeliu.bipawallet.ui.IPayEosSuccess;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
+import com.example.jeliu.eos.data.EoscDataManager;
+import com.example.jeliu.eos.ui.base.RxCallbackWrapper;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,9 +74,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
@@ -86,6 +92,8 @@ import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 public class AssetFragment extends BaseFragment implements PriceChangedListener {
     PayEosWindow mPayEosWindow;
+    @Inject
+    EoscDataManager mDataManager;
     @BindView(R.id.listview)
     ListView listView;
 
@@ -141,8 +149,10 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).getActivityComponent().inject(this);
+        }
         View view = inflater.inflate(R.layout.fragment_asset, null);
-
         ButterKnife.bind(this, view);
         setupView();
         refresh();
@@ -171,8 +181,31 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 if (WalletUtils.isValidAddress(address)) {
                     loadEthData(address);
                 } else if (wallet.type == WALLET_EOS) {
-                    adapter.notifyDataSetChanged();
-                    updateUI(address);
+                    if (getActivity() instanceof BaseActivity && mDataManager != null) {
+                        showWaiting();
+                        ((BaseActivity) getActivity()).addDisposable(mDataManager
+                                .readAccountInfo(address)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeWith(new RxCallbackWrapper<JsonObject>(getActivity()) {
+                                    @Override
+                                    public void onNext(JsonObject jsonObject) {
+                                        super.onNext(jsonObject);
+                                        hideWaiting();
+                                        String core_liquid_balance = jsonObject.get("core_liquid_balance").getAsString();
+                                        tvMoney.setText(core_liquid_balance);
+                                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        super.onError(e);
+                                        adapter.notifyDataSetChanged();
+                                        LogUtil.INSTANCE.i(e.toString());
+                                        hideWaiting();
+                                    }
+                                }));
+                    } else {
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         } else {
@@ -248,13 +281,6 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         super.onResume();
         if (adapter != null) {
             adapter.setContents(AttentionsManager.getInst().getAttentions());
-        }
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null) {
-
-        } else {
-            tvAddress.setText("");
-            tvName.setText("");
         }
     }
 
@@ -472,16 +498,13 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         builder.setTitle("");
         builder.setView(textEntryView);
         builder.setPositiveButton(getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String password = etPassword.getText().toString();
-                        doPay(password);
-                    }
+                (dialog, whichButton) -> {
+                    String password = etPassword.getText().toString();
+                    doPay(password);
                 });
         builder.setNegativeButton(getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        //setTitle("");
                     }
                 });
         builder.show();
