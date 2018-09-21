@@ -12,12 +12,11 @@ import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 public class HZWallet {
     public int type = WALLET_ETH;
     public String name;
+    public String balance = "0";//balance except eth
     public String fileName;
     public String address;
     public int profileIndex;
     public List<HZToken> tokenList = new ArrayList<>();
-    public String privateKey;
-    public String keyStore;
 
     @Override
     public boolean equals(Object o) {
@@ -26,6 +25,6 @@ public class HZWallet {
 
     @Override
     public int hashCode() {
-        return address != null ? address.hashCode() : super.hashCode();
+        return (address + type).hashCode();
     }
 }

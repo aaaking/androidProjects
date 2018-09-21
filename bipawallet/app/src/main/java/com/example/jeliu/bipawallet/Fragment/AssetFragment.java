@@ -45,6 +45,7 @@ import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
 import com.example.jeliu.eos.data.EoscDataManager;
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
@@ -92,6 +93,7 @@ import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 public class AssetFragment extends BaseFragment implements PriceChangedListener {
     PayEosWindow mPayEosWindow;
+    String moneyStr = "0";
     @Inject
     EoscDataManager mDataManager;
     @BindView(R.id.listview)
@@ -136,10 +138,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 tvMoney.setText("***");
             } else {
                 ivLook.setImageDrawable(getResources().getDrawable(R.drawable.display));
-                String address = UserInfoManager.getInst().getCurrentWalletAddress();
-                if (address != null) {
-                    updateUI(address);
-                }
+                tvMoney.setText(moneyStr);
             }
         }
     }
@@ -167,53 +166,55 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
     }
 
     public void refresh() {
-        if (!isAdded()) {
+        String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        if (!isAdded() || address == null || address.trim().length() <= 0) {
             return;
         }
-        String address = UserInfoManager.getInst().getCurrentWalletAddress();
-        if (address != null && address.trim().length() > 0) {
-            tvAddress.setText(address);
-            String name = UserInfoManager.getInst().getCurrentWalletName();
-            tvName.setText(name);
-            HZWallet wallet = HZWalletManager.getInst().getWallet(address);
-            if (wallet != null) {
-                ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
-                if (WalletUtils.isValidAddress(address)) {
-                    loadEthData(address);
-                } else if (wallet.type == WALLET_EOS) {
-                    if (getActivity() instanceof BaseActivity && mDataManager != null) {
-                        showWaiting();
-                        ((BaseActivity) getActivity()).addDisposable(mDataManager
-                                .readAccountInfo(address)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeWith(new RxCallbackWrapper<JsonObject>(getActivity()) {
-                                    @Override
-                                    public void onNext(JsonObject jsonObject) {
-                                        super.onNext(jsonObject);
-                                        hideWaiting();
-                                        String core_liquid_balance = jsonObject.get("core_liquid_balance").getAsString();
-                                        tvMoney.setText(core_liquid_balance);
+        ivLook.setImageDrawable(getResources().getDrawable(R.drawable.display));
+        moneyStr = "0";
+        tvAddress.setText(address);
+        tvName.setText(UserInfoManager.getInst().getCurrentWalletName());
+        tvMoney.setText(moneyStr);
+        HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+        if (wallet != null) {
+            ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
+            if (WalletUtils.isValidAddress(address)) {
+                loadEthData(address);
+            } else if (wallet.type == WALLET_EOS) {
+                if (getActivity() instanceof BaseActivity && mDataManager != null) {
+                    showWaiting();
+                    ((BaseActivity) getActivity()).addDisposable(mDataManager
+                            .readAccountInfo(address)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new RxCallbackWrapper<JsonObject>(getActivity()) {
+                                @Override
+                                public void onNext(JsonObject jsonObject) {
+                                    super.onNext(jsonObject);
+                                    hideWaiting();
+                                    if (jsonObject != null) {
+                                        JsonElement jsonElement = jsonObject.get("core_liquid_balance");
+                                        if (jsonElement != null) {
+                                            moneyStr = jsonElement.getAsString();
+                                            tvMoney.setText(moneyStr);
+                                            wallet.balance = moneyStr;
+                                        }
                                     }
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        super.onError(e);
-                                        adapter.notifyDataSetChanged();
-                                        LogUtil.INSTANCE.i(e.toString());
-                                        hideWaiting();
-                                    }
-                                }));
-                    } else {
-                        adapter.notifyDataSetChanged();
-                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                                @Override
+                                public void onError(Throwable e) {
+                                    super.onError(e);
+                                    adapter.notifyDataSetChanged();
+                                    LogUtil.INSTANCE.i(e.toString());
+                                    hideWaiting();
+                                }
+                            }));
+                } else {
+                    adapter.notifyDataSetChanged();
                 }
             }
-        } else {
-            tvAddress.setText("");
-            tvName.setText("");
-            ivProfile.setImageDrawable(getResources().getDrawable(R.drawable.default_boy));
         }
-        ivLook.setImageDrawable(getResources().getDrawable(R.drawable.display));
     }
 
     private void setupView() {
@@ -259,23 +260,23 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         }
     }
 
-    private void loadBalance() {
-        if (Common.mCredentials != null && Common.mCredentials.getAddress() != null) {
-            try {
-                EthGetBalance ethGetBalance = Common.getWeb3j().ethGetBalance(Common.mCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
-                BigInteger wei = ethGetBalance.getBalance();
-                BigDecimal balance = Convert.fromWei(wei.toString(), Convert.Unit.ETHER);
-                String address = UserInfoManager.getInst().getCurrentWalletAddress();
-//                HZWalletManager.getInst().updateWalletInfo(address, "");
-                adapter.notifyDataSetChanged();
-                updateUI(address);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void loadBalance() {
+//        if (Common.mCredentials != null && Common.mCredentials.getAddress() != null) {
+//            try {
+//                EthGetBalance ethGetBalance = Common.getWeb3j().ethGetBalance(Common.mCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
+//                BigInteger wei = ethGetBalance.getBalance();
+//                BigDecimal balance = Convert.fromWei(wei.toString(), Convert.Unit.ETHER);
+//                String address = UserInfoManager.getInst().getCurrentWalletAddress();
+////                HZWalletManager.getInst().updateWalletInfo(address, "");
+//                adapter.notifyDataSetChanged();
+//                updateUI(address);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     public void onResume() {
         super.onResume();
@@ -399,7 +400,8 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                 double value = token.value;
                 total += value;
             }
-            tvMoney.setText("" + total);
+            moneyStr = String.valueOf(total);
+            tvMoney.setText(moneyStr);
         }
     }
 
@@ -607,7 +609,12 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
         @Override
         public int getCount() {
-            return contents.size();
+            HZWallet wallet = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().getCurrentWalletAddress());
+            if (wallet == null || wallet.type == WALLET_ETH) {
+                return contents.size();
+            } else {
+                return 1;
+            }
         }
 
         @Override
@@ -626,11 +633,9 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             if (null == view) {
                 view = inflater.inflate(R.layout.layout_amount_item, null);
                 holder = new UnitListHolder();
-
                 holder.tvName = (TextView) view.findViewById(R.id.textView_name);
                 holder.tvMoney = (TextView) view.findViewById(R.id.textView_money);
                 holder.tvAbout = (TextView) view.findViewById(R.id.textView_about);
-
                 view.setTag(holder);
             } else {
                 holder = (UnitListHolder) view.getTag();
@@ -638,23 +643,22 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
             String address = UserInfoManager.getInst().getCurrentWalletAddress();
             HZWallet wallet = HZWalletManager.getInst().getWallet(address);
             String attentionName = wallet != null && wallet.type == WALLET_EOS ? "eos" : contents.get(i);
-            boolean find = false;
+            holder.tvName.setText(attentionName);
+            holder.tvMoney.setText("0");
+            holder.tvAbout.setText("0");
             if (wallet != null) {
-                List<HZToken> tokens = wallet.tokenList;
-                for (HZToken token : tokens) {
-                    if (token.token.equalsIgnoreCase(attentionName)) {
-                        find = true;
-                        holder.tvName.setText(token.token);
-                        holder.tvMoney.setText(token.value + "");
-                        holder.tvAbout.setText(PriceManager.getInst().tokenPrice(token.token, token.value) + "");
-                        break;
+                if (wallet.type == WALLET_ETH) {
+                    for (HZToken token : wallet.tokenList) {
+                        if (token.token.equalsIgnoreCase(attentionName)) {
+                            holder.tvName.setText(token.token);
+                            holder.tvMoney.setText(token.value + "");
+                            holder.tvAbout.setText(PriceManager.getInst().tokenPrice(token.token, token.value) + "");
+                            break;
+                        }
                     }
+                } else if (wallet.type == WALLET_EOS) {
+                    holder.tvMoney.setText(wallet.balance);
                 }
-            }
-            if (!find) {
-                holder.tvName.setText(attentionName);
-                holder.tvMoney.setText("0");
-                holder.tvAbout.setText("0");
             }
             return view;
         }

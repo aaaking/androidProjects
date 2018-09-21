@@ -27,10 +27,14 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
 import com.example.jeliu.bipawallet.util.CacheConstantKt;
+import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey;
 import com.example.jeliu.eos.crypto.ec.EosPublicKey;
 import com.example.jeliu.eos.data.EoscDataManager;
+import com.example.jeliu.eos.ui.base.RxCallbackWrapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -50,6 +54,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
@@ -175,7 +181,6 @@ public class WalletNameActivity extends BaseActivity {
                 try {
                     Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
                     if (credentials != null) {
-                        //
                         SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
                         Gson gson = new Gson();
                         String storedHashMapString = sp.getString(credentials.getAddress().toLowerCase().substring(2), "");
@@ -329,7 +334,10 @@ public class WalletNameActivity extends BaseActivity {
     }
 
     private void updateUI(String address, boolean shouldRefresh) {
-        if (wallet != null && wallet.type == WALLET_ETH) {
+        if (wallet == null) {
+            return;
+        }
+        if (wallet.type == WALLET_ETH) {
             if (wallet.tokenList.size() == 0 && shouldRefresh) {
                 showWaiting();
                 HZHttpRequest request = new HZHttpRequest();
@@ -342,6 +350,34 @@ public class WalletNameActivity extends BaseActivity {
                 }
                 tvMoney.setText("" + total);
             }
+        } else if (wallet.type == WALLET_EOS) {
+            showWaiting();
+            addDisposable(mDataManager
+                    .readAccountInfo(address)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new RxCallbackWrapper<JsonObject>(this) {
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            super.onNext(jsonObject);
+                            hideWaiting();
+                            if (jsonObject != null) {
+                                JsonElement jsonElement = jsonObject.get("core_liquid_balance");
+                                if (jsonElement != null) {
+                                    String moneyStr = jsonElement.getAsString();
+                                    tvMoney.setText(moneyStr);
+                                    wallet.balance = moneyStr;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                            LogUtil.INSTANCE.i(e.toString());
+                            hideWaiting();
+                        }
+                    }));
         }
     }
 
