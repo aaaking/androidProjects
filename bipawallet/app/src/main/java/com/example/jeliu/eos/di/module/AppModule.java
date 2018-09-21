@@ -69,9 +69,6 @@ public class AppModule {
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
-
-    private static final String ENDPOINT = "http://testnet1.eos.io";
-
     @Provides
     @Singleton
     NodeosApi providesEosService(Gson gson, OkHttpClient okHttpClient) {

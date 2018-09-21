@@ -355,4 +355,8 @@ public class EosWalletManager {
 
         return stxn;
     }
+
+    public Map<String, EosWallet> getAllWallets() {
+        return mWallets;
+    }
 }

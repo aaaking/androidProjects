@@ -31,6 +31,7 @@ import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey;
 import com.example.jeliu.eos.crypto.ec.EosPublicKey;
 import com.example.jeliu.eos.data.EoscDataManager;
+import com.example.jeliu.eos.data.wallet.EosWallet;
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -158,12 +159,9 @@ public class WalletNameActivity extends BaseActivity {
     }
 
     private void exportPrivateKey(final String password) {
-        showWaiting();
         ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
         fragment.setShowType(showType);
         if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
-            hideWaiting();
-
             mDataManager.getWalletManager().unlock(wallet.name, password);
             if (mDataManager.getWalletManager().isLocked(wallet.name)) {
                 showToastMessage("invalid password");
@@ -177,6 +175,7 @@ public class WalletNameActivity extends BaseActivity {
             fragment.setEosKeys(fs);
             fragment.show(getSupportFragmentManager(), "ExportPrivateKey");
         } else {
+            showWaiting();
             Execute(() -> {
                 try {
                     Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
@@ -256,28 +255,51 @@ public class WalletNameActivity extends BaseActivity {
 
     private void deleteWallet(final String password) {
         showWaiting();
-        Execute(() -> {
-            try {
-                Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
-                File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
-                if (credentials == null || !file.exists() || file.length() <= 0) {
-                    return;
+        if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
+            Execute(() -> {
+                try {
+                    mDataManager.getWalletManager().unlock(wallet.name, password);
+                    if (mDataManager.getWalletManager().isLocked(wallet.name)) {
+                        throw new Exception("invalid password");
+                    }
+                    EosWallet eosWallet = mDataManager.getWalletManager().getAllWallets().get(wallet.name);
+                    if (eosWallet == null) {
+                        throw new Exception("no such wallet");
+                    }
+                    File walletFile = new File(eosWallet.getWalletFilePath());
+                    walletFile.delete();
+                    deleteWalletImp();
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "exception：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
-                SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
-                SharedPreferences.Editor localEditor = sp.edit();
-                localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
-                localEditor.apply();
+            });
+        } else {
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    File file = new File(Common.WALLET_PATH + File.separator + wallet.fileName);
+                    if (credentials == null || !file.exists() || file.length() <= 0) {
+                        throw new Exception("load credentials error");
+                    }
+                    SharedPreferences sp = CacheConstantKt.getSAppContext().getSharedPreferences(BipaCredential.SP_SAFE_BIPA, 0);
+                    SharedPreferences.Editor localEditor = sp.edit();
+                    localEditor.remove(credentials.getAddress().toLowerCase().substring(2));
+                    localEditor.apply();
 
-                file.delete();
-                deleteWalletImp();
-            } catch (Exception e) {
+                    file.delete();
+                    deleteWalletImp();
+                } catch (Exception e) {
+                    hideWaiting();
+                    Looper.prepare();
+                    Toast.makeText(WalletNameActivity.this, "exception：" + e.toString(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
                 hideWaiting();
-                Looper.prepare();
-                Toast.makeText(WalletNameActivity.this, "异常：" + e.toString(), Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-            hideWaiting();
-        });
+            });
+        }
 //        HZHttpRequest request = new HZHttpRequest();
 //        Map<String, String> param = new HashMap<>();
 //        param.put("address", walletAddress);
