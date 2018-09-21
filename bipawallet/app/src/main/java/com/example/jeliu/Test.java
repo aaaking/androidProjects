@@ -31,7 +31,9 @@ public class Test {
         HashSet fs = new HashSet();
         fs.add(a);
         fs.add(b);
-        System.out.println(fs.toString());
+        System.out.println(fs.toArray()[0].toString());
+        //
+        System.out.println(Double.parseDouble(".000"));
     }
 
     public static void testSys(String value) {
@@ -85,5 +87,10 @@ class HZWallet {
     @Override
     public int hashCode() {
         return address != null ? address.hashCode() : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "address: " + address + " name: " + name;
     }
 }

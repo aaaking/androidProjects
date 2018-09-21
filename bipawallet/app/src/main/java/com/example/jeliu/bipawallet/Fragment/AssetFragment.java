@@ -195,7 +195,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                                     if (jsonObject != null) {
                                         JsonElement jsonElement = jsonObject.get("core_liquid_balance");
                                         if (jsonElement != null) {
-                                            moneyStr = jsonElement.getAsString();
+                                            moneyStr = jsonElement.getAsString().replace(" ", "").replace("EOS", "");
                                             tvMoney.setText(moneyStr);
                                             wallet.balance = moneyStr;
                                         }
@@ -658,6 +658,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
                     }
                 } else if (wallet.type == WALLET_EOS) {
                     holder.tvMoney.setText(wallet.balance);
+                    holder.tvAbout.setText(PriceManager.getInst().getEosAssets(wallet.balance) + "");
                 }
             }
             return view;

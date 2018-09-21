@@ -1,6 +1,5 @@
 package com.example.jeliu.bipawallet.Common;
 
-import com.example.jeliu.bipawallet.Model.HZToken;
 import com.example.jeliu.bipawallet.Model.HZTokenPriceUnit;
 import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.Network.RequestResult;
@@ -10,9 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by liuming on 29/07/2018.
@@ -26,7 +23,9 @@ public class PriceManager implements RequestResult {
     public static PriceManager getInst() {
         return s_inst;
     }
-    public double usd2rmb = 0;
+
+    public double usd2rmb = 1;
+    public double eosPrice = 1;
 
     private ArrayList<PriceChangedListener> listeners = new ArrayList<>();
 
@@ -36,6 +35,9 @@ public class PriceManager implements RequestResult {
 
         HZHttpRequest request1 = new HZHttpRequest();
         request1.requestGet(Constant.USD_CNY_PRICE, null, this);
+
+        HZHttpRequest requestEosPrice = new HZHttpRequest();
+        requestEosPrice.requestGet(Constant.MARKET_EOS_PRICE, null, this);
     }
 
     public void addListener(PriceChangedListener listener) {
@@ -64,7 +66,7 @@ public class PriceManager implements RequestResult {
                 } else {
                     JSONArray jsonArray = jsonObject.getJSONArray("queryurls");
                     int length = jsonArray.length();
-                    for (int i = 0; i < length; ++ i) {
+                    for (int i = 0; i < length; ++i) {
                         JSONObject js = jsonArray.getJSONObject(i);
                         HZTokenPriceUnit unit = new HZTokenPriceUnit();
                         unit.token = js.getString("token");
@@ -86,6 +88,19 @@ public class PriceManager implements RequestResult {
                 }
                 return true;
 
+            } else if (url.contains(Constant.MARKET_EOS_PRICE)) {
+                if (jsonObject != null) {
+                    JSONObject data = jsonObject.optJSONObject("data");
+                    if (data != null) {
+                        JSONObject quotes = data.optJSONObject("quotes");
+                        if (quotes != null) {
+                            JSONObject USD = quotes.optJSONObject("USD");
+                            if (USD != null) {
+                                eosPrice = USD.getDouble("price");
+                            }
+                        }
+                    }
+                }
             } else {
                 JSONObject data = jsonObject.getJSONObject("data");
                 String symbol = data.getString("symbol");
@@ -124,7 +139,7 @@ public class PriceManager implements RequestResult {
             if (unit.token.equalsIgnoreCase(token)) {
                 int usd = UserInfoManager.getInst().getUsd();
                 if (usd == 1) {
-                    return  unit.price * value;
+                    return unit.price * value;
                 } else {
                     return usd2rmb * unit.price * value;
                 }
@@ -133,12 +148,26 @@ public class PriceManager implements RequestResult {
         return 0;
     }
 
+    public double getEosAssets(String valueStr) {
+        double value = 0;
+        try {
+            value = Double.parseDouble(valueStr);
+        } catch (Exception e) {
+        }
+        int usd = UserInfoManager.getInst().getUsd();
+        if (usd == 1) {
+            return eosPrice * value;
+        } else {
+            return usd2rmb * eosPrice * value;
+        }
+    }
+
     public String formatPrice(double value, double price) {
         int usd = UserInfoManager.getInst().getUsd();
         if (usd == 1) {
-            return  String.format("$%.06f",  price * value);
+            return String.format("$%.06f", price * value);
         } else {
-            return String.format("¥%.06f",  usd2rmb * price * value) ;
+            return String.format("¥%.06f", usd2rmb * price * value);
         }
     }
 }

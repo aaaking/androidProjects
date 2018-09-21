@@ -89,4 +89,5 @@ public class Constant {
 
     public static final String EOS_SYMBOL_STRING = "EOS";
     public static final String EOS_NAME_REGEX = "^[1-5a-z]{12}$";
+    public static final String MARKET_EOS_PRICE = "https://api.coinmarketcap.com/v2/ticker/1765";
 }
