@@ -19,6 +19,7 @@ import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PriceManager.getInst().setup();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ImageView iv = findViewById(R.id.imageView_splash);
@@ -33,20 +34,12 @@ public class SplashActivity extends AppCompatActivity {
             finish();
             return;
         }
-    }
-
-    protected void onStart() {
-        super.onStart();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                openMainActivity();
-            }
+        new Handler().postDelayed(() -> {
+            openMainActivity();
         }, 1500);
     }
 
     private void openMainActivity() {
-        PriceManager.getInst().setup();
         if (UserInfoManager.getInst().isEmptyWallet()) {
             Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
             if (getIntent().getData() != null) {
@@ -69,5 +62,11 @@ public class SplashActivity extends AppCompatActivity {
     private void initApp() {
         UserInfoManager.getInst();
         HZLocalPhotosManager.getInst();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
     }
 }

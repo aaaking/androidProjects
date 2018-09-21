@@ -30,14 +30,14 @@ public class PriceManager implements RequestResult {
     private ArrayList<PriceChangedListener> listeners = new ArrayList<>();
 
     public void setup() {
-        HZHttpRequest request = new HZHttpRequest();
-        request.requestGet(Constant.COIN_PRICE_URLS, null, this);
-
         HZHttpRequest request1 = new HZHttpRequest();
         request1.requestGet(Constant.USD_CNY_PRICE, null, this);
 
         HZHttpRequest requestEosPrice = new HZHttpRequest();
         requestEosPrice.requestGet(Constant.MARKET_EOS_PRICE, null, this);
+
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.COIN_PRICE_URLS, null, this);
     }
 
     public void addListener(PriceChangedListener listener) {

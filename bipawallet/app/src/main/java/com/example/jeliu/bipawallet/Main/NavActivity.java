@@ -29,6 +29,7 @@ import com.example.jeliu.bipawallet.Base.BaseFragment;
 import com.example.jeliu.bipawallet.Common.BottomNavigationViewHelper;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.FragmentFactory;
+import com.example.jeliu.bipawallet.Common.PriceManager;
 import com.example.jeliu.bipawallet.Fragment.AssetFragment;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
@@ -261,6 +262,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     protected void onResume() {
         super.onResume();
+        if (PriceManager.getInst().usd2rmb == 1) {
+            PriceManager.getInst().setup();
+        }
         refreshWallets();
     }
 
