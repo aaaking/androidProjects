@@ -119,6 +119,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
 
     private String payAddress;
     private String payToken;
+    private int type_chain;
     private String serialNum;
     private String uid;
     private double payValue;
@@ -290,6 +291,7 @@ public class AssetFragment extends BaseFragment implements PriceChangedListener 
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
+            type_chain = jsonObject.optInt("type_chain", WALLET_ETH);
             uid = jsonObject.optString("uid");
             serialNum = jsonObject.optString("serialNum");
             payAddress = jsonObject.getString("id");
