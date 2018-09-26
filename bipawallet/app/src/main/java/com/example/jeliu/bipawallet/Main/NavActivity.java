@@ -492,7 +492,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             payValue = jsonObject.getDouble("value");
             if (WalletUtils.isValidAddress(payAddress)) {
                 if (!WalletUtils.isValidAddress(address)) {
-                    Toast.makeText(this, "current wallet is not an Ethereum wallet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
                 } else {
                     loadGas();
                 }

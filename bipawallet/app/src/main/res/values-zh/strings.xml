@@ -213,4 +213,5 @@
     <string name="eos_wallet_no_keys">EOS钱包不包含私钥，无法进行此操作</string>
     <string name="from">发送方</string>
     <string name="data_empty">暂无数据</string>
+    <string name="current_wallet_not_eth">当前钱包不是以太钱包，请选择一个以太钱包进行交易</string>
 </resources>
