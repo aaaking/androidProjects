@@ -1,8 +1,13 @@
 package com.example.jeliu.bipawallet.ui
 
 import android.app.AlertDialog
+import android.content.Context
+import android.graphics.PixelFormat
 import android.text.TextUtils
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
@@ -39,7 +44,8 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
         val payToken = jsonObject.optString("token")
         payAddress = jsonObject.optString("id")
         payValue = jsonObject.optDouble("value")
-        popupView = activity.layoutInflater.inflate(R.layout.window_pay_eos, null)
+        popupView = activity.layoutInflater.inflate(R.layout.window_pay_eos, null)//(activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.window_pay_eos, null)//
+        var windowManager2 = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         popupView.findViewById<TextView>(R.id.textView_money).text = payValue.toString()
 
@@ -99,6 +105,17 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
         width = LinearLayout.LayoutParams.MATCH_PARENT
         height = LinearLayout.LayoutParams.WRAP_CONTENT
         isFocusable = true
+//        var params = WindowManager.LayoutParams(
+//                WindowManager.LayoutParams.MATCH_PARENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//                WindowManager.LayoutParams.TYPE_PHONE,
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//                PixelFormat.TRANSLUCENT);
+//
+//        params.gravity = Gravity.BOTTOM
+//        params.x = 0;
+//        params.y = 0;
+//        windowManager2.addView(popupView, params);
     }
 
     private fun showInputPassword() {

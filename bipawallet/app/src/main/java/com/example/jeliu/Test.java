@@ -33,7 +33,9 @@ public class Test {
         fs.add(b);
         System.out.println(fs.toArray()[0].toString());
         //
-        System.out.println(Double.parseDouble(".000"));
+        String bin = "123";
+        System.out.println(Arrays.toString(bin.getBytes()));
+        System.out.println(new String(bin.getBytes()));
     }
 
     public static void testSys(String value) {

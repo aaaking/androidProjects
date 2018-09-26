@@ -19,10 +19,13 @@ import com.example.jeliu.bipawallet.Model.HZWallet;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.Webview.WebviewActivity;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.jeliu.bipawallet.debug.DevACKt.startDevAC;
 
 /**
  * Created by liuming on 05/05/2018.
@@ -39,32 +42,38 @@ public class MineFragment extends BaseFragment {
     @BindView(R.id.imageView_wallet_pic)
     ImageView ivProfile;
 
-    @OnClick(R.id.rl_mine) void gotoLogin() {
+    @OnClick(R.id.rl_mine)
+    void gotoLogin() {
         // TODO call server...
         Intent i = new Intent(getActivity(), LoginActivity.class);
         startActivity(i);
     }
+
     //rl_help
-    @OnClick(R.id.rl_help) void gotoHelp() {
+    @OnClick(R.id.rl_help)
+    void gotoHelp() {
         // TODO call server...
         Intent i = new Intent(getActivity(), WebviewActivity.class);
         i.putExtra("url", Common.getCenterUrl());
         startActivity(i);
     }
 
-    @OnClick(R.id.rl_system) void gotoSetting() {
+    @OnClick(R.id.rl_system)
+    void gotoSetting() {
         // TODO call server...
         Intent i = new Intent(getActivity(), SettingActivity.class);
         startActivity(i);
     }
 
-    @OnClick(R.id.rl_about) void gotoAbout() {
+    @OnClick(R.id.rl_about)
+    void gotoAbout() {
         // TODO call server...
         Intent i = new Intent(getActivity(), AboutActivity.class);
         startActivity(i);
     }
 
-    @OnClick(R.id.rl_message) void gotoMessage() {
+    @OnClick(R.id.rl_message)
+    void gotoMessage() {
         Intent i = new Intent(getActivity(), MessageCenterActivity.class);
         startActivity(i);
     }
@@ -74,6 +83,9 @@ public class MineFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_mine, null);
         ButterKnife.bind(this, view);
         setupView();
+        if (CacheConstantKt.getDebugBuildType()) {
+            view.findViewById(R.id.textView12).setOnClickListener(l -> startDevAC(getActivity()));
+        }
         return view;
     }
 

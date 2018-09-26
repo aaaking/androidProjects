@@ -228,7 +228,9 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     }
 
     public void hideWaiting() {
-        mProgressDialog.dismiss();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     public void showToastMessage(String message) {

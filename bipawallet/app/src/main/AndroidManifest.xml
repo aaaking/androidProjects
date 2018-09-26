@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application
         android:name=".Application.HZApplication"
         android:allowBackup="true"
@@ -128,6 +129,7 @@
         <activity android:name="com.example.jeliu.eos.ImportEosWalletAC"/>
         <activity android:name="com.example.jeliu.eos.InviteCreateEosAC"/>
         <activity android:name=".Asset.TransportEosAC"/>
+        <activity android:name=".debug.DevAC"/>
 
     </application>
 

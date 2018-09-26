@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.web3j.abi.TypeReference;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
@@ -52,6 +53,7 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,8 +62,10 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
@@ -263,7 +267,7 @@ public class Common {
         return null;
     }
 
-    public static void showPaySucceed(final Context context, View llRoot, String hash) {
+    public static void showPaySucceed(final Context context, View llRoot, String hash, PopupWindow.OnDismissListener callback) {
         int gravity = Gravity.BOTTOM;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
@@ -304,7 +308,7 @@ public class Common {
                 popupWindow.dismiss();
             }
         });
-
+        popupWindow.setOnDismissListener(callback);
         popupWindow.showAtLocation(llRoot, gravity, 0, 0);
     }
 
@@ -345,7 +349,6 @@ public class Common {
                 popupWindow.dismiss();
             }
         });
-
         popupWindow.showAtLocation(llRoot, gravity, 0, 0);
     }
 

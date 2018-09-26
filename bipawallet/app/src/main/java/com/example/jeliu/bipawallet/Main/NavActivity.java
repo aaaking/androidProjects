@@ -1,7 +1,9 @@
 package com.example.jeliu.bipawallet.Main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -10,15 +12,25 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jeliu.bipawallet.Asset.AddNewAttentionActivity;
 import com.example.jeliu.bipawallet.Asset.CreateWalletActivity;
@@ -27,32 +39,59 @@ import com.example.jeliu.bipawallet.Asset.ManageWalletActivity;
 import com.example.jeliu.bipawallet.Base.BaseActivity;
 import com.example.jeliu.bipawallet.Base.BaseFragment;
 import com.example.jeliu.bipawallet.Common.BottomNavigationViewHelper;
+import com.example.jeliu.bipawallet.Common.Common;
 import com.example.jeliu.bipawallet.Common.Constant;
 import com.example.jeliu.bipawallet.Common.FragmentFactory;
+import com.example.jeliu.bipawallet.Common.HZWalletManager;
 import com.example.jeliu.bipawallet.Common.PriceManager;
 import com.example.jeliu.bipawallet.Fragment.AssetFragment;
+import com.example.jeliu.bipawallet.Fragment.ContactsFragment;
+import com.example.jeliu.bipawallet.Fragment.MineFragment;
+import com.example.jeliu.bipawallet.Fragment.RecordFragment;
+import com.example.jeliu.bipawallet.Model.HZWallet;
+import com.example.jeliu.bipawallet.Network.HZHttpRequest;
 import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
+import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
+import com.example.jeliu.bipawallet.util.LogUtil;
+import com.example.jeliu.bipawallet.util.Util;
 import com.example.jeliu.eos.CreateEosWalletAC;
 import com.example.jeliu.eos.ImportEosWalletAC;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
+import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
 /**
  * Created by liuming on 06/05/2018.
  */
 
 public class NavActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
-
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -67,6 +106,11 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     private ListView menuList;
     private MenuAdapter menuAdapter;
 
+    private AssetFragment mAsset;
+    private RecordFragment mRecord;
+    private ContactsFragment mContact;
+    private MineFragment mMe;
+    private BaseFragment mCurFrg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +136,17 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
         fragmentManager = getSupportFragmentManager();
 
-        BaseFragment fragment = FragmentFactory.createAssetFrg();
-        switchFragment(R.id.content, null, fragment, null);
+        mAsset = FragmentFactory.createAssetFrg();
+        mCurFrg = mAsset;
+        switchFragment(R.id.content, null, mAsset, null);
         requestPermission();
         tryPay();
     }
+
+    protected void initView() {
+    }
+
+    String jsParams = null;
 
     public void tryPay() {
         if (UserInfoManager.getInst().isEmptyWallet()) {
@@ -107,13 +157,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
 //            if (getIntent().getStringExtra("js") != null) {
 //                Uri js = Uri.parse(getIntent().getStringExtra("js"));
-                scanDone(getIntent().getData().getQueryParameter("params"));
+                jsParams = getIntent().getData().getQueryParameter("params");
+                scanDone(jsParams);
             }
         }
-    }
-
-    protected void initView() {
-
     }
 
     protected void onSaveInstanceState(Bundle bundle) {
@@ -142,13 +189,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                             String key = (String) iterator.next();
                             UserInfoManager.getInst().setCurrentWalletAddress(key);
                             drawerLayout.closeDrawers();
-                           // holder.tvName.setText(jsonObj.getString(key));
-
-                            BaseFragment fragment = FragmentFactory.getInstanceByIndex(0);
-                            if (fragment instanceof AssetFragment) {
-                                AssetFragment assetFragment = (AssetFragment)fragment;
-                                assetFragment.refresh();
+                            if (mAsset == null) {
+                                mAsset = FragmentFactory.createAssetFrg();
                             }
+                            mAsset.refresh();
                             break;
                         }
                     } catch (JSONException e) {
@@ -202,19 +246,16 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
         menuList.setAdapter(menuAdapter);
         menuAdapter.setContent(jsonArray);
-        menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    // Handle the camera action
-                    scanCode();
-                } else if (i == 1) {
-                    manageWallet();
-                } else if (i == 2) {
-                    createWallet();
-                } else if (i == 3) {
-                    importWallet();
-                }
+        menuList.setOnItemClickListener((adapterView, view1, i, l) -> {
+            if (i == 0) {
+                // Handle the camera action
+                scanCode();
+            } else if (i == 1) {
+                manageWallet();
+            } else if (i == 2) {
+                createWallet();
+            } else if (i == 3) {
+                importWallet();
             }
         });
     }
@@ -224,22 +265,23 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         if (!checkAddress(barcode)) {
             return;
         }
-        BaseFragment fragment = FragmentFactory.getInstanceByIndex(currentIndex);
-        if (fragment instanceof AssetFragment) {
-            ((AssetFragment) fragment).gotoPay(barcode);
-        }
+//        BaseFragment fragment = FragmentFactory.getInstanceByIndex(currentIndex);
+//        if (fragment instanceof AssetFragment) {
+//            ((AssetFragment) fragment).gotoPay(barcode);
+//        }
+        gotoPay(barcode);
     }
 
     private void refreshWallets() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         if (UserInfoManager.getInst().getJsonWallets().length() > 5) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (200*metrics.density));
-            params.setMargins(0, (int)(40*metrics.density), 0, (int)(10*metrics.density));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (200 * metrics.density));
+            params.setMargins(0, (int) (40 * metrics.density), 0, (int) (10 * metrics.density));
             listView.setLayoutParams(params);
         } else {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int)(40*metrics.density), 0, (int)(10*metrics.density));
+            params.setMargins(0, (int) (40 * metrics.density), 0, (int) (10 * metrics.density));
             listView.setLayoutParams(params);
         }
 
@@ -250,11 +292,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             HashMap<String, String> wallets = UserInfoManager.getInst().getWallets();
             for (String key : wallets.keySet()) {
                 UserInfoManager.getInst().setCurrentWalletAddress(key);
-                BaseFragment fragment = FragmentFactory.getInstanceByIndex(0);
-                if (fragment instanceof AssetFragment) {
-                    AssetFragment assetFragment = (AssetFragment)fragment;
-                    assetFragment.refresh();
+                if (mAsset == null) {
+                    mAsset = FragmentFactory.createAssetFrg();
                 }
+                mAsset.refresh();
                 break;
             }
         }
@@ -292,20 +333,35 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-            BaseFragment pre = FragmentFactory.getInstanceByIndex(currentIndex);
             int index = 0;
+            BaseFragment fragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_asset:
                     index = 0;
+                    if (mAsset == null) {
+                        mAsset = FragmentFactory.createAssetFrg();
+                    }
+                    fragment = mAsset;
                     break;
                 case R.id.navigation_record:
                     index = 1;
+                    if (mRecord == null) {
+                        mRecord = FragmentFactory.createRecordFrg();
+                    }
+                    fragment = mRecord;
                     break;
                 case R.id.navigation_contact:
+                    if (mContact == null) {
+                        mContact = FragmentFactory.createContactsFragment();
+                    }
+                    fragment = mContact;
                     index = 2;
                     break;
                 case R.id.navigation_mine:
+                    if (mMe == null) {
+                        mMe = FragmentFactory.createMineFragment();
+                    }
+                    fragment = mMe;
                     index = 3;
                     break;
             }
@@ -314,16 +370,14 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             }
             currentIndex = index;
             hideToolbar(currentIndex != 0);
-            BaseFragment fragment = FragmentFactory.getInstanceByIndex(currentIndex);
-            switchFragment(R.id.content, pre,
-                    fragment, null);
+            switchFragment(R.id.content, mCurFrg, fragment, null);
             return true;
         }
 
     };
 
     private void hideToolbar(boolean hide) {
-        if (!hide ) {
+        if (!hide) {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             drawerToggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
             drawerToggle.setDrawerIndicatorEnabled(true);
@@ -341,13 +395,13 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     private void switchFragment(int id, BaseFragment from, BaseFragment to, String tag) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        if (from == null) {
-        } else {
+        if (from != null) {
             transaction.remove(from);
         }
         if (to != null) {
             transaction.add(id, to, tag);
         }
+        mCurFrg = to;
         transaction.commitAllowingStateLoss();
     }
 
@@ -389,14 +443,13 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // get selected images from selector
-        if(requestCode == Constant.create_wallet_request_code || requestCode == Constant.import_wallet_request_code || requestCode == Constant.manage_wallet_request_code) {
+        if (requestCode == Constant.create_wallet_request_code || requestCode == Constant.import_wallet_request_code || requestCode == Constant.manage_wallet_request_code) {
             if (resultCode == RESULT_OK) {
-                if(requestCode == Constant.create_wallet_request_code || requestCode == Constant.import_wallet_request_code) {
-                    BaseFragment fragment = FragmentFactory.getInstanceByIndex(0);
-                    if (fragment instanceof AssetFragment) {
-                        AssetFragment assetFragment = (AssetFragment)fragment;
-                        assetFragment.refresh();
+                if (requestCode == Constant.create_wallet_request_code || requestCode == Constant.import_wallet_request_code) {
+                    if (mAsset == null) {
+                        mAsset = FragmentFactory.createAssetFrg();
                     }
+                    mAsset.refresh();
                 }
 
                 refreshWallets();
@@ -411,6 +464,277 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    PayEosWindow mPayEosWindow;
+    private String payAddress;
+    private String payToken;
+    private int type_chain;
+    private String serialNum;
+    private String uid;
+    private double payValue;
+    double gasLimit;
+    double gasPrice;
+    double currentGasPrice;
+
+    public void gotoPay(String scanCode) {
+        LogUtil.INSTANCE.i("zzh-scanCode", scanCode);
+        final String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        try {
+            JSONObject jsonObject = new JSONObject(scanCode);
+            payToken = jsonObject.getString("token");
+            type_chain = jsonObject.optInt("type_chain", WALLET_ETH);
+            uid = jsonObject.optString("uid");
+            serialNum = jsonObject.optString("serialNum");
+            payAddress = jsonObject.getString("id");
+            payValue = jsonObject.getDouble("value");
+            if (WalletUtils.isValidAddress(payAddress)) {
+                if (!WalletUtils.isValidAddress(address)) {
+                    Toast.makeText(this, "current wallet is not an Ethereum wallet", Toast.LENGTH_SHORT).show();
+                } else {
+                    loadGas();
+                }
+            } else if (payToken.toLowerCase().equals("eos")) {
+                mPayEosWindow = new PayEosWindow(jsonObject, this, data -> {
+                    final JSONObject js = new JSONObject();
+                    try {
+                        js.put("tx", data);
+                        sendToPlatformAfterPay(js, null);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        showToastMessage(e.toString());
+                    }
+                });
+                findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            showToastMessage(getResources().getString(R.string.scan_error));
+        }
+    }
+
+    private void loadGas() {
+//        showWaiting();
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.ESTIMATEGAS_URL, null, this);
+    }
+
+    @Override
+    public boolean onSuccess(JSONObject jsonObject, String url) {
+        hideWaiting();
+        if (url.contains(Constant.ESTIMATEGAS_URL)) {
+            if (!super.onSuccess(jsonObject, url)) {
+                return true;
+            }
+            try {
+                gasLimit = jsonObject.getDouble("gasLimit");
+                UserInfoManager.getInst().gasLimited = gasLimit;
+                gasPrice = jsonObject.getDouble("gasPrice");
+                UserInfoManager.getInst().gasPrice = gasPrice;
+                currentGasPrice = gasPrice;
+                showPay();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    private void showPay() {
+        int gravity = Gravity.BOTTOM;
+        View popupView = getLayoutInflater().inflate(R.layout.layout_popup_pay, null);
+        TextView tvMoney = popupView.findViewById(R.id.textView_money);
+        tvMoney.setText(payValue + "");
+
+        TextView tvAddress = popupView.findViewById(R.id.tv_address);
+        tvAddress.setText(payAddress);
+
+        TextView tvPay = popupView.findViewById(R.id.tv_pay);
+        tvPay.setText(payToken);
+        final TextView tvSeek = popupView.findViewById(R.id.textView_seek);
+        Double d = new Double(gasPrice / Common.s_ether * gasLimit);
+        String format = String.format("%f", d);
+        tvSeek.setText(format + " ether");
+
+        SeekBar seekBar;
+        seekBar = popupView.findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                int progress = seekBar.getProgress();
+                double value = 1100 * progress / 100.0;
+                if (progress == 0) {
+                    progress = 1;
+                }
+                double fee = gasPrice * progress;
+                // etSimpleFee.setText(fee+"");
+                Double d = new Double(fee / Common.s_ether * gasLimit);
+                String format = String.format("%f", d);
+                tvSeek.setText(format + " ether");
+                currentGasPrice = fee;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        Button btnPay = popupView.findViewById(R.id.button_pay);
+
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // popupWindow.dismiss();
+                return true;
+            }
+        });
+        ImageView ivBack = popupView.findViewById(R.id.imageView_back);
+        ivBack.setOnClickListener(view -> popupWindow.dismiss());
+        btnPay.setOnClickListener(view -> {
+            popupWindow.dismiss();
+            showInputPassword();
+        });
+        findViewById(R.id.container).post(() -> popupWindow.showAtLocation(findViewById(R.id.container), gravity, 0, 0));
+    }
+
+    private void showInputPassword() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View textEntryView = inflater.inflate(R.layout.layout_input_password, null);
+        final EditText etPassword = (EditText) textEntryView.findViewById(R.id.editText_password);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("");
+        builder.setView(textEntryView);
+        builder.setPositiveButton(getString(R.string.ok),
+                (dialog, whichButton) -> {
+                    String password = etPassword.getText().toString();
+                    doPay(password);
+                });
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, whichButton) -> {
+                });
+        builder.show();
+    }
+
+    private void doPay(final String password) {
+        showWaiting();
+        HZHttpRequest request = new HZHttpRequest();
+        Map<String, String> param = new HashMap<>();
+        final String address = UserInfoManager.getInst().getCurrentWalletAddress();
+        param.put("from", address);
+        param.put("to", payAddress);
+        param.put("password", password);
+        param.put("value", payValue + "");
+        param.put("gasprice", currentGasPrice + "");
+        param.put("gaslimit", gasLimit + "");
+        param.put("token", payToken);
+        final HZWallet wallet = HZWalletManager.getInst().getWallet(address);
+        if (payToken.equalsIgnoreCase("eth")) {
+//            request.requestPost(Constant.SEND_ETH_URL, param, this);
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    EthGetTransactionCount ethGetTransactionCount = Common.getWeb3j().ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
+                    BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+                    RawTransaction rawTransaction =
+                            RawTransaction.createEtherTransaction(nonce, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(),
+                                    new BigDecimal(gasLimit).toBigInteger(), payAddress, Convert.toWei(new BigDecimal(payValue), Convert.Unit.ETHER).toBigInteger());
+                    // sign & send our transaction
+                    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                    String hexValue = Numeric.toHexString(signedMessage);
+                    EthSendTransaction ethSendTransaction = Common.getWeb3j().ethSendRawTransaction(hexValue).send();//EthSendTransaction
+                    String tx = ethSendTransaction.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
+                    }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ETH_URL));
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    hideWaiting();
+                    Looper.loop();
+                }
+                hideWaiting();
+            });
+        } else if (payToken.equalsIgnoreCase("wxc")) {
+            Execute(() -> {
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, Common.WALLET_PATH + File.separator + wallet.fileName);
+                    Wxc contractWxc = Wxc.load(Constant.ADDRESS_WXC, Common.getWeb3j(), credentials, Convert.toWei(String.valueOf(currentGasPrice), Convert.Unit.GWEI).toBigInteger(), new BigDecimal(gasLimit).toBigInteger());
+                    BigInteger decimal = contractWxc.decimals().send();
+                    BigInteger rawValue = new BigInteger("10").pow(decimal.intValue());
+                    TransactionReceipt transferReceipt = contractWxc.transfer(payAddress, rawValue).send();
+                    String tx = transferReceipt.getTransactionHash();
+                    LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
+                    if (tx == null) {
+                        throw new Exception("transfer fail because txhash null");
+                    }
+                    final JSONObject js = new JSONObject();
+                    js.put("tx", tx);
+                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ERC_URL));
+                } catch (Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(this, this.getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    hideWaiting();
+                    Looper.loop();
+                }
+                hideWaiting();
+            });
+        } else {
+            request.requestPost(Constant.SEND_ERC_URL, param, this);
+        }
+    }
+
+    public void sendToPlatformAfterPay(JSONObject jsonObject, String url) {
+        hideWaiting();
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            String time = String.valueOf(new Date().getTime());
+            String tx = jsonObject.getString("tx");
+            Common.showPaySucceed(this, findViewById(R.id.container), tx, null);
+            //Common.showPayFailed(getActivity(), llRoot, payValue + "", payAddress);
+            HZHttpRequest request = new HZHttpRequest();
+            Map<String, String> param = new HashMap<>();
+            String address = UserInfoManager.getInst().getCurrentWalletAddress();
+            param.put("from", address);
+            param.put("to", payAddress);
+            param.put("value", payValue + "");
+            param.put("gasprice", currentGasPrice + "");
+            param.put("gaslimit", gasLimit + "");
+            param.put("token", payToken);
+            param.put("type", "2");
+            param.put("uid", uid);
+            param.put("serialNumber", tx);
+            //these for another api call
+            param.put("hash", tx);
+            param.put("serialNum", serialNum);
+            param.put("time", time);
+            md5.update((time + "bipa321" + tx).getBytes());
+            param.put("sign", Util.bytesToHex(md5.digest()));
+            // wallet node server
+            request.requestPost(Constant.SEND_BY_WEB3J, param, this);
+            if (uid != null && uid.trim().length() > 0) {
+                request.requestPost("game.bipa.io/api/charge/platform", param, this);
+            }
+            request.requestPost("http://192.168.1.212:1111/orders", param, this);
+            LogUtil.INSTANCE.i("zzh", param.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
