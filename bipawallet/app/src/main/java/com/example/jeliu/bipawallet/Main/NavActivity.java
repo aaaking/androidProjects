@@ -1,6 +1,5 @@
 package com.example.jeliu.bipawallet.Main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -54,6 +53,7 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.IPayEosResult;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
 import com.example.jeliu.bipawallet.util.LogUtil;
@@ -61,6 +61,7 @@ import com.example.jeliu.bipawallet.util.Util;
 import com.example.jeliu.eos.CreateEosWalletAC;
 import com.example.jeliu.eos.ImportEosWalletAC;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -496,14 +497,21 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     loadGas();
                 }
             } else if (payToken.toLowerCase().equals("eos")) {
-                mPayEosWindow = new PayEosWindow(jsonObject, this, data -> {
-                    final JSONObject js = new JSONObject();
-                    try {
-                        js.put("tx", data);
-                        sendToPlatformAfterPay(js, null);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        showToastMessage(e.toString());
+                mPayEosWindow = new PayEosWindow(jsonObject, this, new IPayEosResult() {
+                    @Override
+                    public void payEosSuccess(@NotNull Object data) {
+                        final JSONObject js = new JSONObject();
+                        try {
+                            js.put("tx", data);
+                            sendToPlatformAfterPay(js, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            showToastMessage(e.toString());
+                        }
+                    }
+                    @Override
+                    public void payError(@NotNull String error) {
+                        Common.showPayFailed(NavActivity.this, findViewById(R.id.container), payValue + "", payAddress);
                     }
                 });
                 findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
@@ -656,6 +664,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     String tx = ethSendTransaction.getTransactionHash();
                     LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
                     if (tx == null) {
+                        Common.showPayFailed(this, findViewById(R.id.container), payValue + "", payAddress);
                         throw new Exception("transfer fail because txhash null");
                     }
                     final JSONObject js = new JSONObject();
@@ -681,6 +690,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     String tx = transferReceipt.getTransactionHash();
                     LogUtil.INSTANCE.i("zzh", "https://rinkeby.etherscan.io/tx/" + tx);
                     if (tx == null) {
+                        Common.showPayFailed(this, findViewById(R.id.container), payValue + "", payAddress);
                         throw new Exception("transfer fail because txhash null");
                     }
                     final JSONObject js = new JSONObject();
@@ -707,7 +717,6 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             String time = String.valueOf(new Date().getTime());
             String tx = jsonObject.getString("tx");
             Common.showPaySucceed(this, findViewById(R.id.container), tx, null);
-            //Common.showPayFailed(getActivity(), llRoot, payValue + "", payAddress);
             HZHttpRequest request = new HZHttpRequest();
             Map<String, String> param = new HashMap<>();
             String address = UserInfoManager.getInst().getCurrentWalletAddress();

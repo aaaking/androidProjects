@@ -2,10 +2,7 @@ package com.example.jeliu.bipawallet.ui
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.PixelFormat
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -30,7 +27,7 @@ import javax.inject.Inject
 /**
  * Created by 周智慧 on 2018/9/20.
  */
-class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var paySuccessCallback: IPayEosSuccess?) : PopupWindow() {
+class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var paySuccessCallback: IPayEosResult?) : PopupWindow() {
     @Inject
     lateinit var mDataManager: EoscDataManager
     var wallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
@@ -184,6 +181,7 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
                         } else {
                             LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
                         }
+                        paySuccessCallback?.payError(errorMsg)
                         activity.showToastMessage(errorMsg)
                         activity.hideWaiting()
                     }
@@ -193,6 +191,7 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
     }
 }
 
-interface IPayEosSuccess {
+interface IPayEosResult {
     fun payEosSuccess(data: Any)
+    fun payError(error: String)
 }
