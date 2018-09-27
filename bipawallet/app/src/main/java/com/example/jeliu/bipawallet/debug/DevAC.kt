@@ -166,7 +166,7 @@ class DevAC : Activity() {
     }
 
     fun newGreeting2() {
-        var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
+        var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, BigInteger.valueOf(1000000000L), Contract.GAS_LIMIT)
         Log.i("zzh", "isValid contract: " + contract.isValid)
         val function = Function("newGreeting",
                 ContractUtil.getInputs(arrayOf("string"), arrayOf(new_params.text.toString())),
