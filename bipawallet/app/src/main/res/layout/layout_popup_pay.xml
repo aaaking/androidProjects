@@ -175,6 +175,9 @@
                     android:id="@+id/seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxHeight="3dp"
+                    android:progressDrawable="@drawable/seekbar_progress_bg"
+                    android:theme="@style/SeekBarColor"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp" />

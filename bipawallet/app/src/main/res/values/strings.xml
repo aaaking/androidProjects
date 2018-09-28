@@ -116,6 +116,8 @@
     <string name="pay_method">Payment ID:</string>
     <string name="pay_now">Immediate payment</string>
     <string name="pay_confirm">Payment confirmation</string>
+    <string name="eth_call_confirm">Call Function confirmation</string>
+    <string name="eth_func_name">function name</string>
     <string name="confirm">confirm</string>
     <string name="share">share</string>
     <string name="input_money">Please enter the amount received</string>
@@ -214,4 +216,6 @@
     <string name="from">from</string>
     <string name="data_empty">data empty</string>
     <string name="current_wallet_not_eth">current wallet is not an Ethereum wallet, please select an Ethernet wallet to trade</string>
+    <string name="eth_contract_address">contract address</string>
+    <string name="function_params">params</string>
 </resources>

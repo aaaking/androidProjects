@@ -3,7 +3,6 @@ package com.example.jeliu.bipawallet.debug
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.example.jeliu.bipawallet.Common.Common
 import com.example.jeliu.bipawallet.Common.HZWalletManager
@@ -15,16 +14,13 @@ import com.example.jeliu.bipawallet.bipacredential.Greeter
 import com.example.jeliu.bipawallet.util.Execute
 import com.example.jeliu.bipawallet.util.LogUtil
 import kotlinx.android.synthetic.main.ac_dev.*
-import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.Function
-import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.AbiTypes
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.RawTransaction
 import org.web3j.crypto.TransactionEncoder
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.tx.Contract
 import org.web3j.tx.ManagedTransaction
 import org.web3j.utils.Convert
@@ -59,8 +55,6 @@ class DevAC : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_dev)
-        var jsonArr = "[{string:${new_params.text.toString()}}]"
-        LogUtil.i("zzh----test", ContractUtil.getInputs(jsonArr)[0].toString())
         //deploy
         deploy.setOnClickListener {
             Execute(Runnable {
@@ -68,8 +62,8 @@ class DevAC : Activity() {
                 //val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
                 val contract = Greeter.deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, "Hello bipa!").send()
                 val contractAddress = contract.contractAddress
-                Log.i("zzh", contractAddress)
-                Log.i("zzh", "View contract at https://rinkeby.etherscan.io/address/" + contractAddress)
+                LogUtil.i("zzh", contractAddress)
+                LogUtil.i("zzh", "View contract at https://rinkeby.etherscan.io/address/" + contractAddress)
                 runOnUiThread {
                     contract_address.text = contractAddress
                 }
@@ -87,7 +81,7 @@ class DevAC : Activity() {
                 }
 //                var myContract = Greeter.load("0xa2264d93ccee94044b71da856e6b09c4e728530e", web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
 //                var content = myContract.greet().send()
-//                Log.i("zzh", "Value stored in remote smart contract: " + content)
+//                LogUtil.i("zzh", "Value stored in remote smart contract: " + content)
 //                runOnUiThread {
 //                    old_params.setText(content)
 //                }
@@ -128,9 +122,9 @@ class DevAC : Activity() {
     fun test2() {//ok
         var myContract = Greeter.load(payAddress, web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
 //        myContract.setDeployedAddress("4", payAddress)
-        Log.i("zzh", "isValid contract: " + myContract.isValid)
+        LogUtil.i("zzh", "isValid contract: " + myContract.isValid)
         var content = myContract.greet().send()
-        Log.i("zzh", "Value stored in remote smart contract: " + content)
+        LogUtil.i("zzh", "Value stored in remote smart contract: " + content)
     }
 
     fun test3() {
@@ -138,12 +132,12 @@ class DevAC : Activity() {
         var output = arrayListOf<String>("string")
         var outputType = AbiTypes.getType("string")
         var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
-        Log.i("zzh", "isValid contract: " + contract.isValid)
+        LogUtil.i("zzh", "isValid contract: " + contract.isValid)
         val function = Function("greet",
                 Arrays.asList(),
                 ContractUtil.getOutputs(arrayOf("string")))
         var content = contract.executeRemoteCallSingleValueRet(function, String::class.java).send()
-        Log.i("zzh", "Value stored in remote smart contract: " + content.toString())
+        LogUtil.i("zzh", "Value stored in remote smart contract: " + content.toString())
         runOnUiThread(Runnable {
             old_params.text = content
         })
@@ -168,13 +162,13 @@ class DevAC : Activity() {
     }
 
     fun newGreeting2() {
-        var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, BigInteger.valueOf(1000000000L), Contract.GAS_LIMIT)
-        Log.i("zzh", "isValid contract: " + contract.isValid)
+        var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, BigInteger.valueOf(1000000000L), BigInteger.valueOf(43000))
+        LogUtil.i("zzh", "isValid contract: " + contract.isValid)
         var jsonArr = "[{string:${new_params.text.toString()}}]"
         val function = Function("newGreeting",
                 ContractUtil.getInputs(jsonArr),
                 ContractUtil.getOutputs(arrayOf("string")))
         var content = contract.executeRemoteCallTransactionBipa(function).send()
-        Log.i("zzh", "Value stored in remote smart contract: " + content)
+        LogUtil.i("zzh", "Value stored in remote smart contract: " + content)
     }
 }

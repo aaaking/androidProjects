@@ -1,5 +1,6 @@
 package com.example.jeliu.bipawallet.Main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -53,6 +55,7 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.CallEthFuncDialog;
 import com.example.jeliu.bipawallet.ui.IPayEosResult;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
@@ -478,6 +481,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     double gasLimit;
     double gasPrice;
     double currentGasPrice;
+    //below is to call eth function
+    private String eth_func_name;
+    private String eth_inputs;
+    private String eth_contract_binary;
 
     public void gotoPay(String scanCode) {
         LogUtil.INSTANCE.i("zzh-scanCode", scanCode);
@@ -490,9 +497,14 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             serialNum = jsonObject.optString("serialNum");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
+            //
+            eth_func_name = jsonObject.optString("eth_func_name");
+            eth_inputs = jsonObject.optString("eth_inputs");
             if (WalletUtils.isValidAddress(payAddress)) {
                 if (!WalletUtils.isValidAddress(address)) {
                     Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
+                } else if (!TextUtils.isEmpty(eth_func_name) && !TextUtils.isEmpty(eth_inputs)) {
+                    queryContratcBinaryCode();
                 } else {
                     loadGas();
                 }
@@ -523,9 +535,15 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     }
 
     private void loadGas() {
-//        showWaiting();
+        showWaiting();
         HZHttpRequest request = new HZHttpRequest();
         request.requestGet(Constant.ESTIMATEGAS_URL, null, this);
+    }
+
+    private void queryContratcBinaryCode() {
+        showWaiting();
+        HZHttpRequest request = new HZHttpRequest();
+        request.requestGet(Constant.GET_BINARY_URL + "?address=" + payAddress, null, this);
     }
 
     @Override
@@ -545,8 +563,19 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else if (url.contains(Constant.GET_BINARY_URL)) {
+            if (!super.onSuccess(jsonObject, url)) {
+                return true;
+            }
+            eth_contract_binary = jsonObject.optString("msg");
+            showCallEthFuncDialog();
         }
         return true;
+    }
+
+    private void showCallEthFuncDialog() {
+        CallEthFuncDialog dialog = new CallEthFuncDialog(this);
+        dialog.setFuncName(eth_func_name).setConrtactAddress(payAddress).setFuncParams(eth_inputs).setBinary(eth_contract_binary).show();
     }
 
     private void showPay() {

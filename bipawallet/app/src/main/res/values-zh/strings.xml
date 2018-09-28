@@ -116,6 +116,8 @@
     <string name="pay_method">支付方式:</string>
     <string name="pay_now">立即支付</string>
     <string name="pay_confirm">支付确认</string>
+    <string name="eth_call_confirm">方法调用确认</string>
+    <string name="eth_func_name">方法名</string>
     <string name="confirm">确定</string>
     <string name="share">分享</string>
     <string name="input_money">请输入收款金额</string>
@@ -214,4 +216,6 @@
     <string name="from">发送方</string>
     <string name="data_empty">暂无数据</string>
     <string name="current_wallet_not_eth">当前钱包不是以太钱包，请选择一个以太钱包进行交易</string>
+    <string name="eth_contract_address">合约地址</string>
+    <string name="function_params">参数</string>
 </resources>
