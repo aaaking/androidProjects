@@ -59,6 +59,8 @@ class DevAC : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ac_dev)
+        var jsonArr = "[{string:${new_params.text.toString()}}]"
+        LogUtil.i("zzh----test", ContractUtil.getInputs(jsonArr)[0].toString())
         //deploy
         deploy.setOnClickListener {
             Execute(Runnable {
@@ -168,8 +170,9 @@ class DevAC : Activity() {
     fun newGreeting2() {
         var contract = BipaContract(Greeter.BINARY, payAddress, web3j, credentials, BigInteger.valueOf(1000000000L), Contract.GAS_LIMIT)
         Log.i("zzh", "isValid contract: " + contract.isValid)
+        var jsonArr = "[{string:${new_params.text.toString()}}]"
         val function = Function("newGreeting",
-                ContractUtil.getInputs(arrayOf("string"), arrayOf(new_params.text.toString())),
+                ContractUtil.getInputs(jsonArr),
                 ContractUtil.getOutputs(arrayOf("string")))
         var content = contract.executeRemoteCallTransactionBipa(function).send()
         Log.i("zzh", "Value stored in remote smart contract: " + content)

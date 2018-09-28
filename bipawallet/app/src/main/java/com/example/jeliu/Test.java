@@ -1,5 +1,7 @@
 //import com.example.jeliu.bipawallet.Model.HZToken;
 
+import org.json.JSONArray;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,9 +35,6 @@ public class Test {
         fs.add(b);
         System.out.println(fs.toArray()[0].toString());
         //
-        String bin = "123";
-        System.out.println(Arrays.toString(bin.getBytes()));
-        System.out.println(new String(bin.getBytes()));
     }
 
     public static void testSys(String value) {
