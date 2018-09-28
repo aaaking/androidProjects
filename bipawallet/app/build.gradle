@@ -3,8 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion compileSdk
     buildToolsVersion buildTools
+    compileSdkVersion compileSdk
     defaultConfig {
         applicationId "com.example.jeliu.bipawallet"
         minSdkVersion minSdk
@@ -23,7 +23,7 @@ android {
     }
 
     dexOptions {
-        incremental true
+//        incremental true
         javaMaxHeapSize "4g"
     }
 

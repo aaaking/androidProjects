@@ -4,7 +4,7 @@ ext {
     minSdk = 19
     targetSdk = 27
     compileSdk = 27
-    buildTools = "27.0.3"
+    buildTools = "28.0.2"
     versions = [
             supportLib: "27.+"
     ]
@@ -32,7 +32,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
