@@ -119,6 +119,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // 구글 guava
     implementation 'com.google.guava:guava:23.0-android'
+    implementation "com.github.florent37:singledateandtimepicker:${singleDateTimePickerVer}"
 
 }
 repositories {

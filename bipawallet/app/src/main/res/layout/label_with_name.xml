@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.TextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/til_input_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <io.plactal.eoscommander.ui.widget.TextInputAutoCompleteTextView
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:digits=".12345abcdefghijklmnopqrstuvwxyz"
+        android:inputType="textVisiblePassword"
+        android:textSize="16sp"/>
+
+</android.support.design.widget.TextInputLayout>

@@ -14,6 +14,7 @@ import com.example.jeliu.bipawallet.Common.HZWalletManager
 import com.example.jeliu.bipawallet.Model.HZWallet
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
+import com.example.jeliu.bipawallet.ui.abiview.AbiViewBuilder
 import com.example.jeliu.bipawallet.util.LogUtil
 import com.example.jeliu.eos.data.EoscDataManager
 import com.example.jeliu.eos.data.remote.model.abi.EosAbiMain
@@ -21,7 +22,9 @@ import com.example.jeliu.eos.ui.base.RxCallbackWrapper
 import com.example.jeliu.eos.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
+import org.json.JSONArray
+import org.json.JSONObject
+import org.json.JSONTokener
 import javax.inject.Inject
 
 /**
@@ -31,11 +34,14 @@ class CallEosActionDialog : DialogFragment() {
     @Inject
     lateinit var mDataManager: EoscDataManager
     var wallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
-    lateinit var rootView: View
+    lateinit var rootView: ViewGroup
     private lateinit var eos_contract: String
     private lateinit var eos_action: String
     private lateinit var eos_data_json: String
     var paySuccessCallback: IPayEosResult? = null
+    var mAbiViewBuilder: AbiViewBuilder? = null
+    lateinit var button_pay: View
+    lateinit var tv_action_params: TextView
 
     init {
         LogUtil.i("CallEosActionDialog init111111 arguments ${arguments} activity ${activity}")
@@ -53,12 +59,31 @@ class CallEosActionDialog : DialogFragment() {
         eos_data_json = arguments?.getString(Constant.KEY_EOS_DATA_JSON) ?: ""
         LogUtil.i("CallEosActionDialog onCreateView22222 arguments ${arguments}  activity ${activity}")
         return inflater.inflate(R.layout.dialog_eos_push_action, container).apply {
-            this@CallEosActionDialog.rootView = this
+            this@CallEosActionDialog.rootView = this as ViewGroup
             findViewById<View>(R.id.imageView_back).setOnClickListener { dismiss() }
             findViewById<TextView>(R.id.tv_contract_address).text = eos_contract
             findViewById<TextView>(R.id.tv_contract_action).text = eos_action
-            findViewById<View>(R.id.button_pay).setOnClickListener {
-                tryPushAction()
+            findViewById<View>(R.id.button_pay).apply {
+                button_pay = this
+                setOnClickListener {
+                    tryPushAction()
+                }
+            }
+            findViewById<TextView>(R.id.tv_action_params).apply {
+                tv_action_params = this
+                text = try {
+                    var json = JSONTokener(eos_data_json).nextValue()
+                    var result = "error"
+                    if (json is JSONObject) {
+                        result = json.toString(4)
+                    } else if (json is JSONArray) {
+                        result = json.toString(4)
+                    }
+                    result
+                } catch (e: Exception) {
+                    button_pay.isEnabled = false
+                    e.toString()
+                }
             }
         }
     }
@@ -94,6 +119,7 @@ class CallEosActionDialog : DialogFragment() {
                         for (abi in result.actions) {
                             if (abi.name == eos_action) {
                                 hasAction = true
+                                resolveParams()
                                 break
                             }
                         }
@@ -110,10 +136,22 @@ class CallEosActionDialog : DialogFragment() {
                         var errorMsg = Utils.getExceptionStr(e)//HttpCode:500 {"code":500,"message":"Internal Service Error","error":{"code":3010001,"name":"name_type_exception","what":"Invalid name","details":[]}}
                         LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
                         (activity as BaseActivity).showToastMessage(errorMsg)
-                        dismiss()
+                        button_pay.isEnabled = false
+                        tv_action_params.text = errorMsg
                     }
                 })
         )
+    }
+
+    fun resolveParams() {
+        val actionView = mAbiViewBuilder?.getViewForAction(rootView, eos_action)
+        if (actionView == null) {
+//            val textView = TextView(activity)
+//            textView.text = "action params nil"
+//            rootView.addView(textView)
+        } else {
+            rootView.addView(actionView)
+        }
     }
 
     fun setCallback(callback: IPayEosResult) = apply { this.paySuccessCallback = callback }

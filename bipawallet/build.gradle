@@ -26,6 +26,7 @@ buildscript {
     ext.okHttpVer = '3.9.0'
     ext.gsonVer = '2.8.1'
     ext.dagger2Ver = '2.11'
+    ext.singleDateTimePickerVer = '1.2.2'
     repositories {
         google()
         jcenter()
