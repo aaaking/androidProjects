@@ -1,5 +1,8 @@
 package com.example.jeliu.bipawallet.util;
 
+import com.example.jeliu.eos.data.util.GsonEosTypeAdapterFactory;
+import com.google.gson.GsonBuilder;
+
 /**
  * Created by 周智慧 on 2018/8/28.
  */
@@ -14,5 +17,12 @@ public class Util {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
+    }
+
+    public static String prettyPrintJson(Object object) {
+        return new GsonBuilder()
+                .registerTypeAdapterFactory(new GsonEosTypeAdapterFactory())
+                .excludeFieldsWithoutExposeAnnotation()
+                .setPrettyPrinting().create().toJson(object);
     }
 }

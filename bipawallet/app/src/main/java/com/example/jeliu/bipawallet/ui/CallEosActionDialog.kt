@@ -1,5 +1,6 @@
 package com.example.jeliu.bipawallet.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
@@ -7,10 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.Common.HZWalletManager
@@ -19,8 +17,10 @@ import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
 import com.example.jeliu.bipawallet.ui.abiview.AbiViewBuilder
 import com.example.jeliu.bipawallet.util.LogUtil
+import com.example.jeliu.bipawallet.util.Util
 import com.example.jeliu.eos.data.EoscDataManager
 import com.example.jeliu.eos.data.remote.model.abi.EosAbiMain
+import com.example.jeliu.eos.data.remote.model.api.PushTxnResponse
 import com.example.jeliu.eos.ui.base.RxCallbackWrapper
 import com.example.jeliu.eos.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,7 +42,8 @@ class CallEosActionDialog : DialogFragment() {
     private lateinit var eos_action: String
     private lateinit var eos_data_json: String
     private lateinit var eos_permission: String
-    private lateinit var authorize: String
+    private lateinit var permissionAccount: String
+    private var permissionName: String = "active"
     var paySuccessCallback: IPayEosResult? = null
     var mAbiViewBuilder: AbiViewBuilder? = null
     lateinit var button_pay: View
@@ -93,9 +94,10 @@ class CallEosActionDialog : DialogFragment() {
             }
             findViewById<TextView>(R.id.et_permission_name).also {
                 var arr = eos_permission.split("@")
-                authorize = arr[0]
+                permissionAccount = arr[0]
                 arr.takeIf { arr.size >= 2 && arr[1].isNotEmpty() }?.apply {
-                    it.text = this[1]
+                    permissionName = this[1]
+                    it.text = permissionName
                 }
             }
             findViewById<Spinner>(R.id.sp_wallets_unlocked).apply {
@@ -112,7 +114,7 @@ class CallEosActionDialog : DialogFragment() {
                     override fun onNothingSelected(adapterView: AdapterView<*>) {}
                 }
                 for (i in 0 until adapter.count) {
-                    takeIf { HZWalletManager.getInst().getWalletByName(getItemAtPosition(i).toString())?.address == authorize }?.apply {
+                    takeIf { HZWalletManager.getInst().getWalletByName(getItemAtPosition(i).toString())?.address == permissionAccount }?.apply {
                         setSelection(i)
                     }
                 }
@@ -189,6 +191,62 @@ class CallEosActionDialog : DialogFragment() {
     fun setCallback(callback: IPayEosResult) = apply { this.paySuccessCallback = callback }
 
     fun tryPushAction() {
+        if (mWallet?.type != WALLET_EOS) {
+            (activity as BaseActivity).showToastMessage("please select an eos wallet")
+            return
+        }
+        showInputPassword()
+    }
 
+    private fun showInputPassword() {
+        val textEntryView = LayoutInflater.from(activity).inflate(R.layout.layout_input_password, null)
+        val etPassword = textEntryView.findViewById<View>(R.id.editText_password) as EditText
+
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setCancelable(false)
+        builder.setTitle("")
+        builder.setView(textEntryView)
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, whichButton ->
+            mDataManager.walletManager.lock(mWallet?.name)
+            if (etPassword.text.toString().isEmpty()) {
+                return@setPositiveButton
+            }
+            mDataManager.walletManager.unlock(mWallet?.name, etPassword.text.toString())
+            if (mDataManager.walletManager.isLocked(mWallet?.name)) {
+                (activity as BaseActivity).showToastMessage("invalid password")
+                return@setPositiveButton
+            }
+            if (mDataManager.walletManager.listKeys(mWallet?.name).isEmpty()) {
+                (activity as BaseActivity).showToastMessage(activity!!.getString(R.string.eos_wallet_no_keys))
+                return@setPositiveButton
+            }
+            pushAction(etPassword.text.toString())
+        }
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog, whichButton -> }
+        builder.show()
+    }
+
+    fun pushAction(pwd: String) {
+        (activity as BaseActivity).showWaiting()
+        val permissions = arrayOf("$permissionAccount@$permissionName")
+        (activity as BaseActivity).addDisposable(mDataManager.pushAction(eos_contract, eos_action, tv_action_params.text.toString().replace("\\r|\\n".toRegex(), ""), permissions)
+//                .mergeWith { jsonObject -> mDataManager.addAccountHistory(getAccountListForHistory(eos_contract, permissionAccount)) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : RxCallbackWrapper<PushTxnResponse>(activity) {
+                    override fun onNext(result: PushTxnResponse) {
+                        LogUtil.i("zzh-----pushAction---", Util.prettyPrintJson(result))
+                        LogUtil.i("zzh-----pushAction---", result.toString())
+                        (activity as BaseActivity).hideWaiting()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        super.onError(e)
+                        var errorMsg = Utils.getExceptionStr(e)
+                        LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
+                        (activity as BaseActivity).hideWaiting()
+                    }
+                })
+        )
     }
 }
