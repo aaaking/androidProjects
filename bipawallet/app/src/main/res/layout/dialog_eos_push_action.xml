@@ -160,7 +160,7 @@
             android:textSize="18sp"
             android:textColor="@color/colorPrimary"
             android:text="\@"/>
-        <EditText
+        <TextView
             android:id="@+id/et_permission_name"
             android:background="@drawable/round_box_input"
             android:layout_width="0dp"
