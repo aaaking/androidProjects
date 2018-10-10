@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 
 /**
  * Created by swapnibble on 2017-10-18.
@@ -156,5 +157,14 @@ public class Utils {
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    public static String getExceptionStr(Throwable e) {
+        String errorMsg = e.toString();
+        if (e instanceof HttpException) {
+            ResponseBody responseBody = ((HttpException) e).response().errorBody();
+            errorMsg = String.format("HttpCode:%d\n%s", ((HttpException) e).code(), Utils.getErrorMessage(responseBody));
+        }
+        return errorMsg;
     }
 }

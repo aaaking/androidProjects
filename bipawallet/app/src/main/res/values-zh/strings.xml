@@ -218,4 +218,6 @@
     <string name="current_wallet_not_eth">当前钱包不是以太钱包，请选择一个以太钱包进行交易</string>
     <string name="eth_contract_address">合约地址</string>
     <string name="function_params">参数</string>
+    <string name="eos_contract_name">合约账户</string>
+    <string name="eos_contract_action">合约方法名</string>
 </resources>

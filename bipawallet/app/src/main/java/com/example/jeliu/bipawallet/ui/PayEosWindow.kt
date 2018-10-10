@@ -171,14 +171,8 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
 
                     override fun onError(e: Throwable) {
                         super.onError(e)
-                        var errorMsg = e.toString()
-                        if (e is HttpException) {
-                            val responseBody = e.response().errorBody()
-                            errorMsg = String.format("HttpCode:%d\n%s", e.code(), Utils.getErrorMessage(responseBody))
-                            LogUtil.i("zzh---createAccount error HttpException----", errorMsg)
-                        } else {
-                            LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
-                        }
+                        var errorMsg = Utils.getExceptionStr(e)
+                        LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
                         paySuccessCallback?.payError(errorMsg)
                         activity.showToastMessage(errorMsg)
                         activity.hideWaiting()

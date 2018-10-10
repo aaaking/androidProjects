@@ -218,4 +218,6 @@
     <string name="current_wallet_not_eth">current wallet is not an Ethereum wallet, please select an Ethernet wallet to trade</string>
     <string name="eth_contract_address">contract address</string>
     <string name="function_params">params</string>
+    <string name="eos_contract_name">contract account</string>
+    <string name="eos_contract_action">contract action</string>
 </resources>

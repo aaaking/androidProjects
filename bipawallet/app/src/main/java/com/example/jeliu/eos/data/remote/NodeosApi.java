@@ -26,6 +26,7 @@ package com.example.jeliu.eos.data.remote;
 
 import com.example.jeliu.eos.data.remote.model.api.AccountInfoRequest;
 import com.example.jeliu.eos.data.remote.model.api.EosChainInfo;
+import com.example.jeliu.eos.data.remote.model.api.GetAbiResponse;
 import com.example.jeliu.eos.data.remote.model.api.GetBalanceRequest;
 import com.example.jeliu.eos.data.remote.model.api.GetCodeRequest;
 import com.example.jeliu.eos.data.remote.model.api.GetCodeResponse;
@@ -86,6 +87,9 @@ public interface NodeosApi {
 
     @POST("/v1/chain/get_code")
     Observable<GetCodeResponse> getCode(@Body GetCodeRequest body);
+
+    @POST("/v1/chain/get_abi")
+    Observable<GetAbiResponse> getAbi(@Body GetCodeRequest body);
 
     @POST("/v1/history/get_controlled_accounts")
     Observable<JsonObject> getServants(@Body JsonObject body);
