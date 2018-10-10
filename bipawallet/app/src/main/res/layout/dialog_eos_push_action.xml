@@ -97,6 +97,38 @@
             android:text=""/>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="left"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:gravity="center_vertical"
+        android:text="@string/eos_action_params"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:paddingTop="2dp"
+        android:layout_height="160dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+        <TextView
+            android:id="@+id/tv_action_params"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_line"
+            android:clickable="true"
+            android:enabled="true"
+            android:focusable="true"
+            android:longClickable="true"
+            android:overScrollMode="always"
+            android:textSize="12dp"
+            android:padding="5dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true"/>
+    </android.support.v4.widget.NestedScrollView>
+
     <Button
         android:id="@+id/button_pay"
         android:layout_width="match_parent"

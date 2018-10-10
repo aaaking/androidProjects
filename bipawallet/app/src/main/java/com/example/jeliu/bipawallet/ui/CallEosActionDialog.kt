@@ -90,11 +90,15 @@ class CallEosActionDialog : DialogFragment() {
                 .subscribeWith(object : RxCallbackWrapper<EosAbiMain>(activity) {
                     override fun onNext(result: EosAbiMain) {
                         (activity as BaseActivity).hideWaiting()
+                        var hasAction = false
                         for (abi in result.actions) {
-                            if (abi.name == eos_contract) {
+                            if (abi.name == eos_action) {
+                                hasAction = true
                                 break
                             }
                             // tell the upstream we can't accept any more data
+                        }
+                        if (!hasAction) {
                             dispose()
                             onError(Exception("no such action named ${eos_action}"))
                         }
