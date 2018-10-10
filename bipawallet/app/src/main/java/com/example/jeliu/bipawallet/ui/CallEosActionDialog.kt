@@ -96,9 +96,9 @@ class CallEosActionDialog : DialogFragment() {
                                 hasAction = true
                                 break
                             }
-                            // tell the upstream we can't accept any more data
                         }
                         if (!hasAction) {
+                            // tell the upstream we can't accept any more data
                             dispose()
                             onError(Exception("no such action named ${eos_action}"))
                         }
