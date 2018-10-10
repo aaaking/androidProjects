@@ -28,7 +28,7 @@ import javax.inject.Inject
 class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var paySuccessCallback: IPayEosResult?) : PopupWindow() {
     @Inject
     lateinit var mDataManager: EoscDataManager
-    var wallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
+    var mWallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
     var popupView: View
     var from = ""
     var payAddress = ""
@@ -55,16 +55,16 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
         sp_wallets_unlocked.adapter = adapter
         sp_wallets_unlocked.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, id: Long) {
-                wallet = HZWalletManager.getInst().getWalletByName(sp_wallets_unlocked.getItemAtPosition(position).toString())
-                tv_from_address.text = wallet?.address?.replace("\"", "") ?: ""
+                mWallet = HZWalletManager.getInst().getWalletByName(sp_wallets_unlocked.getItemAtPosition(position).toString())
+                tv_from_address.text = mWallet?.address?.replace("\"", "") ?: ""
                 from = tv_from_address.text.toString()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {}
         }
-        if (wallet?.type == WALLET_EOS) {
+        if (mWallet?.type == WALLET_EOS) {
             for (i in 0 until sp_wallets_unlocked.adapter.count) {
-                if (sp_wallets_unlocked.getItemAtPosition(i).toString() == wallet?.name) {
+                if (sp_wallets_unlocked.getItemAtPosition(i).toString() == mWallet?.name) {
                     sp_wallets_unlocked.setSelection(i)
                     break
                 }
@@ -81,7 +81,7 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
 
         popupView.findViewById<ImageView>(R.id.imageView_back).setOnClickListener { dismiss() }
         btnPay.setOnClickListener {
-            if (wallet == null || sp_wallets_unlocked.selectedItemPosition <= 0) {
+            if (mWallet == null || sp_wallets_unlocked.selectedItemPosition <= 0) {
                 activity.showToastMessage("please select at lease one eos wallet")
                 return@setOnClickListener
             }
@@ -127,16 +127,16 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
         dialogPwd.setOnShowListener {
             val b = dialogPwd.getButton(AlertDialog.BUTTON_POSITIVE)
             b.setOnClickListener {
-                mDataManager.walletManager.lock(wallet?.name)
+                mDataManager.walletManager.lock(mWallet?.name)
                 if (etPassword.text.toString().isEmpty()) {
                     return@setOnClickListener
                 }
-                mDataManager.walletManager.unlock(wallet?.name, etPassword.text.toString())
-                if (mDataManager.walletManager.isLocked(wallet?.name)) {
+                mDataManager.walletManager.unlock(mWallet?.name, etPassword.text.toString())
+                if (mDataManager.walletManager.isLocked(mWallet?.name)) {
                     activity.showToastMessage("invalid password")
                     return@setOnClickListener
                 }
-                if (mDataManager.walletManager.listKeys(wallet?.name).isEmpty()) {
+                if (mDataManager.walletManager.listKeys(mWallet?.name).isEmpty()) {
                     activity.showToastMessage(activity.getString(R.string.eos_wallet_no_keys))
                     return@setOnClickListener
                 }

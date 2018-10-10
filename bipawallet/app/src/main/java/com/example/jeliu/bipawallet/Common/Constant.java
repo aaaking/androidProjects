@@ -95,4 +95,5 @@ public class Constant {
     public static final String KEY_EOS_CONTRACT = "eos_contract";
     public static final String KEY_EOS_ACTION = "eos_action";
     public static final String KEY_EOS_DATA_JSON = "eos_data_json";
+    public static final String KEY_EOS_PERMISSION = "eos_permission";
 }

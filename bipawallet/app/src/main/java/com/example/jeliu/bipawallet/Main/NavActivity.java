@@ -496,6 +496,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     private String eos_contract;
     private String eos_action;
     private String eos_data_json;
+    private String eos_permission;
 
     public void gotoPay(String scanCode) {
         LogUtil.INSTANCE.i("zzh-scanCode", scanCode);
@@ -515,6 +516,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             eos_contract = jsonObject.optString(Constant.KEY_EOS_CONTRACT);
             eos_action = jsonObject.optString(Constant.KEY_EOS_ACTION);
             eos_data_json = jsonObject.optString(Constant.KEY_EOS_DATA_JSON);
+            eos_permission = jsonObject.optString(Constant.KEY_EOS_PERMISSION);
             if (WalletUtils.isValidAddress(payAddress) && payToken.toLowerCase().equals("eth")) {
                 if (!WalletUtils.isValidAddress(address)) {
                     Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
@@ -550,6 +552,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     bundle.putString(Constant.KEY_EOS_CONTRACT, eos_contract);
                     bundle.putString(Constant.KEY_EOS_ACTION, eos_action);
                     bundle.putString(Constant.KEY_EOS_DATA_JSON, eos_data_json);
+                    bundle.putString(Constant.KEY_EOS_PERMISSION, eos_permission);
                     dialog.setArguments(bundle);
                     dialog.setCallback(callback);
                     findViewById(R.id.container).post(() -> dialog.show(getSupportFragmentManager(), "CallEosActionDialog"));

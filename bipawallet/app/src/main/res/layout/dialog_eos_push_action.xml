@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="EOS PUSH ACTIO"
+            android:text="EOS PUSH ACTION"
             android:textColor="@android:color/black"
             android:textSize="20sp"/>
 
@@ -109,7 +109,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:paddingTop="2dp"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
         <TextView
@@ -128,6 +128,55 @@
             android:scrollbars="vertical"
             android:textIsSelectable="true"/>
     </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:background="@drawable/round_box_input"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/sp_wallets_unlocked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="35dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:padding="8dp"/> <!-- android:background="@drawable/arrow_gray" unlock 된 지갑을 선택하는 스피너 -->
+        </FrameLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="58dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:text="\@"/>
+        <EditText
+            android:id="@+id/et_permission_name"
+            android:background="@drawable/round_box_input"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:padding="6dp"
+            android:minHeight="35dp"
+            android:textSize="14sp"
+            android:text="active"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:imeOptions="actionSend" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_pay"

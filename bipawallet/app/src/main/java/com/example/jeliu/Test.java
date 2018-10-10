@@ -1,13 +1,7 @@
 //import com.example.jeliu.bipawallet.Model.HZToken;
 
-import org.json.JSONArray;
-
-import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,6 +29,9 @@ public class Test {
         fs.add(b);
         System.out.println(fs.toArray()[0].toString());
         //
+        String fff = "fs@";
+        String[] aaa = fff.split("@");
+        System.out.println(aaa.length + "   " + Arrays.toString(aaa));
     }
 
     public static void testSys(String value) {

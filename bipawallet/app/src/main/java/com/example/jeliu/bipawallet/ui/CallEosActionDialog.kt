@@ -7,6 +7,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
@@ -33,11 +36,13 @@ import javax.inject.Inject
 class CallEosActionDialog : DialogFragment() {
     @Inject
     lateinit var mDataManager: EoscDataManager
-    var wallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
+    var mWallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
     lateinit var rootView: ViewGroup
     private lateinit var eos_contract: String
     private lateinit var eos_action: String
     private lateinit var eos_data_json: String
+    private lateinit var eos_permission: String
+    private lateinit var authorize: String
     var paySuccessCallback: IPayEosResult? = null
     var mAbiViewBuilder: AbiViewBuilder? = null
     lateinit var button_pay: View
@@ -57,6 +62,7 @@ class CallEosActionDialog : DialogFragment() {
         eos_contract = arguments?.getString(Constant.KEY_EOS_CONTRACT) ?: ""
         eos_action = arguments?.getString(Constant.KEY_EOS_ACTION) ?: ""
         eos_data_json = arguments?.getString(Constant.KEY_EOS_DATA_JSON) ?: ""
+        eos_permission = arguments?.getString(Constant.KEY_EOS_PERMISSION) ?: ""
         LogUtil.i("CallEosActionDialog onCreateView22222 arguments ${arguments}  activity ${activity}")
         return inflater.inflate(R.layout.dialog_eos_push_action, container).apply {
             this@CallEosActionDialog.rootView = this as ViewGroup
@@ -83,6 +89,32 @@ class CallEosActionDialog : DialogFragment() {
                 } catch (e: Exception) {
                     button_pay.isEnabled = false
                     e.toString()
+                }
+            }
+            findViewById<TextView>(R.id.et_permission_name).also {
+                var arr = eos_permission.split("@")
+                authorize = arr[0]
+                arr.takeIf { arr.size >= 2 && arr[1].isNotEmpty() }?.apply {
+                    it.text = this[1]
+                }
+            }
+            findViewById<Spinner>(R.id.sp_wallets_unlocked).apply {
+                var walletNames = arrayListOf<String>()
+                walletNames.add(0, activity!!.getString(R.string.select_wallet_to_save_keys))
+                mDataManager.walletManager.listWallets(null).forEach { walletNames.add(it.walletName) }
+                adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, walletNames)
+                (adapter as? ArrayAdapter<*>)?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, id: Long) {
+                        mWallet = HZWalletManager.getInst().getWalletByName(getItemAtPosition(position).toString())
+                    }
+
+                    override fun onNothingSelected(adapterView: AdapterView<*>) {}
+                }
+                for (i in 0 until adapter.count) {
+                    takeIf { HZWalletManager.getInst().getWalletByName(getItemAtPosition(i).toString())?.address == authorize }?.apply {
+                        setSelection(i)
+                    }
                 }
             }
         }
