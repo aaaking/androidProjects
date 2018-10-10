@@ -1,10 +1,8 @@
 package com.example.jeliu.bipawallet.ui
 
 import android.app.AlertDialog
-import android.content.Context
 import android.text.TextUtils
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
@@ -42,7 +40,7 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
         payAddress = jsonObject.optString("id")
         payValue = jsonObject.optDouble("value")
         popupView = activity.layoutInflater.inflate(R.layout.window_pay_eos, null)//(activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.window_pay_eos, null)//
-        var windowManager2 = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+//        var windowManager2 = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         popupView.findViewById<TextView>(R.id.textView_money).text = payValue.toString()
 

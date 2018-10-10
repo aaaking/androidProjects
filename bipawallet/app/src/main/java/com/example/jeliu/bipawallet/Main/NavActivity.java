@@ -55,6 +55,7 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
+import com.example.jeliu.bipawallet.ui.CallEosActionDialog;
 import com.example.jeliu.bipawallet.ui.CallEthFuncDialog;
 import com.example.jeliu.bipawallet.ui.IPayEosResult;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
@@ -416,6 +417,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     private void createWallet() {
         WalletTypeDialog dialog = new WalletTypeDialog();
+        Bundle fs = new Bundle();
+        fs.putString("aaaa", "aaaaV");
+        dialog.setArguments(fs);
         dialog.setCallback(walletType -> {
             Intent i = new Intent(NavActivity.this, walletType == WALLET_ETH ? CreateWalletActivity.class : CreateEosWalletAC.class);
             startActivityForResult(i, Constant.create_wallet_request_code);
@@ -425,6 +429,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     private void importWallet() {
         WalletTypeDialog dialog = new WalletTypeDialog();
+        Bundle fs = new Bundle();
+        fs.putString("aaaa", "aaaaV");
+        dialog.setArguments(fs);
         dialog.setCallback(walletType -> {
             Intent i = new Intent(NavActivity.this, walletType == WALLET_ETH ? ImportWalletActivity.class : ImportEosWalletAC.class);
             startActivityForResult(i, Constant.import_wallet_request_code);
@@ -485,6 +492,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     private String eth_func_name;
     private String eth_inputs;
     private String eth_contract_binary;
+    //below is to push eos action
+    private String eos_contract;
+    private String eos_action;
+    private String eos_data_json;
 
     public void gotoPay(String scanCode) {
         LogUtil.INSTANCE.i("zzh-scanCode", scanCode);
@@ -500,6 +511,10 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             //
             eth_func_name = jsonObject.optString("eth_func_name");
             eth_inputs = jsonObject.optString("eth_inputs");
+            // push eos action
+            eos_contract = jsonObject.optString(Constant.KEY_EOS_CONTRACT);
+            eos_action = jsonObject.optString(Constant.KEY_EOS_ACTION);
+            eos_data_json = jsonObject.optString(Constant.KEY_EOS_DATA_JSON);
             if (WalletUtils.isValidAddress(payAddress) && payToken.toLowerCase().equals("eth")) {
                 if (!WalletUtils.isValidAddress(address)) {
                     Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
@@ -509,7 +524,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     loadGas();
                 }
             } else if (payToken.toLowerCase().equals("eos")) {
-                mPayEosWindow = new PayEosWindow(jsonObject, this, new IPayEosResult() {
+                IPayEosResult callback = new IPayEosResult() {
                     @Override
                     public void payEosSuccess(@NotNull Object data) {
                         final JSONObject js = new JSONObject();
@@ -525,8 +540,20 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     public void payError(@NotNull String error) {
                         Common.showPayFailed(NavActivity.this, findViewById(R.id.container), payValue + "", payAddress);
                     }
-                });
-                findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
+                };
+                if (TextUtils.isEmpty(eos_contract) || TextUtils.isEmpty(eos_action)) {
+                    mPayEosWindow = new PayEosWindow(jsonObject, this, callback);
+                    findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
+                } else {
+                    CallEosActionDialog dialog = new CallEosActionDialog();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constant.KEY_EOS_CONTRACT, eos_contract);
+                    bundle.putString(Constant.KEY_EOS_ACTION, eos_action);
+                    bundle.putString(Constant.KEY_EOS_DATA_JSON, eos_data_json);
+                    dialog.setArguments(bundle);
+                    dialog.setCallback(callback);
+                    findViewById(R.id.container).post(() -> dialog.show(getSupportFragmentManager(), "CallEosActionDialog"));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
