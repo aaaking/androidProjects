@@ -782,6 +782,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             param.put("gasprice", currentGasPrice + "");
             param.put("gaslimit", gasLimit + "");
             param.put("token", payToken);
+            param.put("chain_type", String.valueOf(chain_type));
             param.put("type", "2");
             param.put("uid", uid);
             param.put("serialNumber", tx);
