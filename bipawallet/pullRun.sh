@@ -56,7 +56,7 @@ function installApk() {
         adb -s "${device}" install -r "${filePath}${apkFile}"
 #        sleep 0.050
 #        continue
-#        adb -s "${device}" shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n com.htgames.nutspoker/com.htgames.nutspoker.ui.activity.System.WelcomeActivity
+        adb -s "${device}" shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n com.example.jeliu.bipawallet/com.example.jeliu.bipawallet.Splash.SplashActivity
     done
     date=$(date +"%Y-%m-%d\t\t%H:%M:%SZ")
     #osascript -e 'tell app "System Events" to display dialog "script done.\nDate : '$date'" buttons {"Cancel", "Continue"} cancel button "Cancel" default button "Continue"'
