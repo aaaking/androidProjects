@@ -119,7 +119,7 @@ class CallEthFuncDialog : AlertDialog {
                                     hideWaiting()
                                     val js = JSONObject()
                                     js.put("tx", tx)
-                                    sendToPlatformAfterPay(js, null)
+                                    sendToPlatformAfterPay(js, null, true)
                                 }
                             }
                         } catch (e: Exception) {

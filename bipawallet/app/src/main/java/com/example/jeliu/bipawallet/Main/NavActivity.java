@@ -532,7 +532,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                         final JSONObject js = new JSONObject();
                         try {
                             js.put("tx", data);
-                            sendToPlatformAfterPay(js, null);
+                            sendToPlatformAfterPay(js, null, true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             showToastMessage(e.toString());
@@ -728,7 +728,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     }
                     final JSONObject js = new JSONObject();
                     js.put("tx", tx);
-                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ETH_URL));
+                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ETH_URL, true));
                 } catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(this, getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
@@ -754,7 +754,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     }
                     final JSONObject js = new JSONObject();
                     js.put("tx", tx);
-                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ERC_URL));
+                    runOnUiThread(() -> sendToPlatformAfterPay(js, Constant.SEND_ERC_URL, true));
                 } catch (Exception e) {
                     Looper.prepare();
                     Toast.makeText(this, this.getResources().getString(R.string.failed_transfer) + e.toString(), Toast.LENGTH_SHORT).show();
@@ -769,13 +769,15 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         }
     }
 
-    public void sendToPlatformAfterPay(JSONObject jsonObject, String url) {
+    public void sendToPlatformAfterPay(JSONObject jsonObject, String url, boolean showSuccDialog) {
         hideWaiting();
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             String time = String.valueOf(new Date().getTime());
             String tx = jsonObject.getString("tx");
-            Common.showPaySucceed(this, findViewById(R.id.container), tx, null);
+            if (showSuccDialog) {
+                Common.showPaySucceed(this, findViewById(R.id.container), tx, null);
+            }
             HZHttpRequest request = new HZHttpRequest();
             Map<String, String> param = new HashMap<>();
             String address = UserInfoManager.getInst().getCurrentWalletAddress();

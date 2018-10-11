@@ -165,14 +165,14 @@ class PayEosWindow(var jsonObject: JSONObject, var activity: BaseActivity, var p
                             dismiss()
                             paySuccessCallback?.payEosSuccess(tx)
                         } else {
-                            activity.showToastMessage("transfer error")
+                            activity.showToastMessage("eos transfer error")
                         }
                     }
 
                     override fun onError(e: Throwable) {
                         super.onError(e)
                         var errorMsg = Utils.getExceptionStr(e)
-                        LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
+                        LogUtil.i("zzh---eos transfer error Throwable----", errorMsg)
                         paySuccessCallback?.payError(errorMsg)
                         activity.showToastMessage(errorMsg)
                         activity.hideWaiting()

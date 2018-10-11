@@ -235,18 +235,39 @@ class CallEosActionDialog : DialogFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : RxCallbackWrapper<PushTxnResponse>(activity) {
                     override fun onNext(result: PushTxnResponse) {
-                        LogUtil.i("zzh-----pushAction---", Util.prettyPrintJson(result))
-                        LogUtil.i("zzh-----pushAction---", result.toString())
+                        mResultStatus = result.toString()
+                        mResultData = Util.prettyPrintJson(result)
+                        LogUtil.i("zzh-----pushAction---", mResultStatus)
+                        LogUtil.i("zzh-----pushAction---", mResultData)
                         (activity as BaseActivity).hideWaiting()
+                        showSuccDialog(true)
                     }
 
                     override fun onError(e: Throwable) {
                         super.onError(e)
                         var errorMsg = Utils.getExceptionStr(e)
-                        LogUtil.i("zzh---createAccount error Throwable----", errorMsg)
+                        LogUtil.i("zzh---push action error Throwable----", errorMsg)
                         (activity as BaseActivity).hideWaiting()
+                        showSuccDialog(false)
                     }
                 })
         )
+    }
+
+    var mResultStatus: String = ""
+    var mResultData: String = ""
+    fun showSuccDialog(succ: Boolean) {
+        dismiss()
+        var dialog = PushActionResultDialog()
+        var bundle = Bundle()
+        bundle.putBoolean("result", succ)
+        bundle.putString("result_status", mResultStatus)
+        bundle.putString("result_data", mResultData)
+        dialog.arguments = bundle
+        if (succ) {
+            dialog.show(activity!!.supportFragmentManager, "")
+        } else {
+
+        }
     }
 }
