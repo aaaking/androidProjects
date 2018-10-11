@@ -221,6 +221,9 @@
     <string name="eos_contract_name">合约账户</string>
     <string name="eos_contract_action">合约方法名</string>
     <string name="eos_action_params">合约方法参数</string>
+    <string name="call_eth_func_succ">调用合约成功</string>
+    <string name="call_eth_func_fail">调用合约失败</string>
     <string name="push_action_succ">push action成功</string>
     <string name="push_action_fail">push action失败</string>
+    <string name="call_succeed_tip">恭喜！调用成功</string>
 </resources>

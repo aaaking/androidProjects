@@ -221,6 +221,9 @@
     <string name="eos_contract_name">contract account</string>
     <string name="eos_contract_action">contract action</string>
     <string name="eos_action_params">contract action params</string>
+    <string name="call_eth_func_succ">call function success</string>
+    <string name="call_eth_func_fail">call function fail</string>
     <string name="push_action_succ">push action success</string>
     <string name="push_action_fail">push action fail</string>
+    <string name="call_succeed_tip">Congratulations! You have called function successfully</string>
 </resources>

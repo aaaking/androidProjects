@@ -287,7 +287,7 @@ public class Common {
         });
 
         TextView tvHash = popupView.findViewById(R.id.textView_hash);
-        tvHash.setText("hash值: " + hash);
+        tvHash.setText("hash value: " + hash);
 
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;

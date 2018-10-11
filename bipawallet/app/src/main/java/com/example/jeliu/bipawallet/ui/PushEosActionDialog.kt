@@ -274,6 +274,6 @@ class PushEosActionDialog : DialogFragment() {
         bundle.putString("result_data", mResultData)
         bundle.putString("result_fail", mFailStr)
         dialog.arguments = bundle
-        dialog.show(activity!!.supportFragmentManager, "")
+        dialog.show(activity!!.supportFragmentManager, "PushActionResultDialog")
     }
 }

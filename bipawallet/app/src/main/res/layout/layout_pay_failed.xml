@@ -69,7 +69,7 @@
             android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
             android:text="@string/pay_failed_tip"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 </RelativeLayout>

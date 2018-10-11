@@ -3,6 +3,7 @@ package com.example.jeliu.bipawallet.ui
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Looper
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.Gravity
@@ -108,6 +109,7 @@ class CallEthFuncDialog : AlertDialog {
                                     ContractUtil.getOutputs(arrayOf("string")))
                             var content = contract.executeRemoteCallTransactionBipa(function).send()
                             var tx = content.transactionHash
+                            mResultData = tx
                             LogUtil.i("zzh-call-func-tx", "https://rinkeby.etherscan.io/tx/" + tx)
                             if (TextUtils.isEmpty(tx)) {
                                 Common.showPayFailed(mActivity, mActivity.findViewById(R.id.container), "", tv_contract_address.text.toString())
@@ -119,14 +121,17 @@ class CallEthFuncDialog : AlertDialog {
                                     hideWaiting()
                                     val js = JSONObject()
                                     js.put("tx", tx)
-                                    sendToPlatformAfterPay(js, null, true)
+                                    sendToPlatformAfterPay(js, null, false)
+                                    showSuccDialog(true)
                                 }
                             }
                         } catch (e: Exception) {
                             LogUtil.i("zzh", "call function Exception: " + e.toString())
+                            mFailStr = e.toString()
                             Looper.prepare()
                             mActivity.hideWaiting()
                             mActivity.showToastMessage(e.toString())
+                            showSuccDialog(false)
                             Looper.loop()
                         }
                     })
@@ -135,6 +140,18 @@ class CallEthFuncDialog : AlertDialog {
                 builder.show()
             }
         }
+    }
+
+    var mResultData: String = ""
+    var mFailStr: String = ""
+    fun showSuccDialog(succ: Boolean) {
+        var dialog = CallEthResultDialog()
+        var bundle = Bundle()
+        bundle.putBoolean("result", succ)
+        bundle.putString("result_data", mResultData)
+        bundle.putString("result_fail", mFailStr)
+        dialog.arguments = bundle
+        dialog.show((mActivity as FragmentActivity).supportFragmentManager, "CallEthResultDialog")
     }
 
     fun setConrtactAddress(address: String) = apply { tv_contract_address.text = address }
