@@ -245,8 +245,8 @@ class CallEosActionDialog : DialogFragment() {
 
                     override fun onError(e: Throwable) {
                         super.onError(e)
-                        var errorMsg = Utils.getExceptionStr(e)
-                        LogUtil.i("zzh---push action error Throwable----", errorMsg)
+                        mFailStr = Utils.getExceptionStr(e)
+                        LogUtil.i("zzh---push action error Throwable----", mFailStr)
                         (activity as BaseActivity).hideWaiting()
                         showSuccDialog(false)
                     }
@@ -256,6 +256,7 @@ class CallEosActionDialog : DialogFragment() {
 
     var mResultStatus: String = ""
     var mResultData: String = ""
+    var mFailStr: String = ""
     fun showSuccDialog(succ: Boolean) {
         dismiss()
         var dialog = PushActionResultDialog()
@@ -263,11 +264,8 @@ class CallEosActionDialog : DialogFragment() {
         bundle.putBoolean("result", succ)
         bundle.putString("result_status", mResultStatus)
         bundle.putString("result_data", mResultData)
+        bundle.putString("result_fail", mFailStr)
         dialog.arguments = bundle
-        if (succ) {
-            dialog.show(activity!!.supportFragmentManager, "")
-        } else {
-
-        }
+        dialog.show(activity!!.supportFragmentManager, "")
     }
 }

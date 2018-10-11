@@ -16,13 +16,15 @@ class PushActionResultDialog : DialogFragment() {
     var mResultSucc = true
     var mResultStatus: String = ""
     var mResultData: String = ""
+    var mFailStr: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mResultSucc = arguments?.getBoolean("result") ?: true
         mResultStatus = arguments?.getString("result_status") ?: ""
         mResultData = arguments?.getString("result_data") ?: ""
+        mFailStr = arguments?.getString("result_fail") ?: ""
 
-        var rootView = inflater.inflate(if (mResultSucc) R.layout.dialog_push_action_succ else R.layout.layout_pay_failed, container)
+        var rootView = inflater.inflate(if (mResultSucc) R.layout.dialog_push_action_succ else R.layout.dialog_push_action_fail, container)
         if (mResultSucc) {
             initSuccView(rootView)
         } else {
@@ -37,7 +39,7 @@ class PushActionResultDialog : DialogFragment() {
     }
 
     fun initFailView(view: View) {
-
+        view.findViewById<TextView>(R.id.tv_fail_status).text = mFailStr
     }
 
     override fun onStart() {

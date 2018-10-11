@@ -227,6 +227,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
         if (mProgressDialog == null) {
             mProgressDialog = ProgressDialog.show(BaseActivity.this, "", getResources().getString(R.string.waiting), true);
         }
+        mProgressDialog.show();
     }
 
     public void hideWaiting() {
@@ -250,7 +251,9 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
             int code = jsonObject.getInt("code");
             if (code != 0) {
                 String msg = jsonObject.getString("msg");
-                showToastMessage(msg);
+                if (!url.contains("192.168.1.212:1111/orders")) {
+                    showToastMessage(msg);
+                }
                 return false;
             }
         } catch (JSONException e) {
@@ -264,7 +267,9 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     public void onFailure(String szValue, String url) {
         LogUtil.INSTANCE.i("request error: " + szValue + " and url " + url);
         hideWaiting();
-        showToastMessage(szValue);
+        if (!url.contains("192.168.1.212:1111/orders")) {
+            showToastMessage(szValue);
+        }
     }
 
     protected boolean checkInputs(EditText... args) {

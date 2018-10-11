@@ -70,7 +70,7 @@ public class Constant {
 
     //eos
     public static String TAG_EOS_WALLET = "tag-eos-wallet";//"038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca” //"https://nodes.get-scatter.com";//aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906
-    public static String EOS_URL = "http://193.93.219.219:8888";//"https://nodes.get-scatter.com";//"http://192.168.1.120:8888";//
+    public static String EOS_URL = "http://192.168.1.120:8888";//"http://193.93.219.219:8888";//"https://nodes.get-scatter.com";//
     public static final boolean DEFAULT_SKIP_SIGNING = false;
 
     public static final String DEFAULT_SERVANT_ACCOUNT = "eosio";
