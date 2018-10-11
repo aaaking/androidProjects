@@ -32,6 +32,16 @@ public class Test {
         String fff = "fs@";
         String[] aaa = fff.split("@");
         System.out.println(aaa.length + "   " + Arrays.toString(aaa));
+        //
+        String ll = "[{\"a\":     \"av\", \"a\":\"av\"}]";
+        System.out.println(ll.replaceAll("\\[|\\{|\\]|\\}|\\ |\\\"", ""));
+        for (String i : ll.replaceAll("\\[|\\{|\\]|\\}|\\ |\\\"", "").split(",")) {
+            String[] fsf = i.split(":");
+            String type = fsf[0];
+            String value = fsf[1];
+            System.out.println(Arrays.toString(fsf));
+            System.out.println(value);
+        }
     }
 
     public static void testSys(String value) {

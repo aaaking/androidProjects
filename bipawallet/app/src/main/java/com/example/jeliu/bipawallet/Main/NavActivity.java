@@ -89,6 +89,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_EOS;
 import static com.example.jeliu.bipawallet.ui.WalletTypeDialogKt.WALLET_ETH;
 import static com.example.jeliu.bipawallet.util.ThreadUtilKt.Execute;
 
@@ -481,7 +482,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     PayEosWindow mPayEosWindow;
     private String payAddress;
     private String payToken;
-    private int type_chain;
+    private int chain_type;
     private String serialNum;
     private String uid;
     private double payValue;
@@ -489,13 +490,11 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     double gasPrice;
     double currentGasPrice;
     //below is to call eth function
-    private String eth_func_name;
-    private String eth_inputs;
+    private String func_name;
+    private String inputs;
     private String eth_contract_binary;
     //below is to push eos action
     private String eos_contract;
-    private String eos_action;
-    private String eos_data_json;
     private String eos_permission;
 
     public void gotoPay(String scanCode) {
@@ -504,28 +503,25 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         try {
             JSONObject jsonObject = new JSONObject(scanCode);
             payToken = jsonObject.getString("token");
-            type_chain = jsonObject.optInt("type_chain", WALLET_ETH);
+            chain_type = jsonObject.optInt("chain_type", WALLET_ETH);
             uid = jsonObject.optString("uid");
             serialNum = jsonObject.optString("serialNum");
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
-            //
-            eth_func_name = jsonObject.optString("eth_func_name");
-            eth_inputs = jsonObject.optString("eth_inputs");
-            // push eos action
+            //call contract function
             eos_contract = jsonObject.optString(Constant.KEY_EOS_CONTRACT);
-            eos_action = jsonObject.optString(Constant.KEY_EOS_ACTION);
-            eos_data_json = jsonObject.optString(Constant.KEY_EOS_DATA_JSON);
+            func_name = jsonObject.optString(Constant.KEY_EOS_ACTION);
+            inputs = jsonObject.optString(Constant.KEY_EOS_DATA_JSON);
             eos_permission = jsonObject.optString(Constant.KEY_EOS_PERMISSION);
-            if (WalletUtils.isValidAddress(payAddress) && payToken.toLowerCase().equals("eth")) {
+            if (chain_type == WALLET_ETH && WalletUtils.isValidAddress(payAddress) && payToken.toLowerCase().equals("eth")) {
                 if (!WalletUtils.isValidAddress(address)) {
                     Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
-                } else if (!TextUtils.isEmpty(eth_func_name)) {
+                } else if (!TextUtils.isEmpty(func_name)) {
                     queryContratcBinaryCode();
                 } else {
                     loadGas();
                 }
-            } else if (payToken.toLowerCase().equals("eos")) {
+            } else if (chain_type == WALLET_EOS && payToken.toLowerCase().equals("eos")) {
                 IPayEosResult callback = new IPayEosResult() {
                     @Override
                     public void payEosSuccess(@NotNull Object data) {
@@ -543,15 +539,15 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                         Common.showPayFailed(NavActivity.this, findViewById(R.id.container), payValue + "", payAddress);
                     }
                 };
-                if (TextUtils.isEmpty(eos_contract) || TextUtils.isEmpty(eos_action)) {
+                if (TextUtils.isEmpty(eos_contract) || TextUtils.isEmpty(func_name)) {
                     mPayEosWindow = new PayEosWindow(jsonObject, this, callback);
                     findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
                 } else {
                     CallEosActionDialog dialog = new CallEosActionDialog();
                     Bundle bundle = new Bundle();
                     bundle.putString(Constant.KEY_EOS_CONTRACT, eos_contract);
-                    bundle.putString(Constant.KEY_EOS_ACTION, eos_action);
-                    bundle.putString(Constant.KEY_EOS_DATA_JSON, eos_data_json);
+                    bundle.putString(Constant.KEY_EOS_ACTION, func_name);
+                    bundle.putString(Constant.KEY_EOS_DATA_JSON, inputs);
                     bundle.putString(Constant.KEY_EOS_PERMISSION, eos_permission);
                     dialog.setArguments(bundle);
                     dialog.setCallback(callback);
@@ -605,7 +601,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     private void showCallEthFuncDialog() {
         CallEthFuncDialog dialog = new CallEthFuncDialog(this);
-        dialog.setFuncName(eth_func_name).setConrtactAddress(payAddress).setFuncParams(eth_inputs).setBinary(eth_contract_binary).show();
+        dialog.setFuncName(func_name).setConrtactAddress(payAddress).setFuncParams(inputs).setBinary(eth_contract_binary).show();
     }
 
     private void showPay() {

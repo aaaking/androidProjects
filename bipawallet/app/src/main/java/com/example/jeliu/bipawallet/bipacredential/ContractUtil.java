@@ -127,311 +127,311 @@ public class ContractUtil {
         List result = new ArrayList();
         for (int i = 0; i < types.length; i++) {
             String type = types[i];
-            if (type.equals("address")) {
+            if (type.contains("address")) {
                 result.add(new TypeReference<Address>() {
                 });
-            } else if (type.equals("bool")) {
+            } else if (type.contains("bool")) {
                 result.add(new TypeReference<Bool>() {
                 });
-            } else if (type.equals("string")) {
+            } else if (type.contains("string")) {
                 result.add(new TypeReference<Utf8String>() {
                 });
-            } else if (type.equals("bytes")) {
+            } else if (type.contains("bytes")) {
                 result.add(new TypeReference<DynamicBytes>() {
                 });
-            } else if (type.equals("uint")) {
+            } else if (type.contains("uint")) {
                 result.add(new TypeReference<Uint256>() {
                 });
-            } else if (type.equals("int")) {
+            } else if (type.contains("int")) {
                 result.add(new TypeReference<Int256>() {
                 });
-            } else if (type.equals("uint8")) {
+            } else if (type.contains("uint8")) {
                 result.add(new TypeReference<Uint8>() {
                 });
-            } else if (type.equals("int8")) {
+            } else if (type.contains("int8")) {
                 result.add(new TypeReference<Int8>() {
                 });
-            } else if (type.equals("uint16")) {
+            } else if (type.contains("uint16")) {
                 result.add(new TypeReference<Uint16>() {
                 });
-            } else if (type.equals("int16")) {
+            } else if (type.contains("int16")) {
                 result.add(new TypeReference<Int16>() {
                 });
-            } else if (type.equals("uint24")) {
+            } else if (type.contains("uint24")) {
                 result.add(new TypeReference<Uint24>() {
                 });
-            } else if (type.equals("int24")) {
+            } else if (type.contains("int24")) {
                 result.add(new TypeReference<Int24>() {
                 });
-            } else if (type.equals("uint32")) {
+            } else if (type.contains("uint32")) {
                 result.add(new TypeReference<Uint32>() {
                 });
-            } else if (type.equals("int32")) {
+            } else if (type.contains("int32")) {
                 result.add(new TypeReference<Int32>() {
                 });
-            } else if (type.equals("uint40")) {
+            } else if (type.contains("uint40")) {
                 result.add(new TypeReference<Uint40>() {
                 });
-            } else if (type.equals("int40")) {
+            } else if (type.contains("int40")) {
                 result.add(new TypeReference<Int40>() {
                 });
-            } else if (type.equals("uint48")) {
+            } else if (type.contains("uint48")) {
                 result.add(new TypeReference<Uint48>() {
                 });
-            } else if (type.equals("int48")) {
+            } else if (type.contains("int48")) {
                 result.add(new TypeReference<Int48>() {
                 });
-            } else if (type.equals("uint56")) {
+            } else if (type.contains("uint56")) {
                 result.add(new TypeReference<Uint56>() {
                 });
-            } else if (type.equals("int56")) {
+            } else if (type.contains("int56")) {
                 result.add(new TypeReference<Int56>() {
                 });
-            } else if (type.equals("uint64")) {
+            } else if (type.contains("uint64")) {
                 result.add(new TypeReference<Uint64>() {
                 });
-            } else if (type.equals("int64")) {
+            } else if (type.contains("int64")) {
                 result.add(new TypeReference<Int64>() {
                 });
-            } else if (type.equals("uint72")) {
+            } else if (type.contains("uint72")) {
                 result.add(new TypeReference<Uint72>() {
                 });
-            } else if (type.equals("int72")) {
+            } else if (type.contains("int72")) {
                 result.add(new TypeReference<Int72>() {
                 });
 
-            } else if (type.equals("uint80")) {
+            } else if (type.contains("uint80")) {
                 result.add(new TypeReference<Uint80>() {
                 });
-            } else if (type.equals("int80")) {
+            } else if (type.contains("int80")) {
                 result.add(new TypeReference<Int80>() {
                 });
-            } else if (type.equals("uint88")) {
+            } else if (type.contains("uint88")) {
                 result.add(new TypeReference<Uint88>() {
                 });
-            } else if (type.equals("int88")) {
+            } else if (type.contains("int88")) {
                 result.add(new TypeReference<Int88>() {
                 });
-            } else if (type.equals("uint96")) {
+            } else if (type.contains("uint96")) {
                 result.add(new TypeReference<Uint96>() {
                 });
-            } else if (type.equals("int96")) {
+            } else if (type.contains("int96")) {
                 result.add(new TypeReference<Int96>() {
                 });
-            } else if (type.equals("uint104")) {
+            } else if (type.contains("uint104")) {
                 result.add(new TypeReference<Uint104>() {
                 });
-            } else if (type.equals("int104")) {
+            } else if (type.contains("int104")) {
                 result.add(new TypeReference<Int104>() {
                 });
-            } else if (type.equals("uint112")) {
+            } else if (type.contains("uint112")) {
                 result.add(new TypeReference<Uint112>() {
                 });
-            } else if (type.equals("int112")) {
+            } else if (type.contains("int112")) {
                 result.add(new TypeReference<Int112>() {
                 });
-            } else if (type.equals("uint120")) {
+            } else if (type.contains("uint120")) {
                 result.add(new TypeReference<Uint120>() {
                 });
-            } else if (type.equals("int120")) {
+            } else if (type.contains("int120")) {
                 result.add(new TypeReference<Int120>() {
                 });
-            } else if (type.equals("uint128")) {
+            } else if (type.contains("uint128")) {
                 result.add(new TypeReference<Uint128>() {
                 });
-            } else if (type.equals("int128")) {
+            } else if (type.contains("int128")) {
                 result.add(new TypeReference<Int128>() {
                 });
-            } else if (type.equals("uint136")) {
+            } else if (type.contains("uint136")) {
                 result.add(new TypeReference<Uint136>() {
                 });
-            } else if (type.equals("int136")) {
+            } else if (type.contains("int136")) {
                 result.add(new TypeReference<Int136>() {
                 });
-            } else if (type.equals("uint144")) {
+            } else if (type.contains("uint144")) {
                 result.add(new TypeReference<Uint144>() {
                 });
-            } else if (type.equals("int144")) {
+            } else if (type.contains("int144")) {
                 result.add(new TypeReference<Int144>() {
                 });
-            } else if (type.equals("uint152")) {
+            } else if (type.contains("uint152")) {
                 result.add(new TypeReference<Uint152>() {
                 });
-            } else if (type.equals("int152")) {
+            } else if (type.contains("int152")) {
                 result.add(new TypeReference<Int152>() {
                 });
-            } else if (type.equals("uint160")) {
+            } else if (type.contains("uint160")) {
                 result.add(new TypeReference<Uint160>() {
                 });
-            } else if (type.equals("int160")) {
+            } else if (type.contains("int160")) {
                 result.add(new TypeReference<Int160>() {
                 });
-            } else if (type.equals("uint168")) {
+            } else if (type.contains("uint168")) {
                 result.add(new TypeReference<Uint168>() {
                 });
-            } else if (type.equals("int168")) {
+            } else if (type.contains("int168")) {
                 result.add(new TypeReference<Int168>() {
                 });
-            } else if (type.equals("uint176")) {
+            } else if (type.contains("uint176")) {
                 result.add(new TypeReference<Uint176>() {
                 });
-            } else if (type.equals("int176")) {
+            } else if (type.contains("int176")) {
                 result.add(new TypeReference<Int176>() {
                 });
-            } else if (type.equals("uint184")) {
+            } else if (type.contains("uint184")) {
                 result.add(new TypeReference<Uint184>() {
                 });
-            } else if (type.equals("int184")) {
+            } else if (type.contains("int184")) {
                 result.add(new TypeReference<Int184>() {
                 });
-            } else if (type.equals("uint192")) {
+            } else if (type.contains("uint192")) {
                 result.add(new TypeReference<Uint192>() {
                 });
-            } else if (type.equals("int192")) {
+            } else if (type.contains("int192")) {
                 result.add(new TypeReference<Int192>() {
                 });
-            } else if (type.equals("uint200")) {
+            } else if (type.contains("uint200")) {
                 result.add(new TypeReference<Uint200>() {
                 });
-            } else if (type.equals("int200")) {
+            } else if (type.contains("int200")) {
                 result.add(new TypeReference<Int200>() {
                 });
-            } else if (type.equals("uint208")) {
+            } else if (type.contains("uint208")) {
                 result.add(new TypeReference<Uint208>() {
                 });
-            } else if (type.equals("int208")) {
+            } else if (type.contains("int208")) {
                 result.add(new TypeReference<Int208>() {
                 });
-            } else if (type.equals("uint216")) {
+            } else if (type.contains("uint216")) {
                 result.add(new TypeReference<Uint216>() {
                 });
-            } else if (type.equals("int216")) {
+            } else if (type.contains("int216")) {
                 result.add(new TypeReference<Int216>() {
                 });
-            } else if (type.equals("uint224")) {
+            } else if (type.contains("uint224")) {
                 result.add(new TypeReference<Uint224>() {
                 });
-            } else if (type.equals("int224")) {
+            } else if (type.contains("int224")) {
                 result.add(new TypeReference<Int224>() {
                 });
-            } else if (type.equals("uint232")) {
+            } else if (type.contains("uint232")) {
                 result.add(new TypeReference<Uint232>() {
                 });
-            } else if (type.equals("int232")) {
+            } else if (type.contains("int232")) {
                 result.add(new TypeReference<Int232>() {
                 });
-            } else if (type.equals("uint240")) {
+            } else if (type.contains("uint240")) {
                 result.add(new TypeReference<Uint240>() {
                 });
-            } else if (type.equals("int240")) {
+            } else if (type.contains("int240")) {
                 result.add(new TypeReference<Int240>() {
                 });
-            } else if (type.equals("uint248")) {
+            } else if (type.contains("uint248")) {
                 result.add(new TypeReference<Uint248>() {
                 });
-            } else if (type.equals("int248")) {
+            } else if (type.contains("int248")) {
                 result.add(new TypeReference<Int248>() {
                 });
-            } else if (type.equals("uint256")) {
+            } else if (type.contains("uint256")) {
                 result.add(new TypeReference<Uint256>() {
                 });
-            } else if (type.equals("int256")) {
+            } else if (type.contains("int256")) {
                 result.add(new TypeReference<Int256>() {
                 });
-            } else if (type.equals("bytes1")) {
+            } else if (type.contains("bytes1")) {
                 result.add(new TypeReference<Bytes1>() {
                 });
-            } else if (type.equals("bytes2")) {
+            } else if (type.contains("bytes2")) {
                 result.add(new TypeReference<Bytes2>() {
                 });
-            } else if (type.equals("bytes3")) {
+            } else if (type.contains("bytes3")) {
                 result.add(new TypeReference<Bytes3>() {
                 });
-            } else if (type.equals("bytes4")) {
+            } else if (type.contains("bytes4")) {
                 result.add(new TypeReference<Bytes4>() {
                 });
-            } else if (type.equals("bytes5")) {
+            } else if (type.contains("bytes5")) {
                 result.add(new TypeReference<Bytes5>() {
                 });
-            } else if (type.equals("bytes6")) {
+            } else if (type.contains("bytes6")) {
                 result.add(new TypeReference<Bytes6>() {
                 });
-            } else if (type.equals("bytes7")) {
+            } else if (type.contains("bytes7")) {
                 result.add(new TypeReference<Bytes7>() {
                 });
-            } else if (type.equals("bytes8")) {
+            } else if (type.contains("bytes8")) {
                 result.add(new TypeReference<Bytes8>() {
                 });
-            } else if (type.equals("bytes9")) {
+            } else if (type.contains("bytes9")) {
                 result.add(new TypeReference<Bytes9>() {
                 });
-            } else if (type.equals("bytes10")) {
+            } else if (type.contains("bytes10")) {
                 result.add(new TypeReference<Bytes10>() {
                 });
-            } else if (type.equals("bytes11")) {
+            } else if (type.contains("bytes11")) {
                 result.add(new TypeReference<Bytes11>() {
                 });
-            } else if (type.equals("bytes12")) {
+            } else if (type.contains("bytes12")) {
                 result.add(new TypeReference<Bytes12>() {
                 });
-            } else if (type.equals("bytes13")) {
+            } else if (type.contains("bytes13")) {
                 result.add(new TypeReference<Bytes13>() {
                 });
-            } else if (type.equals("bytes14")) {
+            } else if (type.contains("bytes14")) {
                 result.add(new TypeReference<Bytes14>() {
                 });
-            } else if (type.equals("bytes15")) {
+            } else if (type.contains("bytes15")) {
                 result.add(new TypeReference<Bytes15>() {
                 });
-            } else if (type.equals("bytes16")) {
+            } else if (type.contains("bytes16")) {
                 result.add(new TypeReference<Bytes16>() {
                 });
-            } else if (type.equals("bytes17")) {
+            } else if (type.contains("bytes17")) {
                 result.add(new TypeReference<Bytes17>() {
                 });
-            } else if (type.equals("bytes18")) {
+            } else if (type.contains("bytes18")) {
                 result.add(new TypeReference<Bytes18>() {
                 });
-            } else if (type.equals("bytes19")) {
+            } else if (type.contains("bytes19")) {
                 result.add(new TypeReference<Bytes19>() {
                 });
-            } else if (type.equals("bytes20")) {
+            } else if (type.contains("bytes20")) {
                 result.add(new TypeReference<Bytes20>() {
                 });
-            } else if (type.equals("bytes21")) {
+            } else if (type.contains("bytes21")) {
                 result.add(new TypeReference<Bytes21>() {
                 });
-            } else if (type.equals("bytes22")) {
+            } else if (type.contains("bytes22")) {
                 result.add(new TypeReference<Bytes22>() {
                 });
-            } else if (type.equals("bytes23")) {
+            } else if (type.contains("bytes23")) {
                 result.add(new TypeReference<Bytes23>() {
                 });
-            } else if (type.equals("bytes24")) {
+            } else if (type.contains("bytes24")) {
                 result.add(new TypeReference<Bytes24>() {
                 });
-            } else if (type.equals("bytes25")) {
+            } else if (type.contains("bytes25")) {
                 result.add(new TypeReference<Bytes25>() {
                 });
-            } else if (type.equals("bytes26")) {
+            } else if (type.contains("bytes26")) {
                 result.add(new TypeReference<Bytes26>() {
                 });
-            } else if (type.equals("bytes27")) {
+            } else if (type.contains("bytes27")) {
                 result.add(new TypeReference<Bytes27>() {
                 });
-            } else if (type.equals("bytes28")) {
+            } else if (type.contains("bytes28")) {
                 result.add(new TypeReference<Bytes28>() {
                 });
-            } else if (type.equals("bytes29")) {
+            } else if (type.contains("bytes29")) {
                 result.add(new TypeReference<Bytes29>() {
                 });
-            } else if (type.equals("bytes30")) {
+            } else if (type.contains("bytes30")) {
                 result.add(new TypeReference<Bytes30>() {
                 });
-            } else if (type.equals("bytes31")) {
+            } else if (type.contains("bytes31")) {
                 result.add(new TypeReference<Bytes31>() {
                 });
-            } else if (type.equals("bytes32")) {
+            } else if (type.contains("bytes32")) {
                 result.add(new TypeReference<Bytes32>() {
                 });
             } else {
@@ -449,209 +449,209 @@ public class ContractUtil {
         for (int i = 0; i < types.length; i++) {
             String type = types[i];
             String value = values[i];
-            if (type.equals("address")) {
+            if (type.contains("address")) {
                 result.add(new Address(value));
-            } else if (type.equals("bool")) {
+            } else if (type.contains("bool")) {
                 result.add(new Bool(Boolean.parseBoolean(value)));
-            } else if (type.equals("string")) {
+            } else if (type.contains("string")) {
                 result.add(new Utf8String(value));
-            } else if (type.equals("bytes")) {
+            } else if (type.contains("bytes")) {
                 result.add(new DynamicBytes(value.getBytes()));
-            } else if (type.equals("uint")) {
+            } else if (type.contains("uint")) {
                 result.add(new Uint256(new BigInteger(value)));
-            } else if (type.equals("int")) {
+            } else if (type.contains("int")) {
                 result.add(new Int256(new BigInteger(value)));
-            } else if (type.equals("uint8")) {
+            } else if (type.contains("uint8")) {
                 result.add(new Uint8(new BigInteger(value)));
-            } else if (type.equals("int8")) {
+            } else if (type.contains("int8")) {
                 result.add(new Int8(new BigInteger(value)));
-            } else if (type.equals("uint16")) {
+            } else if (type.contains("uint16")) {
                 result.add(new Uint16(new BigInteger(value)));
-            } else if (type.equals("int16")) {
+            } else if (type.contains("int16")) {
                 result.add(new Int16(new BigInteger(value)));
-            } else if (type.equals("uint24")) {
+            } else if (type.contains("uint24")) {
                 result.add(new Uint24(new BigInteger(value)));
-            } else if (type.equals("int24")) {
+            } else if (type.contains("int24")) {
                 result.add(new Int24(new BigInteger(value)));
-            } else if (type.equals("uint32")) {
+            } else if (type.contains("uint32")) {
                 result.add(new Uint32(new BigInteger(value)));
-            } else if (type.equals("int32")) {
+            } else if (type.contains("int32")) {
                 result.add(new Int32(new BigInteger(value)));
-            } else if (type.equals("uint40")) {
+            } else if (type.contains("uint40")) {
                 result.add(new Uint40(new BigInteger(value)));
-            } else if (type.equals("int40")) {
+            } else if (type.contains("int40")) {
                 result.add(new Int40(new BigInteger(value)));
-            } else if (type.equals("uint48")) {
+            } else if (type.contains("uint48")) {
                 result.add(new Uint48(new BigInteger(value)));
-            } else if (type.equals("int48")) {
+            } else if (type.contains("int48")) {
                 result.add(new Int48(new BigInteger(value)));
-            } else if (type.equals("uint56")) {
+            } else if (type.contains("uint56")) {
                 result.add(new Uint56(new BigInteger(value)));
-            } else if (type.equals("int56")) {
+            } else if (type.contains("int56")) {
                 result.add(new Int56(new BigInteger(value)));
-            } else if (type.equals("uint64")) {
+            } else if (type.contains("uint64")) {
                 result.add(new Uint64(new BigInteger(value)));
-            } else if (type.equals("int64")) {
+            } else if (type.contains("int64")) {
                 result.add(new Int64(new BigInteger(value)));
-            } else if (type.equals("uint72")) {
+            } else if (type.contains("uint72")) {
                 result.add(new Uint72(new BigInteger(value)));
-            } else if (type.equals("int72")) {
+            } else if (type.contains("int72")) {
                 result.add(new Int72(new BigInteger(value)));
-            } else if (type.equals("uint80")) {
+            } else if (type.contains("uint80")) {
                 result.add(new Uint80(new BigInteger(value)));
-            } else if (type.equals("int80")) {
+            } else if (type.contains("int80")) {
                 result.add(new Int80(new BigInteger(value)));
-            } else if (type.equals("uint88")) {
+            } else if (type.contains("uint88")) {
                 result.add(new Uint88(new BigInteger(value)));
-            } else if (type.equals("int88")) {
+            } else if (type.contains("int88")) {
                 result.add(new Int88(new BigInteger(value)));
-            } else if (type.equals("uint96")) {
+            } else if (type.contains("uint96")) {
                 result.add(new Uint96(new BigInteger(value)));
-            } else if (type.equals("int96")) {
+            } else if (type.contains("int96")) {
                 result.add(new Int96(new BigInteger(value)));
-            } else if (type.equals("uint104")) {
+            } else if (type.contains("uint104")) {
                 result.add(new Uint104(new BigInteger(value)));
-            } else if (type.equals("int104")) {
+            } else if (type.contains("int104")) {
                 result.add(new Int104(new BigInteger(value)));
-            } else if (type.equals("uint112")) {
+            } else if (type.contains("uint112")) {
                 result.add(new Uint112(new BigInteger(value)));
-            } else if (type.equals("int112")) {
+            } else if (type.contains("int112")) {
                 result.add(new Int112(new BigInteger(value)));
-            } else if (type.equals("uint120")) {
+            } else if (type.contains("uint120")) {
                 result.add(new Uint120(new BigInteger(value)));
-            } else if (type.equals("int120")) {
+            } else if (type.contains("int120")) {
                 result.add(new Int120(new BigInteger(value)));
-            } else if (type.equals("uint128")) {
+            } else if (type.contains("uint128")) {
                 result.add(new Uint128(new BigInteger(value)));
-            } else if (type.equals("int128")) {
+            } else if (type.contains("int128")) {
                 result.add(new Int128(new BigInteger(value)));
-            } else if (type.equals("uint136")) {
+            } else if (type.contains("uint136")) {
                 result.add(new Uint136(new BigInteger(value)));
-            } else if (type.equals("int136")) {
+            } else if (type.contains("int136")) {
                 result.add(new Int136(new BigInteger(value)));
-            } else if (type.equals("uint144")) {
+            } else if (type.contains("uint144")) {
                 result.add(new Uint144(new BigInteger(value)));
-            } else if (type.equals("int144")) {
+            } else if (type.contains("int144")) {
                 result.add(new Int144(new BigInteger(value)));
-            } else if (type.equals("uint152")) {
+            } else if (type.contains("uint152")) {
                 result.add(new Uint152(new BigInteger(value)));
-            } else if (type.equals("int152")) {
+            } else if (type.contains("int152")) {
                 result.add(new Int152(new BigInteger(value)));
-            } else if (type.equals("uint160")) {
+            } else if (type.contains("uint160")) {
                 result.add(new Uint160(new BigInteger(value)));
-            } else if (type.equals("int160")) {
+            } else if (type.contains("int160")) {
                 result.add(new Int160(new BigInteger(value)));
-            } else if (type.equals("uint168")) {
+            } else if (type.contains("uint168")) {
                 result.add(new Uint168(new BigInteger(value)));
-            } else if (type.equals("int168")) {
+            } else if (type.contains("int168")) {
                 result.add(new Int168(new BigInteger(value)));
-            } else if (type.equals("uint176")) {
+            } else if (type.contains("uint176")) {
                 result.add(new Uint176(new BigInteger(value)));
-            } else if (type.equals("int176")) {
+            } else if (type.contains("int176")) {
                 result.add(new Int176(new BigInteger(value)));
-            } else if (type.equals("uint184")) {
+            } else if (type.contains("uint184")) {
                 result.add(new Uint184(new BigInteger(value)));
-            } else if (type.equals("int184")) {
+            } else if (type.contains("int184")) {
                 result.add(new Int184(new BigInteger(value)));
-            } else if (type.equals("uint192")) {
+            } else if (type.contains("uint192")) {
                 result.add(new Uint192(new BigInteger(value)));
-            } else if (type.equals("int192")) {
+            } else if (type.contains("int192")) {
                 result.add(new Int192(new BigInteger(value)));
-            } else if (type.equals("uint200")) {
+            } else if (type.contains("uint200")) {
                 result.add(new Uint200(new BigInteger(value)));
-            } else if (type.equals("int200")) {
+            } else if (type.contains("int200")) {
                 result.add(new Int200(new BigInteger(value)));
-            } else if (type.equals("uint208")) {
+            } else if (type.contains("uint208")) {
                 result.add(new Uint208(new BigInteger(value)));
-            } else if (type.equals("int208")) {
+            } else if (type.contains("int208")) {
                 result.add(new Int208(new BigInteger(value)));
-            } else if (type.equals("uint216")) {
+            } else if (type.contains("uint216")) {
                 result.add(new Uint216(new BigInteger(value)));
-            } else if (type.equals("int216")) {
+            } else if (type.contains("int216")) {
                 result.add(new Int216(new BigInteger(value)));
-            } else if (type.equals("uint224")) {
+            } else if (type.contains("uint224")) {
                 result.add(new Uint224(new BigInteger(value)));
-            } else if (type.equals("int224")) {
+            } else if (type.contains("int224")) {
                 result.add(new Int224(new BigInteger(value)));
-            } else if (type.equals("uint232")) {
+            } else if (type.contains("uint232")) {
                 result.add(new Uint232(new BigInteger(value)));
-            } else if (type.equals("int232")) {
+            } else if (type.contains("int232")) {
                 result.add(new Int232(new BigInteger(value)));
-            } else if (type.equals("uint240")) {
+            } else if (type.contains("uint240")) {
                 result.add(new Uint240(new BigInteger(value)));
-            } else if (type.equals("int240")) {
+            } else if (type.contains("int240")) {
                 result.add(new Int240(new BigInteger(value)));
-            } else if (type.equals("uint248")) {
+            } else if (type.contains("uint248")) {
                 result.add(new Uint248(new BigInteger(value)));
-            } else if (type.equals("int248")) {
+            } else if (type.contains("int248")) {
                 result.add(new Int248(new BigInteger(value)));
-            } else if (type.equals("uint256")) {
+            } else if (type.contains("uint256")) {
                 result.add(new Uint256(new BigInteger(value)));
-            } else if (type.equals("int256")) {
+            } else if (type.contains("int256")) {
                 result.add(new Int256(new BigInteger(value)));
-            } else if (type.equals("bytes1")) {
+            } else if (type.contains("bytes1")) {
                 result.add(new Bytes1(value.getBytes()));
-            } else if (type.equals("bytes2")) {
+            } else if (type.contains("bytes2")) {
                 result.add(new Bytes2(value.getBytes()));
-            } else if (type.equals("bytes3")) {
+            } else if (type.contains("bytes3")) {
                 result.add(new Bytes3(value.getBytes()));
-            } else if (type.equals("bytes4")) {
+            } else if (type.contains("bytes4")) {
                 result.add(new Bytes4(value.getBytes()));
-            } else if (type.equals("bytes5")) {
+            } else if (type.contains("bytes5")) {
                 result.add(new Bytes5(value.getBytes()));
-            } else if (type.equals("bytes6")) {
+            } else if (type.contains("bytes6")) {
                 result.add(new Bytes6(value.getBytes()));
-            } else if (type.equals("bytes7")) {
+            } else if (type.contains("bytes7")) {
                 result.add(new Bytes7(value.getBytes()));
-            } else if (type.equals("bytes8")) {
+            } else if (type.contains("bytes8")) {
                 result.add(new Bytes8(value.getBytes()));
-            } else if (type.equals("bytes9")) {
+            } else if (type.contains("bytes9")) {
                 result.add(new Bytes9(value.getBytes()));
-            } else if (type.equals("bytes10")) {
+            } else if (type.contains("bytes10")) {
                 result.add(new Bytes10(value.getBytes()));
-            } else if (type.equals("bytes11")) {
+            } else if (type.contains("bytes11")) {
                 result.add(new Bytes11(value.getBytes()));
-            } else if (type.equals("bytes12")) {
+            } else if (type.contains("bytes12")) {
                 result.add(new Bytes12(value.getBytes()));
-            } else if (type.equals("bytes13")) {
+            } else if (type.contains("bytes13")) {
                 result.add(new Bytes13(value.getBytes()));
-            } else if (type.equals("bytes14")) {
+            } else if (type.contains("bytes14")) {
                 result.add(new Bytes14(value.getBytes()));
-            } else if (type.equals("bytes15")) {
+            } else if (type.contains("bytes15")) {
                 result.add(new Bytes15(value.getBytes()));
-            } else if (type.equals("bytes16")) {
+            } else if (type.contains("bytes16")) {
                 result.add(new Bytes16(value.getBytes()));
-            } else if (type.equals("bytes17")) {
+            } else if (type.contains("bytes17")) {
                 result.add(new Bytes17(value.getBytes()));
-            } else if (type.equals("bytes18")) {
+            } else if (type.contains("bytes18")) {
                 result.add(new Bytes18(value.getBytes()));
-            } else if (type.equals("bytes19")) {
+            } else if (type.contains("bytes19")) {
                 result.add(new Bytes19(value.getBytes()));
-            } else if (type.equals("bytes20")) {
+            } else if (type.contains("bytes20")) {
                 result.add(new Bytes20(value.getBytes()));
-            } else if (type.equals("bytes21")) {
+            } else if (type.contains("bytes21")) {
                 result.add(new Bytes21(value.getBytes()));
-            } else if (type.equals("bytes22")) {
+            } else if (type.contains("bytes22")) {
                 result.add(new Bytes22(value.getBytes()));
-            } else if (type.equals("bytes23")) {
+            } else if (type.contains("bytes23")) {
                 result.add(new Bytes23(value.getBytes()));
-            } else if (type.equals("bytes24")) {
+            } else if (type.contains("bytes24")) {
                 result.add(new Bytes24(value.getBytes()));
-            } else if (type.equals("bytes25")) {
+            } else if (type.contains("bytes25")) {
                 result.add(new Bytes25(value.getBytes()));
-            } else if (type.equals("bytes26")) {
+            } else if (type.contains("bytes26")) {
                 result.add(new Bytes26(value.getBytes()));
-            } else if (type.equals("bytes27")) {
+            } else if (type.contains("bytes27")) {
                 result.add(new Bytes27(value.getBytes()));
-            } else if (type.equals("bytes28")) {
+            } else if (type.contains("bytes28")) {
                 result.add(new Bytes28(value.getBytes()));
-            } else if (type.equals("bytes29")) {
+            } else if (type.contains("bytes29")) {
                 result.add(new Bytes29(value.getBytes()));
-            } else if (type.equals("bytes30")) {
+            } else if (type.contains("bytes30")) {
                 result.add(new Bytes30(value.getBytes()));
-            } else if (type.equals("bytes31")) {
+            } else if (type.contains("bytes31")) {
                 result.add(new Bytes31(value.getBytes()));
-            } else if (type.equals("bytes32")) {
+            } else if (type.contains("bytes32")) {
                 result.add(new Bytes32(value.getBytes()));
             } else {
                 throw new UnsupportedOperationException("Unsupported type encountered: " + type);
@@ -662,7 +662,7 @@ public class ContractUtil {
 
     public static List<Type> getInputs(String jsonStr) throws Exception {
         List result = new ArrayList();
-        if (TextUtils.isEmpty(jsonStr) || jsonStr.equals("[]") || jsonStr.equals("[{}]") || jsonStr.equals("[ ]")) {
+        if (TextUtils.isEmpty(jsonStr) || jsonStr.contains("[]") || jsonStr.contains("[{}]") || jsonStr.contains("[ ]")) {
             return result;
         }
         JSONArray jsonArray = new JSONArray(jsonStr);
@@ -675,209 +675,209 @@ public class ContractUtil {
             while (keys.hasNext()) {
                 String type = keys.next();
                 String value = typeValue.optString(type);
-                if (type.equals("address")) {
+                if (type.contains("address")) {
                     result.add(new Address(value));
-                } else if (type.equals("bool")) {
+                } else if (type.contains("bool")) {
                     result.add(new Bool(Boolean.parseBoolean(value)));
-                } else if (type.equals("string")) {
+                } else if (type.contains("string")) {
                     result.add(new Utf8String(value));
-                } else if (type.equals("bytes")) {
+                } else if (type.contains("bytes")) {
                     result.add(new DynamicBytes(value.getBytes()));
-                } else if (type.equals("uint")) {
+                } else if (type.contains("uint")) {
                     result.add(new Uint256(new BigInteger(value)));
-                } else if (type.equals("int")) {
+                } else if (type.contains("int")) {
                     result.add(new Int256(new BigInteger(value)));
-                } else if (type.equals("uint8")) {
+                } else if (type.contains("uint8")) {
                     result.add(new Uint8(new BigInteger(value)));
-                } else if (type.equals("int8")) {
+                } else if (type.contains("int8")) {
                     result.add(new Int8(new BigInteger(value)));
-                } else if (type.equals("uint16")) {
+                } else if (type.contains("uint16")) {
                     result.add(new Uint16(new BigInteger(value)));
-                } else if (type.equals("int16")) {
+                } else if (type.contains("int16")) {
                     result.add(new Int16(new BigInteger(value)));
-                } else if (type.equals("uint24")) {
+                } else if (type.contains("uint24")) {
                     result.add(new Uint24(new BigInteger(value)));
-                } else if (type.equals("int24")) {
+                } else if (type.contains("int24")) {
                     result.add(new Int24(new BigInteger(value)));
-                } else if (type.equals("uint32")) {
+                } else if (type.contains("uint32")) {
                     result.add(new Uint32(new BigInteger(value)));
-                } else if (type.equals("int32")) {
+                } else if (type.contains("int32")) {
                     result.add(new Int32(new BigInteger(value)));
-                } else if (type.equals("uint40")) {
+                } else if (type.contains("uint40")) {
                     result.add(new Uint40(new BigInteger(value)));
-                } else if (type.equals("int40")) {
+                } else if (type.contains("int40")) {
                     result.add(new Int40(new BigInteger(value)));
-                } else if (type.equals("uint48")) {
+                } else if (type.contains("uint48")) {
                     result.add(new Uint48(new BigInteger(value)));
-                } else if (type.equals("int48")) {
+                } else if (type.contains("int48")) {
                     result.add(new Int48(new BigInteger(value)));
-                } else if (type.equals("uint56")) {
+                } else if (type.contains("uint56")) {
                     result.add(new Uint56(new BigInteger(value)));
-                } else if (type.equals("int56")) {
+                } else if (type.contains("int56")) {
                     result.add(new Int56(new BigInteger(value)));
-                } else if (type.equals("uint64")) {
+                } else if (type.contains("uint64")) {
                     result.add(new Uint64(new BigInteger(value)));
-                } else if (type.equals("int64")) {
+                } else if (type.contains("int64")) {
                     result.add(new Int64(new BigInteger(value)));
-                } else if (type.equals("uint72")) {
+                } else if (type.contains("uint72")) {
                     result.add(new Uint72(new BigInteger(value)));
-                } else if (type.equals("int72")) {
+                } else if (type.contains("int72")) {
                     result.add(new Int72(new BigInteger(value)));
-                } else if (type.equals("uint80")) {
+                } else if (type.contains("uint80")) {
                     result.add(new Uint80(new BigInteger(value)));
-                } else if (type.equals("int80")) {
+                } else if (type.contains("int80")) {
                     result.add(new Int80(new BigInteger(value)));
-                } else if (type.equals("uint88")) {
+                } else if (type.contains("uint88")) {
                     result.add(new Uint88(new BigInteger(value)));
-                } else if (type.equals("int88")) {
+                } else if (type.contains("int88")) {
                     result.add(new Int88(new BigInteger(value)));
-                } else if (type.equals("uint96")) {
+                } else if (type.contains("uint96")) {
                     result.add(new Uint96(new BigInteger(value)));
-                } else if (type.equals("int96")) {
+                } else if (type.contains("int96")) {
                     result.add(new Int96(new BigInteger(value)));
-                } else if (type.equals("uint104")) {
+                } else if (type.contains("uint104")) {
                     result.add(new Uint104(new BigInteger(value)));
-                } else if (type.equals("int104")) {
+                } else if (type.contains("int104")) {
                     result.add(new Int104(new BigInteger(value)));
-                } else if (type.equals("uint112")) {
+                } else if (type.contains("uint112")) {
                     result.add(new Uint112(new BigInteger(value)));
-                } else if (type.equals("int112")) {
+                } else if (type.contains("int112")) {
                     result.add(new Int112(new BigInteger(value)));
-                } else if (type.equals("uint120")) {
+                } else if (type.contains("uint120")) {
                     result.add(new Uint120(new BigInteger(value)));
-                } else if (type.equals("int120")) {
+                } else if (type.contains("int120")) {
                     result.add(new Int120(new BigInteger(value)));
-                } else if (type.equals("uint128")) {
+                } else if (type.contains("uint128")) {
                     result.add(new Uint128(new BigInteger(value)));
-                } else if (type.equals("int128")) {
+                } else if (type.contains("int128")) {
                     result.add(new Int128(new BigInteger(value)));
-                } else if (type.equals("uint136")) {
+                } else if (type.contains("uint136")) {
                     result.add(new Uint136(new BigInteger(value)));
-                } else if (type.equals("int136")) {
+                } else if (type.contains("int136")) {
                     result.add(new Int136(new BigInteger(value)));
-                } else if (type.equals("uint144")) {
+                } else if (type.contains("uint144")) {
                     result.add(new Uint144(new BigInteger(value)));
-                } else if (type.equals("int144")) {
+                } else if (type.contains("int144")) {
                     result.add(new Int144(new BigInteger(value)));
-                } else if (type.equals("uint152")) {
+                } else if (type.contains("uint152")) {
                     result.add(new Uint152(new BigInteger(value)));
-                } else if (type.equals("int152")) {
+                } else if (type.contains("int152")) {
                     result.add(new Int152(new BigInteger(value)));
-                } else if (type.equals("uint160")) {
+                } else if (type.contains("uint160")) {
                     result.add(new Uint160(new BigInteger(value)));
-                } else if (type.equals("int160")) {
+                } else if (type.contains("int160")) {
                     result.add(new Int160(new BigInteger(value)));
-                } else if (type.equals("uint168")) {
+                } else if (type.contains("uint168")) {
                     result.add(new Uint168(new BigInteger(value)));
-                } else if (type.equals("int168")) {
+                } else if (type.contains("int168")) {
                     result.add(new Int168(new BigInteger(value)));
-                } else if (type.equals("uint176")) {
+                } else if (type.contains("uint176")) {
                     result.add(new Uint176(new BigInteger(value)));
-                } else if (type.equals("int176")) {
+                } else if (type.contains("int176")) {
                     result.add(new Int176(new BigInteger(value)));
-                } else if (type.equals("uint184")) {
+                } else if (type.contains("uint184")) {
                     result.add(new Uint184(new BigInteger(value)));
-                } else if (type.equals("int184")) {
+                } else if (type.contains("int184")) {
                     result.add(new Int184(new BigInteger(value)));
-                } else if (type.equals("uint192")) {
+                } else if (type.contains("uint192")) {
                     result.add(new Uint192(new BigInteger(value)));
-                } else if (type.equals("int192")) {
+                } else if (type.contains("int192")) {
                     result.add(new Int192(new BigInteger(value)));
-                } else if (type.equals("uint200")) {
+                } else if (type.contains("uint200")) {
                     result.add(new Uint200(new BigInteger(value)));
-                } else if (type.equals("int200")) {
+                } else if (type.contains("int200")) {
                     result.add(new Int200(new BigInteger(value)));
-                } else if (type.equals("uint208")) {
+                } else if (type.contains("uint208")) {
                     result.add(new Uint208(new BigInteger(value)));
-                } else if (type.equals("int208")) {
+                } else if (type.contains("int208")) {
                     result.add(new Int208(new BigInteger(value)));
-                } else if (type.equals("uint216")) {
+                } else if (type.contains("uint216")) {
                     result.add(new Uint216(new BigInteger(value)));
-                } else if (type.equals("int216")) {
+                } else if (type.contains("int216")) {
                     result.add(new Int216(new BigInteger(value)));
-                } else if (type.equals("uint224")) {
+                } else if (type.contains("uint224")) {
                     result.add(new Uint224(new BigInteger(value)));
-                } else if (type.equals("int224")) {
+                } else if (type.contains("int224")) {
                     result.add(new Int224(new BigInteger(value)));
-                } else if (type.equals("uint232")) {
+                } else if (type.contains("uint232")) {
                     result.add(new Uint232(new BigInteger(value)));
-                } else if (type.equals("int232")) {
+                } else if (type.contains("int232")) {
                     result.add(new Int232(new BigInteger(value)));
-                } else if (type.equals("uint240")) {
+                } else if (type.contains("uint240")) {
                     result.add(new Uint240(new BigInteger(value)));
-                } else if (type.equals("int240")) {
+                } else if (type.contains("int240")) {
                     result.add(new Int240(new BigInteger(value)));
-                } else if (type.equals("uint248")) {
+                } else if (type.contains("uint248")) {
                     result.add(new Uint248(new BigInteger(value)));
-                } else if (type.equals("int248")) {
+                } else if (type.contains("int248")) {
                     result.add(new Int248(new BigInteger(value)));
-                } else if (type.equals("uint256")) {
+                } else if (type.contains("uint256")) {
                     result.add(new Uint256(new BigInteger(value)));
-                } else if (type.equals("int256")) {
+                } else if (type.contains("int256")) {
                     result.add(new Int256(new BigInteger(value)));
-                } else if (type.equals("bytes1")) {
+                } else if (type.contains("bytes1")) {
                     result.add(new Bytes1(value.getBytes()));
-                } else if (type.equals("bytes2")) {
+                } else if (type.contains("bytes2")) {
                     result.add(new Bytes2(value.getBytes()));
-                } else if (type.equals("bytes3")) {
+                } else if (type.contains("bytes3")) {
                     result.add(new Bytes3(value.getBytes()));
-                } else if (type.equals("bytes4")) {
+                } else if (type.contains("bytes4")) {
                     result.add(new Bytes4(value.getBytes()));
-                } else if (type.equals("bytes5")) {
+                } else if (type.contains("bytes5")) {
                     result.add(new Bytes5(value.getBytes()));
-                } else if (type.equals("bytes6")) {
+                } else if (type.contains("bytes6")) {
                     result.add(new Bytes6(value.getBytes()));
-                } else if (type.equals("bytes7")) {
+                } else if (type.contains("bytes7")) {
                     result.add(new Bytes7(value.getBytes()));
-                } else if (type.equals("bytes8")) {
+                } else if (type.contains("bytes8")) {
                     result.add(new Bytes8(value.getBytes()));
-                } else if (type.equals("bytes9")) {
+                } else if (type.contains("bytes9")) {
                     result.add(new Bytes9(value.getBytes()));
-                } else if (type.equals("bytes10")) {
+                } else if (type.contains("bytes10")) {
                     result.add(new Bytes10(value.getBytes()));
-                } else if (type.equals("bytes11")) {
+                } else if (type.contains("bytes11")) {
                     result.add(new Bytes11(value.getBytes()));
-                } else if (type.equals("bytes12")) {
+                } else if (type.contains("bytes12")) {
                     result.add(new Bytes12(value.getBytes()));
-                } else if (type.equals("bytes13")) {
+                } else if (type.contains("bytes13")) {
                     result.add(new Bytes13(value.getBytes()));
-                } else if (type.equals("bytes14")) {
+                } else if (type.contains("bytes14")) {
                     result.add(new Bytes14(value.getBytes()));
-                } else if (type.equals("bytes15")) {
+                } else if (type.contains("bytes15")) {
                     result.add(new Bytes15(value.getBytes()));
-                } else if (type.equals("bytes16")) {
+                } else if (type.contains("bytes16")) {
                     result.add(new Bytes16(value.getBytes()));
-                } else if (type.equals("bytes17")) {
+                } else if (type.contains("bytes17")) {
                     result.add(new Bytes17(value.getBytes()));
-                } else if (type.equals("bytes18")) {
+                } else if (type.contains("bytes18")) {
                     result.add(new Bytes18(value.getBytes()));
-                } else if (type.equals("bytes19")) {
+                } else if (type.contains("bytes19")) {
                     result.add(new Bytes19(value.getBytes()));
-                } else if (type.equals("bytes20")) {
+                } else if (type.contains("bytes20")) {
                     result.add(new Bytes20(value.getBytes()));
-                } else if (type.equals("bytes21")) {
+                } else if (type.contains("bytes21")) {
                     result.add(new Bytes21(value.getBytes()));
-                } else if (type.equals("bytes22")) {
+                } else if (type.contains("bytes22")) {
                     result.add(new Bytes22(value.getBytes()));
-                } else if (type.equals("bytes23")) {
+                } else if (type.contains("bytes23")) {
                     result.add(new Bytes23(value.getBytes()));
-                } else if (type.equals("bytes24")) {
+                } else if (type.contains("bytes24")) {
                     result.add(new Bytes24(value.getBytes()));
-                } else if (type.equals("bytes25")) {
+                } else if (type.contains("bytes25")) {
                     result.add(new Bytes25(value.getBytes()));
-                } else if (type.equals("bytes26")) {
+                } else if (type.contains("bytes26")) {
                     result.add(new Bytes26(value.getBytes()));
-                } else if (type.equals("bytes27")) {
+                } else if (type.contains("bytes27")) {
                     result.add(new Bytes27(value.getBytes()));
-                } else if (type.equals("bytes28")) {
+                } else if (type.contains("bytes28")) {
                     result.add(new Bytes28(value.getBytes()));
-                } else if (type.equals("bytes29")) {
+                } else if (type.contains("bytes29")) {
                     result.add(new Bytes29(value.getBytes()));
-                } else if (type.equals("bytes30")) {
+                } else if (type.contains("bytes30")) {
                     result.add(new Bytes30(value.getBytes()));
-                } else if (type.equals("bytes31")) {
+                } else if (type.contains("bytes31")) {
                     result.add(new Bytes31(value.getBytes()));
-                } else if (type.equals("bytes32")) {
+                } else if (type.contains("bytes32")) {
                     result.add(new Bytes32(value.getBytes()));
                 } else {
                     throw new UnsupportedOperationException("Unsupported type encountered: " + type);

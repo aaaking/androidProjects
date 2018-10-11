@@ -93,7 +93,7 @@ public class Constant {
     public static final String MARKET_EOS_PRICE = "https://api.coinmarketcap.com/v2/ticker/1765";
 
     public static final String KEY_EOS_CONTRACT = "eos_contract";
-    public static final String KEY_EOS_ACTION = "eos_action";
-    public static final String KEY_EOS_DATA_JSON = "eos_data_json";
+    public static final String KEY_EOS_ACTION = "func_name";
+    public static final String KEY_EOS_DATA_JSON = "inputs";
     public static final String KEY_EOS_PERMISSION = "eos_permission";
 }
