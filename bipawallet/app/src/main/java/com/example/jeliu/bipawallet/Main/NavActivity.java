@@ -145,7 +145,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         mCurFrg = mAsset;
         switchFragment(R.id.content, null, mAsset, null);
         requestPermission();
-        tryPay();
+        tryPay(getIntent());
         LogUtil.INSTANCE.i("zzh-----------", "nav oncreate");
     }
 
@@ -153,7 +153,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtil.INSTANCE.i("zzh-----------", "nav onNewIntent");
-        tryPay();
+        tryPay(intent);
     }
 
     protected void initView() {
@@ -161,16 +161,16 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     String jsParams = null;
 
-    public void tryPay() {
+    public void tryPay(Intent intent) {
         if (UserInfoManager.getInst().isEmptyWallet()) {
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
             return;
         } else {
-            if (getIntent().getData() != null && getIntent().getData().getQueryParameter("params") != null) {
+            if (intent.getData() != null && intent.getData().getQueryParameter("params") != null) {
 //            if (getIntent().getStringExtra("js") != null) {
 //                Uri js = Uri.parse(getIntent().getStringExtra("js"));
-                jsParams = getIntent().getData().getQueryParameter("params");
+                jsParams = intent.getData().getQueryParameter("params");
                 scanDone(jsParams);
             }
         }
