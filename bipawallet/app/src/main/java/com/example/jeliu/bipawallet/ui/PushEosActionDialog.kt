@@ -33,7 +33,7 @@ import javax.inject.Inject
 /**
  * Created by 周智慧 on 2018/10/10.
  */
-class CallEosActionDialog : DialogFragment() {
+class PushEosActionDialog : DialogFragment() {
     @Inject
     lateinit var mDataManager: EoscDataManager
     var mWallet: HZWallet? = HZWalletManager.getInst().getWallet(UserInfoManager.getInst().currentWalletAddress)
@@ -50,11 +50,11 @@ class CallEosActionDialog : DialogFragment() {
     lateinit var tv_action_params: TextView
 
     init {
-        LogUtil.i("CallEosActionDialog init111111 arguments ${arguments} activity ${activity}")
+        LogUtil.i("PushEosActionDialog init111111 arguments ${arguments} activity ${activity}")
     }
 
     override fun show(manager: FragmentManager, tag: String) {
-        LogUtil.i("CallEosActionDialog show ----- arguments ${arguments} activity ${activity} dialog ${dialog}")
+        LogUtil.i("PushEosActionDialog show ----- arguments ${arguments} activity ${activity} dialog ${dialog}")
         super.show(manager, tag)
     }
 
@@ -64,9 +64,9 @@ class CallEosActionDialog : DialogFragment() {
         eos_action = arguments?.getString(Constant.KEY_EOS_ACTION) ?: ""
         eos_data_json = arguments?.getString(Constant.KEY_EOS_DATA_JSON) ?: ""
         eos_permission = arguments?.getString(Constant.KEY_EOS_PERMISSION) ?: ""
-        LogUtil.i("CallEosActionDialog onCreateView22222 arguments ${arguments}  activity ${activity}")
+        LogUtil.i("PushEosActionDialog onCreateView22222 arguments ${arguments}  activity ${activity}")
         return inflater.inflate(R.layout.dialog_eos_push_action, container).apply {
-            this@CallEosActionDialog.rootView = this as ViewGroup
+            this@PushEosActionDialog.rootView = this as ViewGroup
             findViewById<View>(R.id.imageView_back).setOnClickListener { dismiss() }
             findViewById<TextView>(R.id.tv_contract_address).text = eos_contract
             findViewById<TextView>(R.id.tv_contract_action).text = eos_action
@@ -124,7 +124,7 @@ class CallEosActionDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        LogUtil.i("CallEosActionDialog onStart 333333 arguments ${arguments} activity ${activity} dialog ${dialog}")
+        LogUtil.i("PushEosActionDialog onStart 333333 arguments ${arguments} activity ${activity} dialog ${dialog}")
         if (dialog != null) {
 //            val dm = DisplayMetrics()
 //            activity?.windowManager?.defaultDisplay?.getMetrics(dm)

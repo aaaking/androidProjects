@@ -1,6 +1,5 @@
 package com.example.jeliu.bipawallet.Main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -55,7 +54,7 @@ import com.example.jeliu.bipawallet.R;
 import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.contracts.Wxc;
-import com.example.jeliu.bipawallet.ui.CallEosActionDialog;
+import com.example.jeliu.bipawallet.ui.PushEosActionDialog;
 import com.example.jeliu.bipawallet.ui.CallEthFuncDialog;
 import com.example.jeliu.bipawallet.ui.IPayEosResult;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
@@ -543,7 +542,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     mPayEosWindow = new PayEosWindow(jsonObject, this, callback);
                     findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
                 } else {
-                    CallEosActionDialog dialog = new CallEosActionDialog();
+                    PushEosActionDialog dialog = new PushEosActionDialog();
                     Bundle bundle = new Bundle();
                     bundle.putString(Constant.KEY_EOS_CONTRACT, eos_contract);
                     bundle.putString(Constant.KEY_EOS_ACTION, func_name);
@@ -551,7 +550,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                     bundle.putString(Constant.KEY_EOS_PERMISSION, eos_permission);
                     dialog.setArguments(bundle);
                     dialog.setCallback(callback);
-                    findViewById(R.id.container).post(() -> dialog.show(getSupportFragmentManager(), "CallEosActionDialog"));
+                    findViewById(R.id.container).post(() -> dialog.show(getSupportFragmentManager(), "PushEosActionDialog"));
                 }
             }
         } catch (JSONException e) {
