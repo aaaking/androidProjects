@@ -146,6 +146,14 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         switchFragment(R.id.content, null, mAsset, null);
         requestPermission();
         tryPay();
+        LogUtil.INSTANCE.i("zzh-----------", "nav oncreate");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        LogUtil.INSTANCE.i("zzh-----------", "nav onNewIntent");
+        tryPay();
     }
 
     protected void initView() {
