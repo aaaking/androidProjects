@@ -246,6 +246,7 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
 
     @Override
     public boolean onSuccess(JSONObject jsonObject, String url) {
+        LogUtil.INSTANCE.i("request success:" + " and url " + url);
         hideWaiting();
         try {
             int code = jsonObject.getInt("code");

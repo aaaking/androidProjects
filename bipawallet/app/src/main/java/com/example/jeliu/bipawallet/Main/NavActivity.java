@@ -799,7 +799,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             // wallet node server
             request.requestPost(Constant.SEND_BY_WEB3J, param, this);
             if (uid != null && uid.trim().length() > 0) {
-                request.requestPost("game.bipa.io/api/charge/platform", param, this);
+                request.requestPost("http://game.bipa.io/api/charge/platform", param, this);
 //                request.requestPost("http://192.168.1.212:9999/charge/platform", param, this);
             }
             request.requestPost("http://192.168.1.212:1111/orders", param, this);
