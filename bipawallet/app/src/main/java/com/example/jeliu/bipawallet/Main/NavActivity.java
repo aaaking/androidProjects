@@ -520,7 +520,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             if (WalletUtils.isValidAddress(payAddress) && payToken.toLowerCase().equals("eth")) {
                 if (!WalletUtils.isValidAddress(address)) {
                     Toast.makeText(this, R.string.current_wallet_not_eth, Toast.LENGTH_LONG).show();
-                } else if (!TextUtils.isEmpty(eth_func_name) && !TextUtils.isEmpty(eth_inputs)) {
+                } else if (!TextUtils.isEmpty(eth_func_name)) {
                     queryContratcBinaryCode();
                 } else {
                     loadGas();

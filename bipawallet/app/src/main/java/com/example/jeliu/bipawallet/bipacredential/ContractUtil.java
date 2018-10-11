@@ -1,5 +1,7 @@
 package com.example.jeliu.bipawallet.bipacredential;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.web3j.abi.TypeReference;
@@ -659,8 +661,11 @@ public class ContractUtil {
     }
 
     public static List<Type> getInputs(String jsonStr) throws Exception {
-        JSONArray jsonArray = new JSONArray(jsonStr);
         List result = new ArrayList();
+        if (TextUtils.isEmpty(jsonStr) || jsonStr.equals("[]") || jsonStr.equals("[{}]") || jsonStr.equals("[ ]")) {
+            return result;
+        }
+        JSONArray jsonArray = new JSONArray(jsonStr);
         if (jsonArray == null || jsonArray.length() <= 0) {
             return result;
         }
