@@ -224,7 +224,9 @@ public class BaseActivity extends AppCompatActivity implements RequestResult {
     }
 
     public void showWaiting() {
-        mProgressDialog = ProgressDialog.show(BaseActivity.this, "", getResources().getString(R.string.waiting), true);
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(BaseActivity.this, "", getResources().getString(R.string.waiting), true);
+        }
     }
 
     public void hideWaiting() {
