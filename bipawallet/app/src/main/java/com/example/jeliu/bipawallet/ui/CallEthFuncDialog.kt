@@ -115,15 +115,22 @@ class CallEthFuncDialog : AlertDialog {
                                 Common.showPayFailed(mActivity, mActivity.findViewById(R.id.container), "", tv_contract_address.text.toString())
                                 throw Exception("txhash null")
                             }
-                            dismiss()
-                            (mActivity as? NavActivity)?.apply {
-                                runOnUiThread {
-                                    hideWaiting()
-                                    val js = JSONObject()
-                                    js.put("tx", tx)
-                                    sendToPlatformAfterPay(js, null, false)
-                                    showSuccDialog(true)
+                            var executeResult = Common.getWeb3j().ethGetTransactionReceipt(tx).send()
+                            var status = executeResult.transactionReceipt.status//'0x0' indicates transaction failure , '0x1' indicates transaction succeeded.
+                            if (status == "0x0") {
+                                mFailStr = tx
+                                showSuccDialog(false)
+                            } else {
+                                dismiss()
+                                (mActivity as? NavActivity)?.apply {
+                                    runOnUiThread {
+                                        hideWaiting()
+                                        val js = JSONObject()
+                                        js.put("tx", tx)
+                                        sendToPlatformAfterPay(js, null, false)
+                                    }
                                 }
+                                showSuccDialog(true)
                             }
                         } catch (e: Exception) {
                             LogUtil.i("zzh", "call function Exception: " + e.toString())
