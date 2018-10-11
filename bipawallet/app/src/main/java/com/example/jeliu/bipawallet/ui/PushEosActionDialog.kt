@@ -12,6 +12,7 @@ import android.widget.*
 import com.example.jeliu.bipawallet.Base.BaseActivity
 import com.example.jeliu.bipawallet.Common.Constant
 import com.example.jeliu.bipawallet.Common.HZWalletManager
+import com.example.jeliu.bipawallet.Main.NavActivity
 import com.example.jeliu.bipawallet.Model.HZWallet
 import com.example.jeliu.bipawallet.R
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager
@@ -241,6 +242,13 @@ class PushEosActionDialog : DialogFragment() {
                         LogUtil.i("zzh-----pushAction---", mResultData)
                         (activity as BaseActivity).hideWaiting()
                         showSuccDialog(true)
+                        (activity as? NavActivity)?.apply {
+                            runOnUiThread {
+                                val js = JSONObject()
+                                js.put("tx", result.transaction_id)
+                                sendToPlatformAfterPay(js, null, false)
+                            }
+                        }
                     }
 
                     override fun onError(e: Throwable) {
