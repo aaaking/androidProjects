@@ -226,7 +226,7 @@
     <string name="push_action_succ">push action success</string>
     <string name="push_action_fail">push action fail</string>
     <string name="call_succeed_tip">Congratulations! You have called function successfully</string>
-    <string name="import_eos_keys">Import Eos Keys</string>
+    <string name="import_eos_keys">Import private key</string>
     <string name="import_str">Import</string>
     <string name="import_hint">Input private key</string>
 </resources>
