@@ -3,6 +3,7 @@ package com.example.jeliu.bipawallet.util
 import android.content.Context
 import com.example.jeliu.bipawallet.Application.HZApplication
 import com.example.jeliu.bipawallet.BuildConfig
+import com.example.jeliu.bipawallet.Common.Constant
 
 /**
  * Created by 周智慧 on 2018/9/11.
@@ -17,8 +18,10 @@ fun initConstant(context : Context) {
     //
     if ("release" == BuildConfig.BUILD_TYPE) {
         debugBuildType = false
+        Constant.EOS_URL = "https://nodes.get-scatter.com"
     } else if ("debug" == BuildConfig.BUILD_TYPE) {
         debugBuildType = true
+        Constant.EOS_URL = "http://192.168.1.120:8888"//"http://193.93.219.219:8888"//
     }
 //    ApiConfig.isTestVersion = mSettingsPreferences.sp_setting.getBoolean(SettingsPreferences.KEY_APP_IS_TEST_VERSION, true)
 //    if (!debugBuildType) {
