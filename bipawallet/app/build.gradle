@@ -84,6 +84,7 @@ dependencies {
     api supportDependencies.appcompat
     api supportDependencies.design
     api supportDependencies.vector
+    api supportDependencies.cardview
 
     // Dagger dependencies
     implementation "com.google.dagger:dagger:$dagger2Ver"

@@ -26,6 +26,7 @@ import com.example.jeliu.bipawallet.Splash.WelcomeActivity;
 import com.example.jeliu.bipawallet.UserInfo.UserInfoManager;
 import com.example.jeliu.bipawallet.bipacredential.BipaCredential;
 import com.example.jeliu.bipawallet.bipacredential.BipaWalletFile;
+import com.example.jeliu.bipawallet.ui.InputDataDialog;
 import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.eos.crypto.ec.EosPrivateKey;
@@ -89,9 +90,12 @@ public class WalletNameActivity extends BaseActivity {
     @BindView(R.id.imageView_profile)
     ImageView ivProfile;
 
+    @BindView(R.id.rl_eos_keys)
+    View rl_eos_keys;
+
     private String walletAddress;
 
-    @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete})
+    @OnClick({R.id.rl_private_key, R.id.rl_keystore, R.id.button_delete, R.id.rl_eos_keys})
     void onClick(View view) {
 //        if (true) {
 //            ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
@@ -111,8 +115,10 @@ public class WalletNameActivity extends BaseActivity {
         } else if (view.getId() == R.id.rl_keystore) {
             showType = ExportPrivateKeyFragment.TYPE_SHOW_ETH_KS;
             showInputPassword(1);
-        } else {
+        } else if (view.getId() == R.id.button_delete) {
             showInputPassword(2);
+        } else if (view.getId() == R.id.rl_eos_keys) {
+            showInputPassword(3);
         }
     }
 
@@ -149,6 +155,8 @@ public class WalletNameActivity extends BaseActivity {
                         exportKeystore(password);
                     } else if (flag == 2) {
                         deleteWallet(password);
+                    } else if (flag == 3) {
+                        tryImportEosKey(password);
                     }
                 });
         builder.setNegativeButton(getString(R.string.cancel),
@@ -308,6 +316,20 @@ public class WalletNameActivity extends BaseActivity {
 //        request.requestPost(Constant.DELETEACCOUNT, param, this);
     }
 
+    private void tryImportEosKey(String password) {
+        mDataManager.getWalletManager().lock(wallet.name);
+        mDataManager.getWalletManager().unlock(wallet.name, password);
+        if (mDataManager.getWalletManager().isLocked(wallet.name)) {
+            showToastMessage("invalid password");
+            return;
+        }
+        InputDataDialog dialog = new InputDataDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("wallet_name", wallet.name);
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "InputDataDialog");
+    }
+
     @Override
     public boolean onSuccess(JSONObject jsonObject, String url) {
         if (!super.onSuccess(jsonObject, url)) {
@@ -413,7 +435,8 @@ public class WalletNameActivity extends BaseActivity {
             showType = ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK;
         }
         showBackButton();
-        rl_keystore.setVisibility(wallet == null || wallet.type == WALLET_ETH ? View.VISIBLE : wallet.type == WALLET_EOS ? View.INVISIBLE : View.VISIBLE);
+        rl_keystore.setVisibility(wallet == null || wallet.type == WALLET_ETH ? View.VISIBLE : wallet.type == WALLET_EOS ? View.GONE : View.VISIBLE);
+        rl_eos_keys.setVisibility(wallet == null || wallet.type == WALLET_ETH ? View.GONE : wallet.type == WALLET_EOS ? View.VISIBLE : View.GONE);
         if (wallet != null) {
             ivProfile.setImageDrawable(getResources().getDrawable(UserInfoManager.getInst().getProfile(wallet.profileIndex)));
         }
