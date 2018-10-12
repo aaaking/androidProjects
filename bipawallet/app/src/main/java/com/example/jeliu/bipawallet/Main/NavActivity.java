@@ -516,7 +516,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             payAddress = jsonObject.getString("id");
             payValue = jsonObject.getDouble("value");
             //call contract function
-            eos_contract = jsonObject.optString(Constant.KEY_EOS_CONTRACT);
+            eos_contract = payAddress;
             func_name = jsonObject.optString(Constant.KEY_EOS_ACTION);
             inputs = jsonObject.optString(Constant.KEY_EOS_DATA_JSON);
             eos_permission = jsonObject.optString(Constant.KEY_EOS_PERMISSION);

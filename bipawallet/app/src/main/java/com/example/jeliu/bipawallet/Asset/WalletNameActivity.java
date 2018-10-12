@@ -162,6 +162,7 @@ public class WalletNameActivity extends BaseActivity {
         ExportPrivateKeyFragment fragment = new ExportPrivateKeyFragment();
         fragment.setShowType(showType);
         if (showType == ExportPrivateKeyFragment.TYPE_SHOW_EOS_PK) {
+            mDataManager.getWalletManager().lock(wallet.name);
             mDataManager.getWalletManager().unlock(wallet.name, password);
             if (mDataManager.getWalletManager().isLocked(wallet.name)) {
                 showToastMessage("invalid password");

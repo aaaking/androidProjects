@@ -251,7 +251,7 @@ public class ExportPrivateKeyFragment extends DialogFragment {
             EosPrivateKey data = mKeys.get(position);
             String pkStr = getContext().getResources().getString(R.string.privacy_key);
             holder.tv_transfer.setText(getItemCount() <= 1 ? pkStr : (pkStr + (position + 1)));
-            holder.textView_key.setText(data.toWif());
+            holder.textView_key.setText(data.toWif() + ": " + data.getPublicKey().toString());
         }
 
         @Override
