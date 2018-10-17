@@ -179,6 +179,11 @@ class DevAC : Activity() {
         var i = Intent()
         i.putExtra("fs", "fsV");
         i.setClassName("com.smartisan.weibo", "com.smartisan.weibo.activity.WeiboMainTabActivity");
-        startActivity(i)
+        startActivityForResult(i, 666)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogUtil.i("onActivityResult--" + data?.extras?.get("fs"))
     }
 }
