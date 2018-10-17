@@ -179,6 +179,13 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
         bundle.putInt("CurrentIndex", currentIndex);
+        LogUtil.INSTANCE.i("--onSaveInstanceState--currentIndex---" + currentIndex);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        LogUtil.INSTANCE.i("--onRestoreInstanceState--currentIndex---" + savedInstanceState.get("CurrentIndex"));
     }
 
     private void setupListview(NavigationView view) {
