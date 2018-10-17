@@ -852,11 +852,6 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
     };
     private void testAidl() {//test aidl
         //
-//        Intent i = new Intent();
-//        i.putExtra("fs", "fsV");
-//        i.setClassName("com.smartisan.weibo", "com.smartisan.weibo.activity.WeiboMainTabActivity");
-//        startActivity(i);
-        //
         Intent startIntent = new Intent();
         ComponentName componentName = new ComponentName("com.smartisan.weibo", "com.smartisan.weibo.services.WeiboService");
         startIntent.setComponent(componentName);

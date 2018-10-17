@@ -56,4 +56,10 @@
             android:text="call newGreeting"/>
     </FrameLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:text="gotoSmartisanWeibo"
+        android:onClick="gotoSmartisanWeibo"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

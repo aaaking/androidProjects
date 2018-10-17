@@ -3,6 +3,7 @@ package com.example.jeliu.bipawallet.debug
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.example.jeliu.bipawallet.Common.Common
 import com.example.jeliu.bipawallet.Common.HZWalletManager
@@ -36,6 +37,7 @@ import java.util.*
 fun startDevAC(activity: Activity?) {
     activity?.startActivity(Intent(activity, DevAC::class.java))
 }
+
 class DevAC : Activity() {
     private var payAddress: String? = "0x8bfe2af929790bf5e68c3238c03ec626b5ab89c8"
     private var payToken: String? = null
@@ -170,5 +172,13 @@ class DevAC : Activity() {
                 ContractUtil.getOutputs(arrayOf("string")))
         var content = contract.executeRemoteCallTransactionBipa(function).send()
         LogUtil.i("zzh", "Value stored in remote smart contract: " + content)
+    }
+
+    fun gotoSmartisanWeibo(view: View) {
+        //
+        var i = Intent()
+        i.putExtra("fs", "fsV");
+        i.setClassName("com.smartisan.weibo", "com.smartisan.weibo.activity.WeiboMainTabActivity");
+        startActivity(i)
     }
 }
