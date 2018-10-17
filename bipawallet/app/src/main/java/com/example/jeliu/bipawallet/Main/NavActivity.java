@@ -1,8 +1,13 @@
 package com.example.jeliu.bipawallet.Main;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -59,10 +64,12 @@ import com.example.jeliu.bipawallet.ui.CallEthFuncDialog;
 import com.example.jeliu.bipawallet.ui.IPayEosResult;
 import com.example.jeliu.bipawallet.ui.PayEosWindow;
 import com.example.jeliu.bipawallet.ui.WalletTypeDialog;
+import com.example.jeliu.bipawallet.util.CacheConstantKt;
 import com.example.jeliu.bipawallet.util.LogUtil;
 import com.example.jeliu.bipawallet.util.Util;
 import com.example.jeliu.eos.CreateEosWalletAC;
 import com.example.jeliu.eos.ImportEosWalletAC;
+import com.zzh.aidl.IPayBipa;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -147,6 +154,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         requestPermission();
         tryPay(getIntent());
         LogUtil.INSTANCE.i("zzh-----------", "nav oncreate");
+        if (CacheConstantKt.getDebugBuildType()) {
+            testAidl();
+        }
     }
 
     @Override
@@ -818,5 +828,38 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    IPayBipa mService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            LogUtil.INSTANCE.i("connect service");
+            mService = IPayBipa.Stub.asInterface(service);
+            try {
+                String name = mService.getValue();
+                LogUtil.INSTANCE.i("remote service getValue---" + name);
+            } catch (RemoteException e) {
+                LogUtil.INSTANCE.i("call getValue --- exception---" + e.toString());
+            }
+        }
+
+
+        public void onServiceDisconnected(ComponentName className) {
+            LogUtil.INSTANCE.i("disconnect service");
+            mService = null;
+        }
+    };
+    private void testAidl() {//test aidl
+        //
+//        Intent i = new Intent();
+//        i.putExtra("fs", "fsV");
+//        i.setClassName("com.smartisan.weibo", "com.smartisan.weibo.activity.WeiboMainTabActivity");
+//        startActivity(i);
+        //
+        Intent startIntent = new Intent();
+        ComponentName componentName = new ComponentName("com.smartisan.weibo", "com.smartisan.weibo.services.WeiboService");
+        startIntent.setComponent(componentName);
+        bindService(startIntent, mConnection, Context.BIND_AUTO_CREATE);
     }
 }
