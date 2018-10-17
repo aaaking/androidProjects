@@ -3,6 +3,7 @@ package com.example.jeliu.bipawallet.debug
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.jeliu.bipawallet.Common.Common
@@ -56,6 +57,7 @@ class DevAC : Activity() {
     var credentials: Credentials? = null// = WalletUtils.loadCredentials("1111", Common.WALLET_PATH + File.separator + wallet.fileName)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LogUtil.i("zzh-dev-oncreate: ", "fs:" + intent.extras + " taskid:" + taskId)
         setContentView(R.layout.ac_dev)
         //deploy
         deploy.setOnClickListener {
