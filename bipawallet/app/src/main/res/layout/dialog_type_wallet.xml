@@ -20,7 +20,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:gravity="center"
-        android:text="eth"/>
+        android:text="ETH"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -32,6 +32,6 @@
         android:gravity="center"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:text="eos"/>
+        android:text="EOS"/>
 
 </LinearLayout>
