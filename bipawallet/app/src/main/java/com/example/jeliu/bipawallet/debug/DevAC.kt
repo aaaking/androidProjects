@@ -203,9 +203,11 @@ class DevAC : Activity() {
             while (cursor.moveToNext()) {
                 var nameString = cursor.getString(cursor.getColumnIndex("uid"));
                 var numString = cursor.getString(cursor.getColumnIndex("_id"));
-                LogUtil.i("contentprovider-----" + nameString + "  --  " + numString)
+                LogUtil.i("contentprovider-----" + nameString + "  --  " + numString + " curosr count: " + cursor.count)
             }
             cursor.close();
+        } else {
+            LogUtil.i("contentprovider-----cursor is null")
         }
     }
 }
