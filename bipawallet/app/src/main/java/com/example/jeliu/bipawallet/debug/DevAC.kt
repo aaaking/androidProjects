@@ -2,6 +2,7 @@ package com.example.jeliu.bipawallet.debug
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -98,6 +99,12 @@ class DevAC : Activity() {
                 newGreeting2()
             })
         }
+        //
+        try {
+            testContentProvider()
+        } catch (e: Exception) {
+            LogUtil.i("zzh--contentprovider e:"+e.toString())
+        }
     }
 
     fun getCredential(): Credentials {
@@ -187,5 +194,18 @@ class DevAC : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         LogUtil.i("onActivityResult--" + data?.extras?.get("fs"))
+    }
+
+    fun testContentProvider() {
+        val uri = Uri.parse("content://com.smartisan.weibo.provider/draft_table")
+        var cursor = getContentResolver().query(Uri.withAppendedPath(Uri.parse("content://com.smartisan.weibo.provider"), "draft_table"), null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                var nameString = cursor.getString(cursor.getColumnIndex("uid"));
+                var numString = cursor.getString(cursor.getColumnIndex("_id"));
+                LogUtil.i("contentprovider-----" + nameString + "  --  " + numString)
+            }
+            cursor.close();
+        }
     }
 }
