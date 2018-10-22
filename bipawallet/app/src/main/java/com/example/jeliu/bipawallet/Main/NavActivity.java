@@ -857,4 +857,16 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         startIntent.setComponent(componentName);
         bindService(startIntent, mConnection, Context.BIND_AUTO_CREATE);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtil.INSTANCE.i("zzh", "启动速度 main onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtil.INSTANCE.i("zzh", "启动速度 main onStop");
+    }
 }
