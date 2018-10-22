@@ -21,7 +21,7 @@ fun initConstant(context : Context) {
         Constant.EOS_URL = "https://nodes.get-scatter.com"
     } else if ("debug" == BuildConfig.BUILD_TYPE) {
         debugBuildType = true
-        Constant.EOS_URL = "http://192.168.1.120:8888"//"http://193.93.219.219:8888"//
+        Constant.EOS_URL = "http://193.93.219.219:8888"//"http://192.168.1.120:8888"//
     }
 //    ApiConfig.isTestVersion = mSettingsPreferences.sp_setting.getBoolean(SettingsPreferences.KEY_APP_IS_TEST_VERSION, true)
 //    if (!debugBuildType) {
