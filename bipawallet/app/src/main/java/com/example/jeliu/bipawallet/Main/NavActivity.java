@@ -843,7 +843,9 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             }
             try {
                 String name = mService.getValue();
-                LogUtil.INSTANCE.i("remote service getValue---" + name);
+                LogUtil.INSTANCE.i("remote service getValue--default---" + name);
+                mService.setValue("-----newValue------");
+                LogUtil.INSTANCE.i("remote service getValue--new---" + mService.getValue());
             } catch (RemoteException e) {
                 LogUtil.INSTANCE.i("call getValue --- exception---" + e.toString());
             }
