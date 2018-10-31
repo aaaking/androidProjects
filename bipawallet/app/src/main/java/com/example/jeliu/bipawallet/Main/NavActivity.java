@@ -833,9 +833,14 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
 
     IPayBipa mService;
     private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder binder) {
             LogUtil.INSTANCE.i("connect service");
-            mService = IPayBipa.Stub.asInterface(service);
+            mService = IPayBipa.Stub.asInterface(binder);
+            try {
+                binder.linkToDeath(mDeathRecipient, 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             try {
                 String name = mService.getValue();
                 LogUtil.INSTANCE.i("remote service getValue---" + name);
@@ -857,6 +862,16 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
         startIntent.setComponent(componentName);
         bindService(startIntent, mConnection, Context.BIND_AUTO_CREATE);
     }
+    private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            LogUtil.INSTANCE.i("------------binderDied-----------");
+            if (mService != null) {
+                mService.asBinder().unlinkToDeath(mDeathRecipient, 0);
+                mService = null;
+            }
+        }
+    };
 
     @Override
     protected void onPause() {
