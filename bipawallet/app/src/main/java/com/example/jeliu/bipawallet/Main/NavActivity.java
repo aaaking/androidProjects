@@ -565,7 +565,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
                 };
                 if (TextUtils.isEmpty(eos_contract) || TextUtils.isEmpty(func_name)) {
                     mPayEosWindow = new PayEosWindow(jsonObject, this, callback);
-                    findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation(findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
+                    findViewById(R.id.container).post(() -> mPayEosWindow.showAtLocation((View) findViewById(R.id.container), Gravity.BOTTOM, 0, 0));
                 } else {
                     PushEosActionDialog dialog = new PushEosActionDialog();
                     Bundle bundle = new Bundle();
@@ -691,7 +691,7 @@ public class NavActivity extends BaseActivity implements NavigationView.OnNaviga
             popupWindow.dismiss();
             showInputPassword();
         });
-        findViewById(R.id.container).post(() -> popupWindow.showAtLocation(findViewById(R.id.container), gravity, 0, 0));
+        findViewById(R.id.container).post(() -> popupWindow.showAtLocation((View) findViewById(R.id.container), gravity, 0, 0));
     }
 
     private void showInputPassword() {
