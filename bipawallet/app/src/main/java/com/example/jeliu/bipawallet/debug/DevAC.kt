@@ -200,6 +200,7 @@ class DevAC : Activity() {
         val uri = Uri.parse("content://com.smartisan.weibo.provider/draft_table")
         var cursor = getContentResolver().query(Uri.withAppendedPath(Uri.parse("content://com.smartisan.weibo.provider"), "draft_table"), null, null, null, null);
         if (cursor != null) {
+            LogUtil.i("contentprovider-----cursor is not null")
             while (cursor.moveToNext()) {
                 var nameString = cursor.getString(cursor.getColumnIndex("uid"));
                 var numString = cursor.getString(cursor.getColumnIndex("_id"));
